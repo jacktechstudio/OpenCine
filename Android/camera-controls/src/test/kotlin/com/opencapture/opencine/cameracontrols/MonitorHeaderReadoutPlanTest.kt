@@ -20,10 +20,10 @@ class MonitorHeaderReadoutPlanTest {
     private fun readout(id: String, title: String, value: String,
         section: MonitorDisplaySection? = null): HeaderReadout = HeaderReadout(id, title, value, section)
 
-    private val format = readout("format", "Recording format", "6K · 25p")
-    private val codec = readout("codec", "Codec", "R3D NE", MonitorDisplaySection.CODEC)
-    private val color = readout("color", "Color mode", "D-Log2", MonitorDisplaySection.COLOR)
-    private val mode = readout("mode", "Shooting mode", "Video")
+    private val format = readout("format", "录制格式", "6K · 25p")
+    private val codec = readout("codec", "编码", "R3D NE", MonitorDisplaySection.CODEC)
+    private val color = readout("color", "色彩模式", "D-Log2", MonitorDisplaySection.COLOR)
+    private val mode = readout("mode", "拍摄模式", "录像")
 
     private fun plan(
         portrait: Boolean, photo: Boolean = false, format: List<HeaderReadout> = listOf(this.format, codec),
@@ -39,7 +39,7 @@ class MonitorHeaderReadoutPlanTest {
         assertTrue(landscape.foldsColor)
         assertNull(landscape.color)
         assertEquals("codec", landscape.combined?.codec?.id)
-        assertEquals("Codec and color", landscape.accessibility(codec)?.first)
+        assertEquals("编码与色彩", landscape.accessibility(codec)?.first)
         assertEquals("R3D NE · D-Log2", landscape.accessibility(codec)?.second)
         assertNull(landscape.accessibility(format), "The format readout is not the combined control")
     }

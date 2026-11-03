@@ -26,7 +26,7 @@ class CaptureProfileAdmissionTest {
         for (color in colors) {
             val status = CameraStatus(colorMode = color, availableColorModes = colors)
             val control = recordingCategoryQuickControl(LiveSheet.COLOR, status, profile = profile)
-            assertEquals(listOf("Standard", "I-Log", "Dolby Vision"), control?.options)
+            assertEquals(listOf("Standard", "I-Log", "杜比视界"), control?.options)
             assertEquals(CameraCommands.colorLabel(color, profile = profile), control?.selection)
         }
     }
@@ -39,11 +39,11 @@ class CaptureProfileAdmissionTest {
     }
 
     @Test fun optionalAudioContainsOnlyDeclaredFieldsAndUnknownSelection() {
-        val field = CaptureAudioField(CaptureAudioControl.CHANNEL, "Channel",
+        val field = CaptureAudioField(CaptureAudioControl.CHANNEL, "声道",
             listOf(CaptureAudioValue.Channel(CaptureAudioChannel.STEREO), CaptureAudioValue.Channel(CaptureAudioChannel.MONO)))
         val service = CaptureAudioService(CaptureAudioSourceID(CameraSessionID(), ControlEpoch()), listOf(field), { CaptureAudioCommitResult.SUBMITTED }, {})
-        assertEquals(listOf("Channel"), service.fields.map { it.title })
-        assertEquals(listOf("Stereo", "Mono"), field.choices.map { it.label })
+        assertEquals(listOf("声道"), service.fields.map { it.title })
+        assertEquals(listOf("立体声", "单声道"), field.choices.map { it.label })
         assertNull(field.observed)
     }
 }

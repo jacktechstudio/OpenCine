@@ -38,8 +38,8 @@ class GyroLogSectionsTest {
         )
         assertEquals(
             listOf(
-                "Today",
-                "Yesterday",
+                "今天",
+                "昨天",
                 "Tuesday, October 20",
                 "Wednesday, December 31, 2025",
             ),
@@ -61,7 +61,7 @@ class GyroLogSectionsTest {
             locale,
         )
         assertEquals(
-            listOf("Today", "Yesterday", "Friday, October 23"),
+            listOf("今天", "昨天", "Friday, October 23"),
             sections.map { it.title },
         )
         assertEquals(

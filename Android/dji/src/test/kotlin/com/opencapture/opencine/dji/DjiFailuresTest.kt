@@ -32,7 +32,7 @@ class DjiFailuresTest {
                 pairingTimedOut,
             )
         assertTrue(
-            failure.message.startsWith("The camera didn't respond in time. Check Bluetooth and try again."),
+            failure.message.startsWith("相机响应超时，请检查蓝牙后重试。"),
             failure.message,
         )
         assertTrue(failure.message.endsWith(DjiFailures.DJI_APPS_TIP), failure.message)
@@ -46,7 +46,7 @@ class DjiFailuresTest {
                 ConnectionPhase.OPENING_DATALINK,
                 "camera never answered the datalink handshake",
             )
-        assertEquals("The camera never answered the video link. ${DjiFailures.DJI_APPS_TIP}", failure.message)
+        assertEquals("相机未响应图传连接请求。 ${DjiFailures.DJI_APPS_TIP}", failure.message)
     }
 
     @Test
@@ -57,7 +57,7 @@ class DjiFailuresTest {
                 ConnectionPhase.JOINING_WIFI,
                 "the camera disconnected",
             )
-        assertEquals("The camera ended the connection. Try again.", failure.message)
+        assertEquals("相机已断开连接，请重试。", failure.message)
     }
 
     @Test

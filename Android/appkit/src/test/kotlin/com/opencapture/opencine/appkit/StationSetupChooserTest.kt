@@ -21,14 +21,14 @@ class StationSetupChooserTest {
 
     @Test fun cameraChooserNamesTheCameraAndItsAddedSetups() {
         val chooser = stationSetupChooser(camera)
-        assertEquals("How should this camera connect?", chooser.title)
+        assertEquals("选择此相机的连接方式", chooser.title)
         assertEquals("Body A · Model 1", chooser.detail)
         assertEquals("stationSetup", chooser.identifierPrefix)
         assertEquals(listOf("wifi", "phoneHotspot"), chooser.options.map { it.id })
         assertEquals(listOf(RouteKind.INFRASTRUCTURE_NETWORK, RouteKind.PHONE_HOTSPOT), chooser.options.map { it.kind })
-        assertEquals(listOf("Wi-Fi", "Hotspot"), chooser.options.map { it.title })
-        assertTrue(chooser.options[0].detail.startsWith("Added · studio\n"))
-        assertFalse(chooser.options[1].detail.startsWith("Added"))
+        assertEquals(listOf("Wi-Fi", "热点"), chooser.options.map { it.title })
+        assertTrue(chooser.options[0].detail.startsWith("已添加 · studio\n"))
+        assertFalse(chooser.options[1].detail.startsWith("已添加"))
     }
 
     @Test fun hostRoutesJoinTheSharedChooserInOneOrderWithSharedCopy() {
@@ -41,21 +41,21 @@ class StationSetupChooserTest {
                 StationSetupRoute(RouteKind.INFRASTRUCTURE_NETWORK, actionTitle = "Find on this network"),
                 StationSetupRoute(RouteKind.CAPTURE_DEVICE),
             ),
-            notice = AddSetupNotice("names", "Allow names.", "Allow"),
+            notice = AddSetupNotice("names", "Allow names.", "允许"),
         )
-        assertEquals("How should this camera connect?", chooser.title)
+        assertEquals("选择此相机的连接方式", chooser.title)
         assertEquals("Body A · Model 1", chooser.detail)
         assertEquals(listOf("wifi", "phoneHotspot", "cameraAccessPoint", "usb", "captureDevice"), chooser.options.map { it.id })
-        assertEquals(listOf("Wi-Fi", "Hotspot", "Camera Wi-Fi", "USB-C", "HDMI capture"), chooser.options.map { it.title })
+        assertEquals(listOf("Wi-Fi", "热点", "相机 Wi-Fi", "USB-C", "HDMI 采集"), chooser.options.map { it.title })
         assertEquals(
-            listOf("Find on this network", "Choose hotspot", "Choose camera Wi-Fi", "Connect now", "Choose HDMI capture"),
+            listOf("Find on this network", "选择热点", "选择相机 Wi-Fi", "Connect now", "选择 HDMI 采集"),
             chooser.options.map { it.actionTitle },
         )
         assertEquals(listOf(true, true, false, true, true), chooser.options.map { it.enabled })
-        assertTrue(chooser.options[2].detail.startsWith("Added · BODY-AP\n"))
+        assertTrue(chooser.options[2].detail.startsWith("已添加 · BODY-AP\n"))
         assertEquals("names", chooser.notice?.id)
         // The camera's Wi-Fi is on offer, so the footer does not claim it is already there.
-        assertEquals("Switch setups from the camera’s chips at any time.", chooser.footer)
+        assertEquals("可随时点按相机卡片上的连接方案进行切换。", chooser.footer)
         val words = listOf(chooser.title, chooser.detail, chooser.footer.orEmpty()) +
             chooser.options.flatMap { listOf(it.title, it.detail, it.actionTitle) }
         assertFalse(words.any { it.contains('\u2014') })
@@ -67,15 +67,15 @@ class StationSetupChooserTest {
 
     @Test fun stationHostsKeepWiFiAndHotspotOnly() {
         val chooser = stationSetupChooser(camera)
-        assertEquals(listOf("Choose Wi-Fi", "Choose hotspot"), chooser.options.map { it.actionTitle })
+        assertEquals(listOf("选择 Wi-Fi", "选择热点"), chooser.options.map { it.actionTitle })
         assertEquals(null, chooser.notice)
-        assertEquals("Camera Wi-Fi stays available. Switch setups from the camera’s chips at any time.", chooser.footer)
+        assertEquals("仍可使用相机 Wi-Fi。可随时点按相机卡片上的连接方案进行切换。", chooser.footer)
     }
 
     @Test fun multiviewChooserHasNoCamera() {
         val chooser = stationSetupChooser(null)
-        assertEquals("How will your cameras connect?", chooser.title)
+        assertEquals("多台相机将如何连接？", chooser.title)
         assertEquals("", chooser.detail)
-        assertTrue(chooser.footer.orEmpty().startsWith("Choose the shared network"))
+        assertTrue(chooser.footer.orEmpty().startsWith("请先选择共用网络"))
     }
 }

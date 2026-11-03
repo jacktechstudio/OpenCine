@@ -33,7 +33,7 @@ class NativeProgramZoomTest {
     @Test fun longAndTinyLegsStartImmediatelyAndClampAtBothEnds() {
         assertEquals(NativeProgramZoomCommand.Track(3.75), NativeProgramZoom.demand(3.0, 6.0, 60.0, 15.0).command)
         assertEquals(NativeProgramZoomCommand.Track(1.0005), NativeProgramZoom.demand(1.0, 1.001, 1.0, 0.5).command)
-        assertEquals("Invalid zoom movement", NativeProgramZoom.demand(3.0, 6.0, 2.5, -1.0).failureReason)
+        assertEquals("无效的变焦动作", NativeProgramZoom.demand(3.0, 6.0, 2.5, -1.0).failureReason)
         assertEquals(NativeProgramZoomCommand.Track(6.0), NativeProgramZoom.demand(3.0, 6.0, 2.5, 3.0).command)
         assertEquals(NativeProgramZoomCommand.Stop, NativeProgramZoom.demand(3.0, 3.0, 2.0, 1.0).command)
         val a = GimbalWaypoint(0.0, 0.0, 1.0, 175.0)

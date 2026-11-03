@@ -7,9 +7,9 @@ internal object CaptureTestProfiles {
         CameraCommands.COLOR_HDR, CameraCommands.COLOR_DLOG))
     val pro = base.copy(colorModes = base.colorModes!! + CameraCommands.COLOR_DLOG2)
     val lowLight = CameraLabelProfile(
-        shootingModeLabels = mapOf(CameraCommands.SHOOT_SUPER_NIGHT to "Low-Light"),
+        shootingModeLabels = mapOf(CameraCommands.SHOOT_SUPER_NIGHT to "低光视频"),
         colorModes = listOf(CameraCommands.COLOR_NORMAL, CameraCommands.COLOR_HDR, CameraCommands.COLOR_DLOG_M))
-    val fixed = CameraLabelProfile(colorModeLabels = mapOf(CameraCommands.COLOR_NORMAL to "Normal 8-bit",
+    val fixed = CameraLabelProfile(colorModeLabels = mapOf(CameraCommands.COLOR_NORMAL to "普通 8-bit",
         CameraCommands.COLOR_DLOG_M to "D-Log M 10-bit"),
         colorModes = listOf(CameraCommands.COLOR_NORMAL, CameraCommands.COLOR_NORMAL10, CameraCommands.COLOR_DLOG_M))
     val video = listOf(VideoResolution.P1080, VideoResolution.P2_7K, VideoResolution.P4K,

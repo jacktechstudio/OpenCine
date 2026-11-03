@@ -345,7 +345,7 @@ class MonitorControlModelTest {
         model.bind(camera)
         val old = assertNotNull(model.edit(SettingKey.ZOOM))
         val unrelated = assertNotNull(model.edit(SettingKey.ISO))
-        assertTrue(model.commit(SettingValue.Zoom(2.0), old, "Zoom 2"))
+        assertTrue(model.commit(SettingValue.Zoom(2.0), old, "变焦 2"))
         assertTrue(model.commit(iso(800), unrelated, "ISO 800"))
         runCurrent()
         advanceTimeBy(60); runCurrent()
@@ -354,7 +354,7 @@ class MonitorControlModelTest {
         assertTrue(model.isCurrent(unrelated))
         assertFalse(model.commit(SettingValue.Zoom(2.0), old, "Retired zoom"))
         val successor = assertNotNull(model.edit(SettingKey.ZOOM))
-        assertTrue(model.commit(SettingValue.Zoom(3.0), successor, "Zoom 3"))
+        assertTrue(model.commit(SettingValue.Zoom(3.0), successor, "变焦 3"))
         runCurrent()
         advanceTimeBy(60); runCurrent()
         assertEquals(listOf("set ${iso(800)}"), camera.wire)
@@ -368,11 +368,11 @@ class MonitorControlModelTest {
         val camera = FakeCameraSession.djiLike()
         camera.cameraReportsStatus()
         model.bind(camera)
-        assertTrue(model.commit(SettingValue.Zoom(2.0), assertNotNull(model.edit(SettingKey.ZOOM)), "Zoom 2"))
+        assertTrue(model.commit(SettingValue.Zoom(2.0), assertNotNull(model.edit(SettingKey.ZOOM)), "变焦 2"))
         tick()
         assertEquals(1, camera.wire.size)
         model.cancelEdit(SettingKey.ZOOM)
-        assertTrue(model.commit(SettingValue.Zoom(3.0), assertNotNull(model.edit(SettingKey.ZOOM)), "Zoom 3"))
+        assertTrue(model.commit(SettingValue.Zoom(3.0), assertNotNull(model.edit(SettingKey.ZOOM)), "变焦 3"))
         tick()
         assertEquals(2, camera.wire.size)
         assertEquals(SettingValue.Zoom(3.0), model.state.value.pending[SettingKey.ZOOM])
@@ -532,7 +532,7 @@ class MonitorControlModelTest {
         camera.refuseNextCommand()
         model.record(true)
         runCurrent()
-        assertEquals(listOf("ISO 800 host", "Record host"), notes)
+        assertEquals(listOf("ISO 800 host", "录像 host"), notes)
     }
 
     @Test
@@ -540,13 +540,13 @@ class MonitorControlModelTest {
         assertNull(MonitorControlModel.note(CommandStage.Confirmed, "ISO 800"))
         assertNull(MonitorControlModel.note(CommandStage.Failed(CommandFailure.SUPERSEDED), "ISO 800"))
         assertEquals(
-            "ISO 800: the camera refused it.",
+            "相机拒绝了“ISO 800”。",
             MonitorControlModel.note(CommandStage.Rejected(CommandRejection.CameraRefused), "ISO 800"),
         )
         assertEquals(
             MonitorControlModel.CONNECT_FIRST,
             MonitorControlModel.note(CommandStage.Rejected(CommandRejection.NoAuthority), "ISO 800"),
         )
-        assertEquals("Stop: the camera link dropped before it confirmed.", MonitorControlModel.note(CommandStage.OutcomeUnknown, "Stop"))
+        assertEquals("连接中断，相机未确认“停止”。", MonitorControlModel.note(CommandStage.OutcomeUnknown, "停止"))
     }
 }

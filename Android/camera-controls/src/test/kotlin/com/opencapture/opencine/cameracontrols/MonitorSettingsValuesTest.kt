@@ -24,8 +24,8 @@ class MonitorSettingsValuesTest {
         val terms = MonitorLegalDocument.Text("terms")
         val licenses = MonitorLegalDocument.Text("licenses")
         val notice = MonitorLegalDocument.Text("notice")
-        val documents = MonitorLegalDocuments("APP", privacy, terms, licenses, notice)
+        val documents = MonitorLegalDocuments("应用", privacy, terms, licenses, notice)
         assertEquals(listOf(privacy, terms, licenses, notice), MonitorLegalPage.entries.map { documents[it] })
-        assertEquals(listOf("Privacy", "Terms", "Licenses", "NOTICE"), MonitorLegalPage.entries.map { it.title })
+        assertEquals(listOf("隐私", "条款", "许可证", "NOTICE"), MonitorLegalPage.entries.map { it.title })
     }
 }

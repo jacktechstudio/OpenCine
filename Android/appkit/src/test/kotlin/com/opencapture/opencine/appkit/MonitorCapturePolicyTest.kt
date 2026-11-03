@@ -58,20 +58,20 @@ class MonitorCapturePolicyTest {
 
     /** ZAA-415: the record disc speaks its state beside the action. */
     @Test fun theRecordDiscSpeaksItsState() {
-        assertEquals("Recording", policy(recording = true).stateDescription)
-        assertEquals("Standby", policy(recording = false).stateDescription)
+        assertEquals("录制中", policy(recording = true).stateDescription)
+        assertEquals("待机", policy(recording = false).stateDescription)
         assertNull(policy(recording = null).stateDescription)
         assertNull(policy(photo = true).stateDescription)
-        assertEquals("Start recording", policy(recording = false).accessibilityLabel)
-        assertEquals("Stop recording", policy(recording = true).accessibilityLabel)
-        assertEquals("Take photo", policy(photo = true).accessibilityLabel)
+        assertEquals("开始录制", policy(recording = false).accessibilityLabel)
+        assertEquals("停止录制", policy(recording = true).accessibilityLabel)
+        assertEquals("拍照", policy(photo = true).accessibilityLabel)
     }
 
     /** Review: an unrelated busy command is not a stop; a hold that opens the sheet is named. */
     @Test fun onlyAPendingStopIsAnnouncedAndTheModeHoldIsNamed() {
-        assertEquals("Stop recording", policy(busy = true, recording = true).accessibilityLabel)
-        assertEquals("Stopping recording", policy(pending = true, recording = true).accessibilityLabel)
-        assertEquals("Shooting mode", policy(offersMode = true).holdAccessibilityLabel)
+        assertEquals("停止录制", policy(busy = true, recording = true).accessibilityLabel)
+        assertEquals("正在停止录制", policy(pending = true, recording = true).accessibilityLabel)
+        assertEquals("拍摄模式", policy(offersMode = true).holdAccessibilityLabel)
         assertNull(policy().holdAccessibilityLabel)
     }
 

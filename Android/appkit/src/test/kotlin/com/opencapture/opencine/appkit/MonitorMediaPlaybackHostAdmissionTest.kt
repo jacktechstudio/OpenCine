@@ -141,7 +141,7 @@ class MonitorMediaPlaybackHostAdmissionTest {
         try {
             fixture.model.load(a, listOf(a)); runCurrent()
             assertEquals(0, calls); assertTrue(fixture.port.preparations.isEmpty()); assertNull(fixture.library.binding)
-            assertEquals("This clip is not cached on the phone.", fixture.model.state.value.error)
+            assertEquals("此片段尚未缓存到本机。", fixture.model.state.value.error)
         } finally { fixture.close() }
     }
     @Test fun retiredHostWriterCannotCommitAfterRootClear() = runTest {

@@ -136,23 +136,23 @@ class MultiviewStageTest {
         val link = group.summary(state(), 30.seconds).entries[0]
         val closed = RoleStatus.Reported(ConnectionState.Disconnected(SessionCloseReason.LINK_LOST))
         val lost = MultiviewTile(group.entries[0], link.copy(control = closed), null)
-        assertTrue(lost.status?.text == "Disconnected" && lost.status?.inProgress == false)
+        assertTrue(lost.status?.text == "已断开" && lost.status?.inProgress == false)
         val unreported = MultiviewTile(group.entries[0], link.copy(control = RoleStatus.Unreported), null)
-        assertEquals("Waiting for the camera", unreported.detail)
+        assertEquals("正在等待相机", unreported.detail)
         // A5-01: a reading declared in fifths is the camera's gauge: bars, never a percent.
         val reported = state().cameras.getValue(group.entries[0].cameraSession!!)
         val fifths = ObservedValue(0.6, ObservationOrigin.CAMERA_REPORTED, null, precision = ObservationPrecision.Quantized(0.2))
         val gauge = MultiviewTile(group.entries[0], link, reported.copy(power = reported.power.copy(battery = fifths)))
         assertEquals(listOf(null, 3, 5), listOf(gauge.battery, gauge.batteryBars, gauge.batteryBarCount))
         assertEquals(null, first.batteryBars, "a percent reading stays a percent")
-        assertEquals(listOf("ISO", "SHUTTER", "WB", "FOCUS"), first.readouts.map { it.title })
+        assertEquals(listOf("ISO", "快门", "WB", "对焦"), first.readouts.map { it.title })
         assertEquals(listOf("800", "1/50", "5600K", "\u2014"), first.readouts.map { it.value })
         assertTrue(stage.drop(members).all { it == null }, "the other slots stay empty")
 
         // One confirmed group start: one explicit command per camera, nothing else.
         val start = context()
         assertTrue(start.canConfirm && !start.stopping)
-        assertEquals("Record on all cameras?", start.question(single = false))
+        assertEquals("开始用所有相机录制？", start.question(single = false))
         val submission = start.plan.submit(group, state(), sessions)
         cameras.forEach { it.advance(1.seconds) }
         val result = submission.finished(sessions)
@@ -161,7 +161,7 @@ class MultiviewStageTest {
         stage = tiles(state())
         assertTrue(stage.filterNotNull().all { it.recording && it.tally == "REC" })
         val stop = context()
-        assertTrue(stop.stopping && stop.question(single = false) == "Stop recording on all cameras?")
+        assertTrue(stop.stopping && stop.question(single = false) == "停止所有相机的录制？")
 
         // Removing a member and closing its session sends nothing: it keeps recording, and so do
         // the others. No compensation, no stop on close.

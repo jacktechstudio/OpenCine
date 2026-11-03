@@ -37,8 +37,8 @@ class MonitorDeliveryBatchTest {
 
     @Test fun uploadPresentationUsesHostContentAndNeutralDestination() {
         assertEquals("SIMULATED service", MonitorDeliveryDestination.REMOTE_UPLOAD.title("SIMULATED service"))
-        assertEquals("Upload to your SIMULATED service project", MonitorDeliveryDestination.REMOTE_UPLOAD.subtitle("SIMULATED service"))
-        assertEquals("Upload", MonitorDeliveryDestination.REMOTE_UPLOAD.title(null))
+        assertEquals("上传到SIMULATED service项目", MonitorDeliveryDestination.REMOTE_UPLOAD.subtitle("SIMULATED service"))
+        assertEquals("上传", MonitorDeliveryDestination.REMOTE_UPLOAD.title(null))
         val value = MonitorDeliveryBatchProgress(MonitorDeliveryDestination.REMOTE_UPLOAD, 1, 1, 0.6,
             uploadCaption = "SIMULATED upload")
         assertEquals("SIMULATED upload 60%", value.statusLine())
@@ -72,7 +72,7 @@ class MonitorDeliveryBatchTest {
             }, share = null, photos = null, upload = MonitorDeliveryUploadService { artifact, progress ->
                 facts.calls += "upload $artifact"; progress(0.5)
             }, filename = { "$it" }, progress = facts.progress::add)
-        assertEquals("1 uploaded, 1 skipped, 1 not cached, 1 failed", (outcome as MonitorDeliveryBatchOutcome.Failed<String>).message)
+        assertEquals("已上传 1 项, 已跳过 1 项, 1 项未缓存, 1 项失败", (outcome as MonitorDeliveryBatchOutcome.Failed<String>).message)
         assertEquals(listOf("prepare 1", "upload 1", "prepare 3", "prepare 4"), facts.calls)
         assertTrue(facts.progress.any { it.stage == MonitorDeliveryBatchProgress.Stage.EXPORTING && kotlin.math.abs(it.clipFraction - 0.36) < 0.000001 })
         assertTrue(facts.progress.any { it.stage == MonitorDeliveryBatchProgress.Stage.UPLOADING && kotlin.math.abs(it.clipFraction - 0.725) < 0.000001 })
@@ -104,11 +104,11 @@ class MonitorDeliveryBatchTest {
             MonitorDeliveryAdmission { true }, originals(facts), exporter(facts), share = null, photos = null,
             upload = MonitorDeliveryUploadService { artifact, _ -> facts.calls += "upload $artifact" },
             uploadHistory = history, reupload = reupload, filename = { "$it" }, progress = facts.progress::add)
-        assertEquals("1 uploaded", (upload(false) as MonitorDeliveryBatchOutcome.Uploaded<String>).summary)
+        assertEquals("已上传 1 项", (upload(false) as MonitorDeliveryBatchOutcome.Uploaded<String>).summary)
         assertEquals(setOf(1), confirmed)
-        assertEquals("1 skipped", (upload(false) as MonitorDeliveryBatchOutcome.Uploaded<String>).summary)
+        assertEquals("已跳过 1 项", (upload(false) as MonitorDeliveryBatchOutcome.Uploaded<String>).summary)
         assertEquals(listOf("prepare 1", "upload 1"), facts.calls)
-        assertEquals("1 uploaded", (upload(true) as MonitorDeliveryBatchOutcome.Uploaded<String>).summary)
+        assertEquals("已上传 1 项", (upload(true) as MonitorDeliveryBatchOutcome.Uploaded<String>).summary)
         assertEquals(listOf("prepare 1", "upload 1", "prepare 1", "upload 1"), facts.calls)
     }
     /**
@@ -125,13 +125,13 @@ class MonitorDeliveryBatchTest {
                 exporter(facts), share = { MonitorDeliveryShareFiles(it) }, photos = null,
                 filename = { "$it" }, progress = {})
             assertEquals(
-                if (stopped) "The camera stopped responding while caching 1 clip(s). Reconnect and try again."
-                else "Couldn't cache 1 clip(s) from the camera. Check the connection and try again.",
+                if (stopped) "缓存 1 个片段时相机无响应。请重新连接后重试。"
+                else "未能从相机缓存 1 个片段。请检查连接后重试。",
                 (outcome as MonitorDeliveryBatchOutcome.Failed).message)
             assertEquals(listOf("cache 1"), facts.calls)
         }
         // The camera-network hop refuses with the same words.
-        assertEquals("The camera stopped responding while caching 2 clip(s). Reconnect and try again.",
+        assertEquals("缓存 2 个片段时相机无响应。请重新连接后重试。",
             MonitorDeliveryCacheException(2, cameraStopped = true).message)
     }
     @Test fun cachingProgressReadsTheCameraDownloadSpeed() = runTest {
@@ -149,14 +149,14 @@ class MonitorDeliveryBatchTest {
         runCurrent()
         // No byte has arrived yet: the stall still shows.
         facts.fraction = 0.0; rate = MediaTransferRate.Stalled; clock.release(Unit); runCurrent()
-        assertEquals("Caching from camera · Stalled", model.state.value.progress!!.statusLine())
+        assertEquals("正在从相机缓存素材 · 已停滞", model.state.value.progress!!.statusLine())
         rate = null
         facts.fraction = 0.25; clock.release(Unit); runCurrent()
-        assertEquals("Caching from camera 25%", model.state.value.progress!!.statusLine())
+        assertEquals("从相机缓存素材 25%", model.state.value.progress!!.statusLine())
         rate = MediaTransferRate.BytesPerSecond(42_000_000); clock.release(Unit); runCurrent()
-        assertEquals("Caching from camera 25% · 42 MB/s", model.state.value.progress!!.statusLine())
+        assertEquals("从相机缓存素材 25% · 42 MB/s", model.state.value.progress!!.statusLine())
         rate = MediaTransferRate.Stalled; clock.release(Unit); runCurrent()
-        assertEquals("Caching from camera 25% · Stalled", model.state.value.progress!!.statusLine())
+        assertEquals("从相机缓存素材 25% · 已停滞", model.state.value.progress!!.statusLine())
         acquire.release(Unit); runCurrent()
         clock.release(Unit); runCurrent()
         model.close()
@@ -268,7 +268,7 @@ class MonitorDeliveryBatchTest {
             MonitorDeliveryAdmission { true }, originals(facts), exporter(facts), share = null, photos = null,
             upload = MonitorDeliveryUploadService { _, _ -> }, internet = internet, initialLease = 7,
             filename = { "$it" }, progress = facts.progress::add)
-        assertEquals("1 uploaded", (outcome as MonitorDeliveryBatchOutcome.Uploaded<String>).summary)
+        assertEquals("已上传 1 项", (outcome as MonitorDeliveryBatchOutcome.Uploaded<String>).summary)
         assertEquals(0, began); assertEquals(listOf(7), waited); assertEquals(listOf(7), restored); assertNull(owned)
     }
     @Test fun refusedRouteBeginFailsWithTheInternetMessageWithoutUploading() = runTest {

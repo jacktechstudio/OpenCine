@@ -33,7 +33,7 @@ class MonitorDeliveryNativeLeaseTest {
                 if (owned == token) { owned = null; calls += "restore $token" }
             }, restore = { token -> if (owned == token) { owned = null; calls += "restore $token" } })
         val remote get() = MonitorDeliveryRemoteService<String, Int, Int>(
-            MonitorDeliveryRemotePresentation("Remote", "Upload"),
+            MonitorDeliveryRemotePresentation("Remote", "上传"),
             observe = { MonitorDeliveryRemoteFacts(true, true, false, "p", "Project") },
             load = { MonitorDeliveryProjectListing(1, emptyList()) },
             create = { _, _ -> MonitorDeliveryProject("p", "Project", true, "p") }, persist = { _, _ -> },
@@ -116,7 +116,7 @@ class MonitorDeliveryNativeLeaseTest {
         task.cancel(); facts.entered?.complete(Unit); task.join()
         val outcome = result
         assertTrue(outcome is MonitorDeliveryBatchOutcome.Failed)
-        assertEquals("Cancelled.", outcome.message)
+        assertEquals("已取消。", outcome.message)
         assertNull(facts.owned)
         assertEquals(listOf("transfer 1", "prepare", "release file", "restore-start 2", "restore 2"), facts.calls)
     }

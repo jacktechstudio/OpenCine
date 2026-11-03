@@ -78,7 +78,7 @@ class CaptureQuickControlTest {
     }
 
     @Test fun focusTapAndHoldOfferFiveNativeChoicesWithUnknownUnselected() {
-        assertEquals(listOf("AF-S", "AF-C", "Showcase", "Lock", "Priority"), CaptureFocusChoices.labels)
+        assertEquals(listOf("AF-S", "AF-C", "展示模式", "主角追焦", "登记优先"), CaptureFocusChoices.labels)
         val statuses = listOf(CameraStatus(focusMode = CameraCommands.FOCUS_SINGLE)) +
             (0..3).map { CameraStatus(focusMode = CameraCommands.FOCUS_CONTINUOUS, focusTrack = it) }
         for ((index, status) in statuses.withIndex()) {
@@ -99,10 +99,10 @@ class CaptureQuickControlTest {
         val calls = mutableListOf<String>()
         fun apply(label: String, status: CameraStatus) = applyCaptureFocusChoice(label, status,
             { calls += "mode:$it" }, { calls += "track:$it" })
-        apply("Lock", single)
+        apply("主角追焦", single)
         assertEquals(listOf("mode:true", "track:2"), calls)
         calls.clear()
-        apply("Showcase", single.copy(focusMode = CameraCommands.FOCUS_CONTINUOUS))
+        apply("展示模式", single.copy(focusMode = CameraCommands.FOCUS_CONTINUOUS))
         assertEquals(listOf("track:1"), calls)
         calls.clear()
         apply("AF-S", single.copy(focusMode = CameraCommands.FOCUS_CONTINUOUS))
@@ -116,19 +116,19 @@ class CaptureQuickControlTest {
     }
 
     @Test fun releaseRejectsStaleSourceOptionsStatusDisabledAndUnchangedValues() {
-        val source = MonitorQuickControl(listOf("AF-S", "AF-C", "Showcase", "Lock", "Priority"),
+        val source = MonitorQuickControl(listOf("AF-S", "AF-C", "展示模式", "主角追焦", "登记优先"),
             "AF-S", context = "1:0", identity = "camera-a")
         var sends = 0
         for (current in listOf(source.copy(identity = "camera-b"), source.copy(context = "2:0"),
             source.copy(options = listOf("AF-S", "AF-C")), source.copy(selection = "AF-C"),
             source.copy(enabled = false), null)) {
-            commitCaptureQuickControl(source, current, "Lock", enabled = true) { sends++ }
+            commitCaptureQuickControl(source, current, "主角追焦", enabled = true) { sends++ }
         }
-        commitCaptureQuickControl(source, source, "Lock", enabled = false) { sends++ }
+        commitCaptureQuickControl(source, source, "主角追焦", enabled = false) { sends++ }
         commitCaptureQuickControl(source, source, "AF-S", enabled = true) { sends++ }
         commitCaptureQuickControl(source, source, "Invented mode", enabled = true) { sends++ }
         assertEquals(0, sends)
-        commitCaptureQuickControl(source, source, "Lock", enabled = true) { sends++ }
+        commitCaptureQuickControl(source, source, "主角追焦", enabled = true) { sends++ }
         assertEquals(1, sends)
     }
 
@@ -176,18 +176,18 @@ class CaptureQuickControlTest {
 
         val color = requireNotNull(recordingCategoryQuickControl(LiveSheet.COLOR, status, family = "pocket"))
         assertEquals(CaptureLists.colorWheelLabels(status, "pocket"), color.options)
-        assertTrue(color.options.contains("Normal"))
-        assertEquals("Normal", color.selection)
+        assertTrue(color.options.contains("普通"))
+        assertEquals("普通", color.selection)
 
         val mode = requireNotNull(recordingCategoryQuickControl(LiveSheet.MODE, status))
         assertEquals(CaptureLists.shootingModeLabels(null), mode.options)
-        assertEquals("Video", mode.selection)
-        assertTrue("Photo" in mode.options)
+        assertEquals("视频", mode.selection)
+        assertTrue("拍照" in mode.options)
         val photo = requireNotNull(
             recordingCategoryQuickControl(
                 LiveSheet.MODE, status.copy(shootingMode = CameraCommands.SHOOT_PHOTO_POCKET4)),
         )
-        commitCaptureQuickControl(mode, photo, "Photo", enabled = true) { sends++ }
+        commitCaptureQuickControl(mode, photo, "拍照", enabled = true) { sends++ }
         assertEquals(1, sends, "A changed shooting-mode source cannot commit")
         assertTrue(LiveSheet.MODE.isTopAnchored)
         assertTrue(!LiveSheet.EXPO.isTopAnchored)

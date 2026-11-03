@@ -65,7 +65,7 @@ class StationJoinTest {
             ),
             camera.sent,
         )
-        assertEquals("Joining Wi-Fi · attempt 1 of 3", statuses.last())
+        assertEquals("正在加入 Wi-Fi · 第 1/3 次", statuses.last())
     }
 
     @Test

@@ -61,9 +61,9 @@ class MultiviewStageStateTest {
     }
 
     @Test fun closeCopyUsesOnlyTheTypedRestoreFact() {
-        assertEquals("Close Multiview? Recording continues.", MultiviewNetworkRestore.NONE.closeQuestion)
-        assertEquals("Close Multiview and return cameras to their own Wi-Fi? Recording continues.",
+        assertEquals("关闭多机监看？相机会继续录制。", MultiviewNetworkRestore.NONE.closeQuestion)
+        assertEquals("关闭多机监看并将各相机切回自身 Wi-Fi？相机会继续录制。",
             MultiviewNetworkRestore.CAMERA_NETWORKS.closeQuestion)
-        assertEquals("Close monitoring", MultiviewNetworkRestore.CLOSE_ACTION)
+        assertEquals("关闭监看", MultiviewNetworkRestore.CLOSE_ACTION)
     }
 }

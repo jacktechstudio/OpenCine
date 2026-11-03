@@ -84,8 +84,8 @@ class CamerasModelTest {
             override val confirmationID = "SIMULATED-consent"
             override val confirmationTitle = "Continue?"
             override val fallbackText = "Another operator loses their session."
-            override val confirmTitle = "Continue"
-            override val cancelTitle = "Cancel"
+            override val confirmTitle = "继续"
+            override val cancelTitle = "取消"
             override val confirm = { admissions++; Unit }
             override val cancel = {}
         }
@@ -108,8 +108,8 @@ class CamerasModelTest {
             override val confirmationID = "SIMULATED-retired-consent"
             override val confirmationTitle = "Continue?"
             override val fallbackText = "Consent required"
-            override val confirmTitle = "Continue"
-            override val cancelTitle = "Cancel"
+            override val confirmTitle = "继续"
+            override val cancelTitle = "取消"
             override val confirm = { admissions++; Unit }
             override val cancel = {}
         }
@@ -382,10 +382,10 @@ class CamerasModelTest {
         val pairing = CamerasMapping.pairing(model)
         assertTrue(pairing.currentStep == 2 && pairing.title == "Approve")
         assertEquals(
-            listOf(MonitorPairingInstruction("On the camera", MonitorPairingInstructionIcon.CAMERA, listOf("Tap Allow on the camera"))),
+            listOf(MonitorPairingInstruction("在相机上操作", MonitorPairingInstructionIcon.CAMERA, listOf("Tap Allow on the camera"))),
             pairing.instructions,
         )
-        assertTrue(pairing.progress == "Approve" && pairing.backAction == "Cancel")
+        assertTrue(pairing.progress == "Approve" && pairing.backAction == "取消")
     }
 
     @Test

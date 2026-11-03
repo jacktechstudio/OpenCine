@@ -57,7 +57,7 @@ object OperatorLinkHealth {
         phase: ConnectionPhase): String {
         val label = MonitorLinkMeter.chipLabel(phase, recovering, false,
             MonitorLinkMeter.compactFPS(MonitorLinkMeter.formatMeasuredFPS(measuredFps)), measuredFps)
-        return if (isLive && phase == ConnectionPhase.IDLE && !recovering && measuredFps <= 0.0) "图传" else label
+        return if (isLive && phase == ConnectionPhase.IDLE && !recovering && measuredFps <= 0.0) "LINK" else label
     }
 
     fun liveTileDetail(

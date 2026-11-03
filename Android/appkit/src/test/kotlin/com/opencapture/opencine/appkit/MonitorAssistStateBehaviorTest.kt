@@ -318,7 +318,7 @@ class MonitorAssistStateBehaviorTest {
     fun levelTogglesPersistsAndStaysLiveOnly() {
         var saved: String? = null
         val state = MonitorAssistState(onPersist = { saved = it })
-        assertEquals("Level", MonitorAssistTool.LEVEL.title)
+        assertEquals("电子水平仪", MonitorAssistTool.LEVEL.title)
         assertFalse(state.isVisible(MonitorAssistTool.LEVEL))
         state.toggle(MonitorAssistTool.LEVEL)
         assertTrue(state.level)

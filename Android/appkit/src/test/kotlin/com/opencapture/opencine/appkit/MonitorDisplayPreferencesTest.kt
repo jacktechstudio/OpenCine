@@ -20,9 +20,9 @@ class MonitorDisplayPreferencesTest {
     @Test fun legacySectionOrderAndLiveCleanDefaultsStayStable() {
         assertEquals(identifiers, MonitorDisplaySection.entries.map { it.key })
         assertEquals(listOf("LIVE", "CLEAN", "COMMAND"), MonitorDisplayMode.entries.map { it.name })
-        assertEquals(listOf("DISP 1 · Live", "DISP 2 · Clean", "DISP 3 · Command"),
+        assertEquals(listOf("DISP 1 · 监看", "DISP 2 · 净画面", "DISP 3 · 控制面板"),
             MonitorDisplayMode.entries.map { it.settingsTitle })
-        assertEquals("Face Box", MonitorDisplaySection.FOCUS_BOX.title)
+        assertEquals("人脸识别框", MonitorDisplaySection.FOCUS_BOX.title)
         for (mode in listOf(MonitorDisplayMode.LIVE, MonitorDisplayMode.CLEAN)) {
             assertEquals(MonitorDisplaySection.entries, MonitorDisplayChrome.configurableSections(mode))
         }

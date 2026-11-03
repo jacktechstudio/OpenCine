@@ -52,7 +52,7 @@ public data class ReviewLaunch(
             put(Key.MEDIA_COUNT, mediaCount.toString())
             put(Key.SOURCE, source.wire)
             put(Key.CONNECTED, if (connected) "1" else "0")
-            settingsTab?.let { put(Key.SETTINGS_TAB, it.title) }
+            settingsTab?.let { put(Key.SETTINGS_TAB, it.tagName) }
             put(Key.COMMON_CONTROLS, if (commonControls) "1" else "0")
             meteredEv?.let { put(Key.METERED_EV, it.toString()) }
         }
@@ -74,7 +74,7 @@ public data class ReviewLaunch(
                     ?: Source.LOCAL,
                 connected = value(Key.CONNECTED)?.let { flag(it) ?: return null } ?: false,
                 settingsTab = value(Key.SETTINGS_TAB)?.let { raw ->
-                    MonitorSettingsTab.entries.firstOrNull { it.title == raw } ?: return null
+                    MonitorSettingsTab.entries.firstOrNull { it.tagName == raw } ?: return null
                 },
                 commonControls = value(Key.COMMON_CONTROLS)?.let { flag(it) ?: return null } ?: true,
                 meteredEv = value(Key.METERED_EV)?.let { it.toDoubleOrNull()?.takeIf(Double::isFinite) ?: return null },

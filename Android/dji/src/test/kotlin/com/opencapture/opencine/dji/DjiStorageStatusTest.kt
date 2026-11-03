@@ -15,7 +15,7 @@ class DjiStorageStatusTest {
     @Test
     fun storageReadsTheSharedStorageCycle() {
         val status = CameraStatus(storageTotalMb = 128_000, storageFreeMb = 109_568, recordRemainingSec = 3_000)
-        assertEquals(listOf("115GB", "86%", "50 Min"), storageCycle(djiStorageStatus(status), photo = false))
+        assertEquals(listOf("115GB", "86%", "50 分钟"), storageCycle(djiStorageStatus(status), photo = false))
         assertEquals(listOf("115GB", "86%"), storageCycle(djiStorageStatus(status), photo = true))
         assertEquals(listOf("115GB", "86%"),
             storageCycle(djiStorageStatus(status.copy(recordRemainingSec = 0)), photo = false))

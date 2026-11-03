@@ -26,23 +26,23 @@ class ShootingModePolishTest {
         assertFalse(CameraCommands.isPhotoMode(CameraCommands.SHOOT_SUPER_NIGHT))
         assertTrue(CameraCommands.isPhotoMode(CameraCommands.SHOOT_PHOTO))
         assertTrue(CameraCommands.isPhotoMode(CameraCommands.SHOOT_PHOTO_POCKET4))
-        assertEquals("SuperNight", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_SUPER_NIGHT))
+        assertEquals("超级夜景", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_SUPER_NIGHT))
         assertEquals(
-            "Low-Light",
+            "低光视频",
             CameraCommands.shootingModeLabel(CameraCommands.SHOOT_SUPER_NIGHT, "Osmo Pocket 3", profile = CaptureTestProfiles.lowLight),
         )
         assertEquals(
-            "SuperNight",
+            "超级夜景",
             CameraCommands.shootingModeLabel(CameraCommands.SHOOT_SUPER_NIGHT, "Osmo Pocket 4 Pro"),
         )
         assertEquals(
             CameraCommands.SHOOT_SUPER_NIGHT,
-            CaptureLists.shootingModeRaw("Low-Light", "Osmo Pocket 3", profile = CaptureTestProfiles.lowLight),
+            CaptureLists.shootingModeRaw("低光视频", "Osmo Pocket 3", profile = CaptureTestProfiles.lowLight),
         )
-        assertNull(CaptureLists.shootingModeRaw("SuperNight", "Osmo Pocket 3", profile = CaptureTestProfiles.lowLight))
-        assertTrue("Low-Light" in CaptureLists.shootingModeLabels("Osmo Pocket 3", profile = CaptureTestProfiles.lowLight))
-        assertTrue("SuperNight" !in CaptureLists.shootingModeLabels("Osmo Pocket 3", profile = CaptureTestProfiles.lowLight))
-        assertTrue("SuperNight" in CaptureLists.shootingModeLabels("Osmo Pocket 4"))
+        assertNull(CaptureLists.shootingModeRaw("超级夜景", "Osmo Pocket 3", profile = CaptureTestProfiles.lowLight))
+        assertTrue("低光视频" in CaptureLists.shootingModeLabels("Osmo Pocket 3", profile = CaptureTestProfiles.lowLight))
+        assertTrue("超级夜景" !in CaptureLists.shootingModeLabels("Osmo Pocket 3", profile = CaptureTestProfiles.lowLight))
+        assertTrue("超级夜景" in CaptureLists.shootingModeLabels("Osmo Pocket 4"))
     }
 
     @Test
@@ -89,22 +89,22 @@ class ShootingModePolishTest {
             fps = 60,
             availableVideoFormats = leftoverVideo,
         )
-        assertEquals("Photo", CaptureLists.recFormatChipLabel(photo))
+        assertEquals("拍照", CaptureLists.recFormatChipLabel(photo))
         assertFalse(CaptureLists.formatPickerEditable(photo))
-        assertEquals(listOf("Photo"), CaptureLists.formatDrumLabels(photo, tab = 0))
+        assertEquals(listOf("拍照"), CaptureLists.formatDrumLabels(photo, tab = 0))
         assertEquals(emptyList(), CaptureLists.modeTabs(LiveSheet.FORMAT, photo, offersIsoAuto = false))
         assertNull(CaptureLists.nextVideoFormat(photo, tab = 0, drum = "60p", fromDrum = true))
-        assertEquals("FORMAT", CaptureLists.headerTitle(LiveSheet.FORMAT, -1, photo.shootingMode))
-        assertEquals("Photo", CaptureLists.headerSubtitle(LiveSheet.FORMAT, -1, 0, false, photo.shootingMode))
+        assertEquals("格式", CaptureLists.headerTitle(LiveSheet.FORMAT, -1, photo.shootingMode))
+        assertEquals("拍照", CaptureLists.headerSubtitle(LiveSheet.FORMAT, -1, 0, false, photo.shootingMode))
         val hold = recordingCategoryQuickControl(LiveSheet.FORMAT, photo, "Osmo Pocket 3", cameraModel = CaptureTestProfiles.acceptedModel)
-        assertEquals(listOf("Photo"), hold?.options)
+        assertEquals(listOf("拍照"), hold?.options)
         assertFalse(hold!!.enabled)
     }
 
     @Test
     fun photoShutterHasNoAngleLadder() {
         assertEquals(emptyList(), CaptureLists.shutterModeTabs(false, CameraCommands.SHOOT_PHOTO))
-        assertEquals(listOf("Speed", "Angle"), CaptureLists.shutterModeTabs(false, CameraCommands.SHOOT_VIDEO))
+        assertEquals(listOf("速度", "角度"), CaptureLists.shutterModeTabs(false, CameraCommands.SHOOT_VIDEO))
         assertFalse(CaptureLists.isAngleSheet(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, 1, CameraCommands.SHOOT_PHOTO))
         assertTrue(CaptureLists.isAngleSheet(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, 1, CameraCommands.SHOOT_VIDEO))
         assertEquals(
@@ -214,18 +214,18 @@ class ShootingModePolishTest {
         assertEquals("D-Log2", CaptureShutterPolicy.portraitSetupCaption(video, "pocket"))
         assertNull(CaptureShutterPolicy.portraitSetupCaption(video.copy(colorMode = -1), "pocket"))
         val photo = video.copy(shootingMode = CameraCommands.SHOOT_PHOTO)
-        assertEquals("MODE", CaptureShutterPolicy.portraitSetupLabel(photo))
+        assertEquals("模式", CaptureShutterPolicy.portraitSetupLabel(photo))
         assertNull(CaptureShutterPolicy.portraitSetupCaption(photo, "pocket"))
     }
 
     @Test
     fun portraitPhotoOpensModeNotRecSetup() {
-        assertEquals("MODE", CaptureShutterPolicy.portraitSetupLabel(CameraStatus(shootingMode = CameraCommands.SHOOT_PHOTO)))
+        assertEquals("模式", CaptureShutterPolicy.portraitSetupLabel(CameraStatus(shootingMode = CameraCommands.SHOOT_PHOTO)))
         assertEquals(LiveSheet.MODE, CaptureShutterPolicy.portraitSetupSheet(CameraCommands.SHOOT_PHOTO))
         assertTrue(CaptureShutterPolicy.portraitSetupOpensMode(CameraCommands.SHOOT_PHOTO))
-        assertEquals("REC SETUP", CaptureShutterPolicy.portraitSetupLabel(CameraStatus(shootingMode = CameraCommands.SHOOT_VIDEO)))
+        assertEquals("录制设置", CaptureShutterPolicy.portraitSetupLabel(CameraStatus(shootingMode = CameraCommands.SHOOT_VIDEO)))
         assertEquals(LiveSheet.FORMAT, CaptureShutterPolicy.portraitSetupSheet(CameraCommands.SHOOT_VIDEO))
-        assertEquals("REC SETUP", CaptureShutterPolicy.portraitSetupLabel(CameraStatus(shootingMode = CameraCommands.SHOOT_SUPER_NIGHT)))
+        assertEquals("录制设置", CaptureShutterPolicy.portraitSetupLabel(CameraStatus(shootingMode = CameraCommands.SHOOT_SUPER_NIGHT)))
         assertFalse(CaptureShutterPolicy.canRevertFormatFailure(CameraCommands.SHOOT_PHOTO, CameraCommands.SHOOT_VIDEO))
         assertTrue(CaptureShutterPolicy.canRevertFormatFailure(CameraCommands.SHOOT_VIDEO, CameraCommands.SHOOT_VIDEO))
         val fourK30 = VideoFormat(VideoResolution.P4K, VideoFrameRate.FPS30)
@@ -319,14 +319,14 @@ class ShootingModePolishTest {
     @Test
     fun livePhotoIsStillCaptureWithoutLivePhotoMenuOption() {
         assertTrue(CameraCommands.isPhotoMode(CameraCommands.SHOOT_LIVE_PHOTO))
-        assertEquals("Live Photo", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_LIVE_PHOTO))
-        assertTrue("Live Photo" !in CaptureLists.shootingModeLabels("Osmo Pocket 4 Pro"))
-        assertTrue("Live Photo" !in CaptureLists.shootingModeLabels(null))
+        assertEquals("动态照片", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_LIVE_PHOTO))
+        assertTrue("动态照片" !in CaptureLists.shootingModeLabels("Osmo Pocket 4 Pro"))
+        assertTrue("动态照片" !in CaptureLists.shootingModeLabels(null))
         assertTrue(
-            "Live Photo" in
+            "动态照片" in
                 CaptureLists.shootingModeLabels("Osmo Pocket 4 Pro", CameraCommands.SHOOT_LIVE_PHOTO),
         )
-        assertNull(CaptureLists.shootingModeRaw("Live Photo", "Osmo Pocket 4 Pro"))
+        assertNull(CaptureLists.shootingModeRaw("动态照片", "Osmo Pocket 4 Pro"))
         assertEquals(
             CaptureShutterPolicy.CaptureKind.PHOTO,
             CaptureShutterPolicy.captureKind(CameraCommands.SHOOT_LIVE_PHOTO),
@@ -334,8 +334,8 @@ class ShootingModePolishTest {
         assertFalse(
             CaptureShutterPolicy.requiresRecordConfirmation(true, CameraCommands.SHOOT_LIVE_PHOTO),
         )
-        assertEquals("MODE", CaptureShutterPolicy.portraitSetupLabel(CameraStatus(shootingMode = CameraCommands.SHOOT_LIVE_PHOTO)))
-        assertEquals(listOf("Mode"), CaptureShutterPolicy.recordingCategoryTabs(CameraCommands.SHOOT_LIVE_PHOTO))
+        assertEquals("模式", CaptureShutterPolicy.portraitSetupLabel(CameraStatus(shootingMode = CameraCommands.SHOOT_LIVE_PHOTO)))
+        assertEquals(listOf("模式"), CaptureShutterPolicy.recordingCategoryTabs(CameraCommands.SHOOT_LIVE_PHOTO))
         assertEquals(LiveSheet.MODE, CaptureShutterPolicy.opening(LiveSheet.COLOR, CameraCommands.SHOOT_LIVE_PHOTO))
         assertEquals(LiveSheet.MODE, CaptureShutterPolicy.retainedSheet(LiveSheet.FORMAT, CameraCommands.SHOOT_LIVE_PHOTO))
         assertNull(CaptureShutterPolicy.retainedSheet(LiveSheet.AUDIO, CameraCommands.SHOOT_LIVE_PHOTO))

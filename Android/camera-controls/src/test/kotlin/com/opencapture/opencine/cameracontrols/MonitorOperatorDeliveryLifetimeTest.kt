@@ -79,7 +79,7 @@ class MonitorOperatorDeliveryLifetimeTest {
             f.exported.complete(Unit); runCurrent()
             assertFalse(coordinator.lifetime.state.value.running)
             assertEquals(listOf("A.mov", "B.mov"), saved)
-            assertEquals("Saved 2 clips to Photos", coordinator.lifetime.state.value.toast)
+            assertEquals("已将 2 个片段存入相册", coordinator.lifetime.state.value.toast)
             coordinator.close()
         } finally { f.close() }
     }
@@ -111,7 +111,7 @@ class MonitorOperatorDeliveryLifetimeTest {
             val restored = mutableListOf<String>()
             val internet = MonitorDeliveryInternetService(needsHop = { false }, begin = { "unused" }, owns = { it == "route" },
                 wait = { true }, restoreEntered = { lease -> rejoin.await(); restored += lease }, restore = { restored += "dismissed $it" })
-            val service = MonitorDeliveryRemoteService<Unit, Unit, String>(MonitorDeliveryRemotePresentation("SIMULATED", "Uploading"),
+            val service = MonitorDeliveryRemoteService<Unit, Unit, String>(MonitorDeliveryRemotePresentation("SIMULATED", "正在上传"),
                 observe = { MonitorDeliveryRemoteFacts(true, true, false, null, null) },
                 load = { error("unused") }, create = { _, _ -> error("unused") }, persist = { _, _ -> },
                 internet = internet, transfer = { it }, skipsUploaded = false)

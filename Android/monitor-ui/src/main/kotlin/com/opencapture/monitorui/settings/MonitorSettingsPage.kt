@@ -95,7 +95,7 @@ public fun MonitorSettingsPage(
     MonitorPageScaffold(
         modifier = modifier,
         navigationWidth = 190f,
-        heading = { MonitorPageHeading("操作设置", brand) },
+        heading = { MonitorPageHeading("监看设置", brand) },
         navigation = { portrait ->
             Column(
                 if (portrait) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),

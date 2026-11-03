@@ -124,18 +124,18 @@ class GimbalProgramZoomTest {
     @Test fun dlog2UnknownColorMissingFeedbackAndFormatCeilingBlockOnlyZoomChangingMoves() {
         for (recording in listOf(false, true)) {
             val status = ready.copy(colorMode = CameraCommands.COLOR_DLOG2, isRecording = recording)
-            assertEquals("Zoom moves are unavailable in D-Log2", nativeProgramZoomFailure(program, pro, status))
+            assertEquals("D-Log2 模式不支持变焦运动", nativeProgramZoomFailure(program, pro, status))
             assertNull(nativeProgramZoomFailure(program.copy(b = b.copy(zoom = 1.0), c = null), pro, status))
         }
-        assertEquals("Wait for camera color mode before a zoom move", nativeProgramZoomFailure(program, pro, ready.copy(colorMode = -1)))
-        assertEquals("Wait for camera color mode before a zoom move", nativeProgramZoomFailure(program, pro, ready.copy(colorMode = 0x7F)))
-        assertEquals("Wait for camera zoom feedback", nativeProgramZoomFailure(program, pro, ready.copy(zoomFactor = null)))
-        assertEquals("Saved zoom exceeds the current FORMAT limit",
+        assertEquals("请等候相机报告色彩模式，再运行变焦动作", nativeProgramZoomFailure(program, pro, ready.copy(colorMode = -1)))
+        assertEquals("请等候相机报告色彩模式，再运行变焦动作", nativeProgramZoomFailure(program, pro, ready.copy(colorMode = 0x7F)))
+        assertEquals("正在等待相机反馈变焦倍率", nativeProgramZoomFailure(program, pro, ready.copy(zoomFactor = null)))
+        assertEquals("保存的变焦倍率超出当前录制格式的上限",
             nativeProgramZoomFailure(program, djiBodyProfile("Osmo Pocket 3"), ready.copy(resolutionCode = 0x10)))
         assertNull(nativeProgramZoomFailure(program, pro, ready))
-        assertEquals("Wait for camera zoom feedback", nativeProgramZoomFailure(program, pro,
+        assertEquals("正在等待相机反馈变焦倍率", nativeProgramZoomFailure(program, pro,
             ready.copy(shootingMode = CameraCommands.SHOOT_SLOWMO, zoomFactor = 12.0)))
-        assertEquals("Wait for camera zoom feedback", nativeProgramZoomFailure(program, pro,
+        assertEquals("正在等待相机反馈变焦倍率", nativeProgramZoomFailure(program, pro,
             ready.copy(shootingMode = CameraCommands.SHOOT_SLOWMO), target = 3.1))
     }
 
@@ -196,14 +196,14 @@ class GimbalProgramZoomTest {
         fun subscribe(name: String, value: ByteArray) = DumlFrame(0, 0, 1, 0, 0, 0x99, StatusExtras.packSubscribe(name, value))
         var status = ready
         status = nativeProgramZoomStatus(subscribe("cam_image_effect", byteArrayOf(0, 0, 0x41, 0, 0)), status, pro)
-        assertEquals("Zoom moves are unavailable in D-Log2", nativeProgramZoomFailure(program, pro, status))
+        assertEquals("D-Log2 模式不支持变焦运动", nativeProgramZoomFailure(program, pro, status))
         status = nativeProgramZoomStatus(subscribe("cam_image_effect", byteArrayOf(0, 0, 0x3F, 0, 0)), status, pro)
         val lens = ByteArray(16).also { it[14] = 0x8B.toByte(); it[15] = 0x02 }
         status = nativeProgramZoomStatus(subscribe("cam_lens_state", lens), status, pro)
         assertEquals(3.0, status.zoomFactor)
         val mode = ByteArray(58).also { it[57] = CameraCommands.SHOOT_SLOWMO.toByte() }
         status = nativeProgramZoomStatus(DumlFrame(0, 0, 1, 0, 2, 0x80, mode), status, pro)
-        assertEquals("Saved zoom exceeds the current FORMAT limit",
+        assertEquals("保存的变焦倍率超出当前录制格式的上限",
             nativeProgramZoomFailure(program.copy(b = b.copy(zoom = 6.0)), pro, status))
         status = nativeProgramZoomStatus(subscribe("cam_video_param_v2", byteArrayOf(0x10, 0x02)), status, pro)
         assertEquals(0x10, status.resolutionCode)

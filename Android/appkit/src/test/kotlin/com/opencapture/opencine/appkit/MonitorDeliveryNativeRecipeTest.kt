@@ -29,7 +29,7 @@ class MonitorDeliveryNativeRecipeTest {
         assertEquals(1, (outcome as MonitorDeliveryBatchOutcome.SavedToPhotos<*>).count)
         assertEquals(listOf("authorize", "cache 1", "prepare 1", "save", "release 1"), facts.calls)
         assertEquals(MonitorDeliveryBatchProgress.Stage.AWAITING_PHOTOS_ACCESS, facts.progress.first().stage)
-        assertEquals("Waiting for Photos access…", facts.progress.first().statusLine())
+        assertEquals("正在等待相册访问权限…", facts.progress.first().statusLine())
         assertTrue(facts.progress.any { it.stage == MonitorDeliveryBatchProgress.Stage.SAVING && it.showsBusySpinner && !it.isPreparingClip })
     }
 
@@ -51,7 +51,7 @@ class MonitorDeliveryNativeRecipeTest {
                 facts.calls += "prepare $record"; if (record == 2) error("second failed"); "$record"
             }), metadata = { "metadata" }) as MonitorDeliveryBatchOutcome.Share<*>
         assertEquals(listOf("1", "3"), outcome.urls)
-        assertEquals("Prepared 2; 1 failed.\nmetadata", outcome.metadataText)
+        assertEquals("已准备 2 项，1 项失败。\nmetadata", outcome.metadataText)
         assertEquals(listOf("prepare 1", "prepare 2", "prepare 3", "release 1", "release 3"), facts.calls)
     }
 
@@ -66,7 +66,7 @@ class MonitorDeliveryNativeRecipeTest {
             share = { MonitorDeliveryShareFiles(it) }, photos = null, filename = { "$it" },
             sleep = { throw CancellationException("manual mirror retired") }, progress = {}) as MonitorDeliveryBatchOutcome.Share<*>
         assertEquals(listOf("1"), outcome.urls)
-        assertEquals("Prepared 1; 1 failed. 1 clip(s) couldn't be cached from the camera.", outcome.metadataText)
+        assertEquals("已准备 1 项，1 项失败。 有 1 个片段未能从相机缓存。", outcome.metadataText)
     }
 
     @Test fun emptyUploadSuccessKeepsSkippedCountAndCountFailure() = runTest {
@@ -76,7 +76,7 @@ class MonitorDeliveryNativeRecipeTest {
                 exporter = MonitorDeliveryExportService { _, _ -> if (failed) error("detail"); null },
                 upload = MonitorDeliveryUploadService { _, _ -> facts.calls += "upload" })
             if (failed) assertEquals("detail", (outcome as MonitorDeliveryBatchOutcome.Failed<*>).message)
-            else assertEquals("1 skipped", (outcome as MonitorDeliveryBatchOutcome.Uploaded<*>).summary)
+            else assertEquals("已跳过 1 项", (outcome as MonitorDeliveryBatchOutcome.Uploaded<*>).summary)
             assertTrue(facts.calls.isEmpty())
         }
     }
@@ -87,7 +87,7 @@ class MonitorDeliveryNativeRecipeTest {
             photos = MonitorDeliveryPhotosService { artifact ->
                 facts.calls += "save $artifact"; if (artifact == "2") error("insert failed"); artifact == "1"
             })
-        assertEquals("Saved 1; 2 couldn't be saved to Photos.", (outcome as MonitorDeliveryBatchOutcome.Failed<*>).message)
+        assertEquals("已保存 1 项，2 项未能存入相册。", (outcome as MonitorDeliveryBatchOutcome.Failed<*>).message)
         assertEquals(listOf("prepare 1", "prepare 2", "prepare 3", "save 1", "save 2", "save 3", "release 1", "release 2", "release 3"), facts.calls)
     }
 
@@ -148,7 +148,7 @@ class MonitorDeliveryNativeRecipeTest {
             val outcome = batch(facts, action = MonitorDeliveryPostExportAction.SAVE_TO_PHOTOS,
                 photos = MonitorDeliveryPhotosService { true },
                 authorization = MonitorDeliveryPhotosAuthorizationService({ facts.current = false; reply }, { facts.calls += "authorize" }))
-            assertEquals("Cancelled.", (outcome as MonitorDeliveryBatchOutcome.Failed<*>).message)
+            assertEquals("已取消。", (outcome as MonitorDeliveryBatchOutcome.Failed<*>).message)
             assertTrue(facts.calls.isEmpty())
         }
     }

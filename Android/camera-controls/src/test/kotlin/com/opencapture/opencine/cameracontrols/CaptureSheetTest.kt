@@ -195,13 +195,13 @@ class CaptureSheetTest {
         assertTrue(CaptureLists.isEvSheet(LiveSheet.SHUTTER, auto.expoMode))
         assertTrue(!CaptureLists.isEvSheet(LiveSheet.SHUTTER, manual.expoMode))
         assertEquals("EV", CaptureLists.shutterHeaderTitle(true))
-        assertEquals("SHUTTER", CaptureLists.shutterHeaderTitle(false))
-        assertEquals("Compensation", CaptureLists.shutterHeaderSubtitle(true, false, false))
-        assertEquals("Face priority", CaptureLists.shutterHeaderSubtitle(true, false, true))
-        assertEquals("Speed", CaptureLists.shutterHeaderSubtitle(false, false, false))
-        assertEquals("Angle", CaptureLists.shutterHeaderSubtitle(false, true, false))
+        assertEquals("快门", CaptureLists.shutterHeaderTitle(false))
+        assertEquals("补偿", CaptureLists.shutterHeaderSubtitle(true, false, false))
+        assertEquals("人脸优先", CaptureLists.shutterHeaderSubtitle(true, false, true))
+        assertEquals("速度", CaptureLists.shutterHeaderSubtitle(false, false, false))
+        assertEquals("角度", CaptureLists.shutterHeaderSubtitle(false, true, false))
         assertEquals(emptyList(), CaptureLists.shutterModeTabs(true))
-        assertEquals(listOf("Speed", "Angle"), CaptureLists.shutterModeTabs(false))
+        assertEquals(listOf("速度", "角度"), CaptureLists.shutterModeTabs(false))
         assertEquals(CaptureLists.evLabels, CaptureLists.shutterWheelOptions(auto, true, false))
         assertEquals(ShutterAngle.labels, CaptureLists.shutterWheelOptions(manual, false, true))
         assertEquals(
@@ -374,12 +374,12 @@ class CaptureSheetTest {
 
     @Test
     fun wbSheetTabsModeKelvinTint() {
-        assertEquals(listOf("Mode", "Kelvin", "Tint"), CaptureLists.wbTabs)
-        assertEquals("WHITE BALANCE", LiveSheet.WB.headerLabel)
-        assertEquals("Kelvin · auto · tint", LiveSheet.WB.subtitle)
-        assertEquals("SHUTTER", LiveSheet.SHUTTER.headerLabel)
-        assertEquals("Angle · speed", LiveSheet.SHUTTER.subtitle)
-        assertEquals(listOf("Auto", "Custom"), CaptureLists.wbModeRows)
+        assertEquals(listOf("模式", "色温", "色调"), CaptureLists.wbTabs)
+        assertEquals("白平衡", LiveSheet.WB.headerLabel)
+        assertEquals("色温 · 自动 · 色调", LiveSheet.WB.subtitle)
+        assertEquals("快门", LiveSheet.SHUTTER.headerLabel)
+        assertEquals("快门角度 · 快门速度", LiveSheet.SHUTTER.subtitle)
+        assertEquals(listOf("自动", "自定义"), CaptureLists.wbModeRows)
         assertEquals(
             CaptureLists.WB_TAB_MODE,
             CaptureLists.wbInitialTab(CameraStatus(wbMode = CameraCommands.WB_AUTO)),
@@ -394,15 +394,15 @@ class CaptureSheetTest {
                 CameraStatus(wbMode = CameraCommands.WB_CUSTOM, wbKelvin = 3200),
             ),
         )
-        assertEquals("Auto", CaptureLists.wbModeRowSelected(CameraStatus()))
+        assertEquals("自动", CaptureLists.wbModeRowSelected(CameraStatus()))
         assertEquals(
-            "Custom",
+            "自定义",
             CaptureLists.wbModeRowSelected(CameraStatus(wbMode = CameraCommands.WB_CUSTOM)),
         )
-        assertTrue(CaptureLists.wbSendsAuto("Auto"))
-        assertTrue(!CaptureLists.wbSendsAuto("Custom"))
+        assertTrue(CaptureLists.wbSendsAuto("自动"))
+        assertTrue(!CaptureLists.wbSendsAuto("自定义"))
         assertEquals(
-            listOf("Mode", "Kelvin", "Tint"),
+            listOf("模式", "色温", "色调"),
             CaptureLists.modeTabs(LiveSheet.WB, CameraCommands.EXPO_MANUAL, false),
         )
     }
@@ -438,7 +438,7 @@ class CaptureSheetTest {
 
     @Test
     fun wbTintPadIsMinus100To100WithNeutral() {
-        assertEquals("Neutral", CaptureLists.tintLabel(0))
+        assertEquals("中性", CaptureLists.tintLabel(0))
         assertEquals("+10", CaptureLists.tintLabel(10))
         assertEquals("-5", CaptureLists.tintLabel(-5))
         assertEquals(-100, CaptureLists.roundedTint(-100.4f))
@@ -461,10 +461,10 @@ class CaptureSheetTest {
         assertEquals(CaptureLists.FOCUS_TAB_CONTINUOUS, "AF-C")
         assertEquals(
             listOf(
-                "Default",
-                "Product Showcase",
-                "Subject Lock Tracking",
-                "Registered Subject Priority",
+                "默认",
+                "展示模式",
+                "锁定主角追焦",
+                "登记主角优先",
             ),
             FocusTrackMode.entries.map { it.label },
         )
@@ -475,11 +475,11 @@ class CaptureSheetTest {
         assertEquals("AF-S", FocusOption.resolve(CameraCommands.FOCUS_SINGLE, 2)?.chip)
         assertEquals("AF-C", FocusOption.resolve(CameraCommands.FOCUS_CONTINUOUS, -1)?.chip)
         assertEquals("AF-C", FocusOption.resolve(CameraCommands.FOCUS_CONTINUOUS, 0)?.chip)
-        assertEquals("Showcase", FocusOption.resolve(CameraCommands.FOCUS_CONTINUOUS, 1)?.chip)
-        assertEquals("Lock", FocusOption.resolve(CameraCommands.FOCUS_CONTINUOUS, 2)?.chip)
-        assertEquals("Priority", FocusOption.resolve(CameraCommands.FOCUS_CONTINUOUS, 3)?.chip)
+        assertEquals("展示模式", FocusOption.resolve(CameraCommands.FOCUS_CONTINUOUS, 1)?.chip)
+        assertEquals("主角追焦", FocusOption.resolve(CameraCommands.FOCUS_CONTINUOUS, 2)?.chip)
+        assertEquals("登记优先", FocusOption.resolve(CameraCommands.FOCUS_CONTINUOUS, 3)?.chip)
         assertEquals(
-            "Showcase",
+            "展示模式",
             CameraStatus(focusMode = CameraCommands.FOCUS_CONTINUOUS, focusTrack = 1).focusLabel,
         )
         assertEquals("AF-S", CameraStatus(focusMode = CameraCommands.FOCUS_SINGLE, focusTrack = 2).focusLabel)
@@ -503,7 +503,7 @@ class CaptureSheetTest {
     fun colorDrumKeepsTheReportedCurrentModeAndNeverSendsIt() {
         val status = CameraStatus(colorMode = CameraCommands.COLOR_DLOG2)
         val labels = CaptureLists.colorWheelLabels(status, profile = CaptureTestProfiles.base)
-        assertEquals(listOf("Normal", "HDR", "D-Log", "D-Log2"), labels)
+        assertEquals(listOf("普通", "HDR", "D-Log", "D-Log2"), labels)
         val quick = requireNotNull(
             recordingCategoryQuickControl(LiveSheet.COLOR, status, family = "pocket", profile = CaptureTestProfiles.base),
         )
@@ -511,11 +511,11 @@ class CaptureSheetTest {
         // Shown, never sent: the body does not offer it.
         assertNull(CaptureLists.applyColorDrum("D-Log2", "pocket", status, hopEnabled = false, profile = CaptureTestProfiles.base))
         assertEquals(
-            listOf("Normal", "HDR", "D-Log"),
+            listOf("普通", "HDR", "D-Log"),
             CaptureLists.colorWheelLabels(CameraStatus(colorMode = CameraCommands.COLOR_HDR), profile = CaptureTestProfiles.base),
         )
         assertEquals(
-            listOf("Normal", "HDR", "D-Log"),
+            listOf("普通", "HDR", "D-Log"),
             CaptureLists.colorWheelLabels(CameraStatus(), profile = CaptureTestProfiles.base),
         )
     }
@@ -526,11 +526,11 @@ class CaptureSheetTest {
         assertEquals(VideoFrameRate.FPS120, VideoFrameRate.fromDrumLabel("120p"))
         assertTrue(!CaptureLists.fpsDrumLabels.contains("120p"))
         assertEquals(
-            listOf("Normal", "HDR", "D-Log"),
+            listOf("普通", "HDR", "D-Log"),
             CaptureLists.colorWheelLabels(CameraStatus(), profile = CaptureTestProfiles.base),
         )
         assertEquals(
-            listOf("Normal", "HDR", "D-Log", "D-Log2"),
+            listOf("普通", "HDR", "D-Log", "D-Log2"),
             CaptureLists.colorWheelLabels(
                 CameraStatus(),
                 family = "pocket",
@@ -538,7 +538,7 @@ class CaptureSheetTest {
             ),
         )
         assertEquals(
-            listOf("Normal", "HDR", "D-Log M"),
+            listOf("普通", "HDR", "D-Log M"),
             CaptureLists.colorWheelLabels(
                 CameraStatus(),
                 family = "pocket",
@@ -546,7 +546,7 @@ class CaptureSheetTest {
             ),
         )
         assertEquals(
-            listOf("Normal", "HDR", "D-Log"),
+            listOf("普通", "HDR", "D-Log"),
             CaptureLists.colorWheelLabels(
                 CameraStatus(),
                 family = "pocket",
@@ -556,7 +556,7 @@ class CaptureSheetTest {
         assertEquals(CameraCommands.COLOR_DLOG2, CaptureLists.colorModeFromLabel("D-Log2"))
         assertEquals(CameraCommands.COLOR_DLOG_M, CaptureLists.colorModeFromLabel("D-Log M"))
         assertEquals(
-            listOf("Normal", "HDR", "D-Log", "D-Log2"),
+            listOf("普通", "HDR", "D-Log", "D-Log2"),
             CaptureLists.colorWheel(
                 "pocket",
                 listOf(
@@ -598,16 +598,16 @@ class CaptureSheetTest {
     @Test
     fun nanoColorWheelUsesCamcapFamily() {
         assertEquals(
-            listOf("Normal 8-bit", "Normal 10-bit", "D-Log M 10-bit"),
+            listOf("普通 8-bit", "普通 10-bit", "D-Log M 10-bit"),
             CaptureLists.colorWheelLabels(CameraStatus(), family = "nano", profile = CaptureTestProfiles.fixed),
         )
-        assertEquals(CameraCommands.COLOR_NORMAL, CaptureLists.colorModeFromLabel("Normal 8-bit", "nano", profile = CaptureTestProfiles.fixed))
-        assertEquals(CameraCommands.COLOR_NORMAL10, CaptureLists.colorModeFromLabel("Normal 10-bit", "nano", profile = CaptureTestProfiles.fixed))
+        assertEquals(CameraCommands.COLOR_NORMAL, CaptureLists.colorModeFromLabel("普通 8-bit", "nano", profile = CaptureTestProfiles.fixed))
+        assertEquals(CameraCommands.COLOR_NORMAL10, CaptureLists.colorModeFromLabel("普通 10-bit", "nano", profile = CaptureTestProfiles.fixed))
         assertEquals(CameraCommands.COLOR_DLOG_M, CaptureLists.colorModeFromLabel("D-Log M 10-bit", "nano", profile = CaptureTestProfiles.fixed))
-        assertEquals("Normal 8-bit", CameraCommands.colorLabel(CameraCommands.COLOR_NORMAL, "nano", CaptureTestProfiles.fixed))
-        assertEquals("Normal", CameraCommands.colorLabel(CameraCommands.COLOR_NORMAL, "pocket"))
+        assertEquals("普通 8-bit", CameraCommands.colorLabel(CameraCommands.COLOR_NORMAL, "nano", CaptureTestProfiles.fixed))
+        assertEquals("普通", CameraCommands.colorLabel(CameraCommands.COLOR_NORMAL, "pocket"))
         assertEquals(
-            listOf("Normal 8-bit", "Normal 10-bit", "D-Log M 10-bit"),
+            listOf("普通 8-bit", "普通 10-bit", "D-Log M 10-bit"),
             CaptureLists.colorWheel(
                 "nano",
                 listOf(
@@ -618,7 +618,7 @@ class CaptureSheetTest {
             ).map { it.second },
         )
         assertEquals(
-            listOf("Normal 8-bit", "Normal 10-bit", "D-Log M 10-bit"),
+            listOf("普通 8-bit", "普通 10-bit", "D-Log M 10-bit"),
             CaptureLists.colorWheelLabels(
                 CameraStatus(
                     availableColorModes =
@@ -639,14 +639,14 @@ class CaptureSheetTest {
 
     @Test
     fun expoModeSheetIsAutoManualOnly() {
-        assertEquals(listOf("Auto", "Manual"), CaptureLists.expoLabels)
-        assertEquals("Auto", CameraStatus(expoMode = CameraCommands.EXPO_AUTO).expoLabel)
-        assertEquals("Manual", CameraStatus(expoMode = CameraCommands.EXPO_MANUAL).expoLabel)
-        assertEquals("Auto", CaptureLists.expoSelectedLabel(CameraCommands.EXPO_AUTO))
-        assertEquals("Manual", CaptureLists.expoSelectedLabel(CameraCommands.EXPO_MANUAL))
+        assertEquals(listOf("自动", "手动"), CaptureLists.expoLabels)
+        assertEquals("自动", CameraStatus(expoMode = CameraCommands.EXPO_AUTO).expoLabel)
+        assertEquals("手动", CameraStatus(expoMode = CameraCommands.EXPO_MANUAL).expoLabel)
+        assertEquals("自动", CaptureLists.expoSelectedLabel(CameraCommands.EXPO_AUTO))
+        assertEquals("手动", CaptureLists.expoSelectedLabel(CameraCommands.EXPO_MANUAL))
         assertEquals(null, CaptureLists.expoSelectedLabel(-1))
         // AE-L sits left of Auto while locked; Auto or Manual releases it.
-        assertEquals(listOf("AE-L", "Auto", "Manual"), CaptureLists.expoLabels(aeLocked = true))
+        assertEquals(listOf("AE-L", "自动", "手动"), CaptureLists.expoLabels(aeLocked = true))
         assertEquals("AE-L", CaptureLists.expoSelectedLabel(CameraCommands.EXPO_MANUAL, aeLocked = true))
         assertEquals(null, CaptureLists.expoModeFromLabel("AE-L"))
     }
@@ -654,28 +654,28 @@ class CaptureSheetTest {
     @Test
     fun awbLockIsAModeStopLeftOfAutoAndStaysSelectedWhileLocked() {
         val auto = CameraStatus(wbMode = CameraCommands.WB_AUTO)
-        assertEquals(listOf("AWB Lock", "Auto", "Custom"), CaptureLists.wbModeRows(offersLock = true))
-        assertEquals(listOf("Auto", "Custom"), CaptureLists.wbModeRows(offersLock = false))
-        assertEquals("Auto", CaptureLists.wbModeRowSelected(auto))
+        assertEquals(listOf("自动白平衡锁定", "自动", "自定义"), CaptureLists.wbModeRows(offersLock = true))
+        assertEquals(listOf("自动", "自定义"), CaptureLists.wbModeRows(offersLock = false))
+        assertEquals("自动", CaptureLists.wbModeRowSelected(auto))
         // Locked: the camera is Custom, but the stop, tab and tile stay AWB Lock.
         val locked = CameraStatus(wbMode = CameraCommands.WB_CUSTOM, wbKelvin = 4_900)
-        assertEquals("AWB Lock", CaptureLists.wbModeRowSelected(locked, awbLocked = true))
+        assertEquals("自动白平衡锁定", CaptureLists.wbModeRowSelected(locked, awbLocked = true))
         assertEquals(CaptureLists.WB_TAB_MODE, CaptureLists.wbInitialTab(locked, awbLocked = true))
         assertEquals("AWB-L", CaptureLists.wbChipValue(locked, awbLocked = true))
         // Unlocked Custom returns to the Kelvin tab and value.
         assertEquals(CaptureLists.WB_TAB_KELVIN, CaptureLists.wbInitialTab(locked))
         assertEquals("4900K", CaptureLists.wbChipValue(locked))
-        assertEquals(CameraCommands.EXPO_AUTO, CaptureLists.expoModeFromLabel("Auto"))
-        assertEquals(CameraCommands.EXPO_MANUAL, CaptureLists.expoModeFromLabel("Manual"))
-        assertEquals(null, CaptureLists.expoModeFromLabel("Video"))
-        assertEquals(null, CaptureLists.expoModeFromLabel("Photo"))
+        assertEquals(CameraCommands.EXPO_AUTO, CaptureLists.expoModeFromLabel("自动"))
+        assertEquals(CameraCommands.EXPO_MANUAL, CaptureLists.expoModeFromLabel("手动"))
+        assertEquals(null, CaptureLists.expoModeFromLabel("视频"))
+        assertEquals(null, CaptureLists.expoModeFromLabel("拍照"))
     }
 
     @Test
     fun audioSheetMatchesIosChannelWindDirVocal() {
-        assertEquals("AUDIO", LiveSheet.AUDIO.headerLabel)
-        assertEquals("Channel · wind · direction · vocal", LiveSheet.AUDIO.subtitle)
-        assertEquals(listOf("Channel", "Wind", "Dir", "Vocal"), CaptureLists.audioTabs)
+        assertEquals("音频", LiveSheet.AUDIO.headerLabel)
+        assertEquals("声道 · 风噪抑制 · 收音指向 · 人声", LiveSheet.AUDIO.subtitle)
+        assertEquals(listOf("声道", "风噪抑制", "指向", "人声"), CaptureLists.audioTabs)
         assertEquals(
             CaptureLists.audioTabs,
             CaptureLists.modeTabs(LiveSheet.AUDIO, CameraCommands.EXPO_MANUAL, false),
@@ -685,9 +685,9 @@ class CaptureSheetTest {
         assertTrue(!CaptureLists.shouldRefreshAudio(LiveSheet.EXPO))
 
         val channels = listOf(
-            "Stereo" to CameraCommands.AUDIO_STEREO,
-            "Mono" to CameraCommands.AUDIO_MONO,
-            "Spatial" to CameraCommands.AUDIO_SPATIAL,
+            "立体声" to CameraCommands.AUDIO_STEREO,
+            "单声道" to CameraCommands.AUDIO_MONO,
+            "空间音频" to CameraCommands.AUDIO_SPATIAL,
         )
         assertEquals(channels.map { it.first }, CaptureLists.audioChannelLabels)
         for ((label, value) in channels) {
@@ -701,9 +701,9 @@ class CaptureSheetTest {
 
         // Index-coded lists: the raw value is the position in the list.
         val indexed = listOf(
-            Triple("wind", listOf("Off", "On"), CaptureLists::audioWindLabel),
-            Triple("dir", listOf("All", "Front", "Front+back"), CaptureLists::audioDirLabel),
-            Triple("vocal", listOf("Off", "On"), CaptureLists::audioVocalLabel),
+            Triple("wind", listOf("关", "开"), CaptureLists::audioWindLabel),
+            Triple("dir", listOf("全向", "前方", "前后双向"), CaptureLists::audioDirLabel),
+            Triple("vocal", listOf("关", "开"), CaptureLists::audioVocalLabel),
         )
         assertEquals(indexed[0].second, CaptureLists.audioWindLabels)
         assertEquals(indexed[1].second, CaptureLists.audioDirLabels)
@@ -728,27 +728,27 @@ class CaptureSheetTest {
         assertTrue(!CaptureLists.isEvSheet(LiveSheet.SHUTTER, -1))
         assertTrue(!CaptureLists.isEvSheet(LiveSheet.EXPO, CameraCommands.EXPO_AUTO))
         assertEquals("EV", CaptureLists.headerTitle(LiveSheet.SHUTTER, CameraCommands.EXPO_AUTO))
-        assertEquals("Compensation", CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_AUTO, 0, false))
+        assertEquals("补偿", CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_AUTO, 0, false))
         assertEquals(
-            "Face priority",
+            "人脸优先",
             CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_AUTO, 0, true),
         )
         assertEquals(emptyList(), CaptureLists.modeTabs(LiveSheet.SHUTTER, CameraCommands.EXPO_AUTO, true))
         assertEquals(null, CaptureLists.shutterTabAfterExpoChange(CameraCommands.EXPO_AUTO, true))
-        assertEquals("MODE", CaptureLists.headerTitle(LiveSheet.EXPO, CameraCommands.EXPO_AUTO))
-        assertEquals("Exposure", CaptureLists.headerSubtitle(LiveSheet.EXPO, CameraCommands.EXPO_AUTO, 0, false))
+        assertEquals("模式", CaptureLists.headerTitle(LiveSheet.EXPO, CameraCommands.EXPO_AUTO))
+        assertEquals("曝光", CaptureLists.headerSubtitle(LiveSheet.EXPO, CameraCommands.EXPO_AUTO, 0, false))
         assertEquals(emptyList(), CaptureLists.modeTabs(LiveSheet.EXPO, CameraCommands.EXPO_AUTO, true))
     }
 
     @Test
     fun manualExpoRestoresShutterSpeedOrAngle() {
-        assertEquals("SHUTTER", CaptureLists.headerTitle(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL))
-        assertEquals("Angle · speed", CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, 0, false))
-        assertEquals("Angle · speed", CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, 1, false))
-        assertEquals("Speed", CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, 0, false,
+        assertEquals("快门", CaptureLists.headerTitle(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL))
+        assertEquals("快门角度 · 快门速度", CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, 0, false))
+        assertEquals("快门角度 · 快门速度", CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, 1, false))
+        assertEquals("速度", CaptureLists.headerSubtitle(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, 0, false,
             CameraCommands.SHOOT_PHOTO))
         assertEquals(
-            listOf("Speed", "Angle"),
+            listOf("速度", "角度"),
             CaptureLists.modeTabs(LiveSheet.SHUTTER, CameraCommands.EXPO_MANUAL, true),
         )
         assertEquals(0, CaptureLists.shutterTabAfterExpoChange(CameraCommands.EXPO_MANUAL, false))
@@ -760,7 +760,7 @@ class CaptureSheetTest {
 
     @Test
     fun isoAutoChipAndLimitGetMatchIos() {
-        assertEquals("Auto", CaptureLists.isoChipValue(CameraStatus(isoIndex = 0, iso = 400)))
+        assertEquals("自动", CaptureLists.isoChipValue(CameraStatus(isoIndex = 0, iso = 400)))
         assertEquals("1600", CaptureLists.isoChipValue(CameraStatus(isoIndex = 0x07, iso = 1600)))
         assertTrue(CaptureLists.shouldGetIsoLimit(CameraStatus(colorMode = CameraCommands.COLOR_NORMAL)))
         assertTrue(CaptureLists.shouldGetIsoLimit(CameraStatus(colorMode = CameraCommands.COLOR_DLOG)))
@@ -835,7 +835,7 @@ class CaptureSheetTest {
         assertEquals(
             ColorDrumCommand(CameraCommands.COLOR_NORMAL, null),
             CaptureLists.applyColorDrum(
-                "Normal", "pocket", dlog2Native, hopEnabled = true, name = pro, profile = CaptureTestProfiles.pro
+                "普通", "pocket", dlog2Native, hopEnabled = true, name = pro, profile = CaptureTestProfiles.pro
             ),
         )
         assertNull(CaptureLists.applyColorDrum("D-Log2", "nano", CameraStatus(), hopEnabled = true, profile = CaptureTestProfiles.fixed))
@@ -859,7 +859,7 @@ class CaptureSheetTest {
         assertNull(CaptureLists.applyColorDrum("N-Log", "pocket", CameraStatus(), hopEnabled = true, profile = CaptureTestProfiles.base))
         assertEquals(
             ColorDrumCommand(CameraCommands.COLOR_NORMAL, null),
-            CaptureLists.applyColorDrum("Normal 8-bit", "nano", CameraStatus(), hopEnabled = true, profile = CaptureTestProfiles.fixed),
+            CaptureLists.applyColorDrum("普通 8-bit", "nano", CameraStatus(), hopEnabled = true, profile = CaptureTestProfiles.fixed),
         )
         assertEquals(
             ColorDrumCommand(CameraCommands.COLOR_DLOG_M, null),
@@ -889,7 +889,7 @@ class CaptureSheetTest {
             listOf("100", "200", "400", "800", "1600", "3200"),
             CaptureLists.isoDrumLabels(dlog2),
         )
-        assertTrue(!CaptureLists.isoDrumLabels(dlog2).contains("Auto"))
+        assertTrue(!CaptureLists.isoDrumLabels(dlog2).contains("自动"))
         val dlog = CameraStatus(colorMode = CameraCommands.COLOR_DLOG)
         assertEquals(listOf("400", "800", "1600", "3200", "6400"), CaptureLists.isoDrumLabels(dlog))
         assertTrue(CaptureLists.isoFallback(CameraCommands.COLOR_DLOG).contains(0))
@@ -899,7 +899,7 @@ class CaptureSheetTest {
         assertTrue(CaptureLists.isoDrumLabels(autoOnly).isEmpty())
         assertEquals(
             0,
-            CaptureLists.isoIndexFromLabel("Auto"),
+            CaptureLists.isoIndexFromLabel("自动"),
         )
         assertEquals(0x07, CaptureLists.isoIndexFromLabel("1600"))
         assertEquals(1600, CameraCommands.isoValue(0x07))
@@ -920,7 +920,7 @@ class CaptureSheetTest {
             IsoSheetLogic.Command.SetIndex(0x07),
             IsoSheetLogic.applyDrum("1600", dlog, selectedMode = 1, isoAutoRangeFloor = 100),
         )
-        assertEquals(null, IsoSheetLogic.applyDrum("Auto", dlog, selectedMode = 1, isoAutoRangeFloor = 100))
+        assertEquals(null, IsoSheetLogic.applyDrum("自动", dlog, selectedMode = 1, isoAutoRangeFloor = 100))
         val auto =
             CameraStatus(
                 colorMode = CameraCommands.COLOR_DLOG,
@@ -1168,13 +1168,13 @@ class CaptureSheetTest {
         val sdOnly = CameraStatus(sdFreeMb = 1024, sdTotalMb = 2048)
         assertEquals("1.07 GB · 50%", CaptureLists.storageLabel(sdOnly, showDuration = false))
         val duration = CameraStatus(recordRemainingSec = 180)
-        assertEquals("3 Min", CaptureLists.storageLabel(duration, showDuration = true))
-        assertEquals("— Min", CaptureLists.storageLabel(CameraStatus(), showDuration = true))
+        assertEquals("3 分钟", CaptureLists.storageLabel(duration, showDuration = true))
+        assertEquals("— 分钟", CaptureLists.storageLabel(CameraStatus(), showDuration = true))
     }
 
     @Test
     fun wbChipShowsCustomKelvinAndAuto() {
-        assertEquals("Auto", CaptureLists.wbChipValue(CameraStatus(wbMode = CameraCommands.WB_AUTO)))
+        assertEquals("自动", CaptureLists.wbChipValue(CameraStatus(wbMode = CameraCommands.WB_AUTO)))
         assertEquals(
             "5600K",
             CaptureLists.wbChipValue(CameraStatus(wbMode = CameraCommands.WB_CUSTOM, wbKelvin = 5600)),
@@ -1183,7 +1183,7 @@ class CaptureSheetTest {
             "10000K",
             CaptureLists.wbChipValue(CameraStatus(wbMode = CameraCommands.WB_CUSTOM, wbKelvin = 10_000)),
         )
-        assertEquals("Custom", CaptureLists.wbChipValue(CameraStatus(wbMode = CameraCommands.WB_CUSTOM)))
+        assertEquals("自定义", CaptureLists.wbChipValue(CameraStatus(wbMode = CameraCommands.WB_CUSTOM)))
         assertEquals("—", CaptureLists.wbChipValue(CameraStatus()))
         assertTrue(CaptureLists.wbIsAuto(CameraStatus(wbMode = CameraCommands.WB_AUTO)))
         assertTrue(CaptureLists.wbIsAuto(CameraStatus()))

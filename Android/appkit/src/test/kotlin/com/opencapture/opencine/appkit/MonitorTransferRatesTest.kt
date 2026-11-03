@@ -39,7 +39,7 @@ class MonitorTransferRatesTest {
         assertEquals("42 MB/s", rates.rate("clip")?.label)
         // No byte for three seconds: the tick alone turns the reading into Stalled.
         advanceTimeBy(3000); runCurrent()
-        assertEquals("Stalled", rates.rate("clip")?.label)
+        assertEquals("已停滞", rates.rate("clip")?.label)
     }
 
     @Test fun anEndedDownloadHasNoReadingAndStopsTheTick() = runTest {

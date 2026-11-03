@@ -26,13 +26,13 @@ class StationNetworkCredentialsTest {
     @Test fun aSecuredNetworkNeedsItsPasswordBeforeConnect() {
         assertFalse(validStationCredentials("Studio", "", false, secured = true))
         assertTrue(validStationCredentials("Studio", "synthetic1", false, secured = true))
-        kotlin.test.assertEquals("This network is secured. Enter its password.", stationPasswordNote("", secured = true))
+        kotlin.test.assertEquals("此网络已加密，请输入密码。", stationPasswordNote("", secured = true))
     }
 
     @Test fun anEmptyPasswordIsAllowedWhenTheSecurityIsUnknownOrOpen() {
         assertTrue(validStationCredentials("Studio", "", false, secured = null))
         assertTrue(validStationCredentials("Studio", "", false, secured = false))
-        kotlin.test.assertEquals("Leave it empty only for an open network.", stationPasswordNote("", secured = null))
+        kotlin.test.assertEquals("仅开放网络可不填密码。", stationPasswordNote("", secured = null))
         kotlin.test.assertNull(stationPasswordNote("", secured = false))
     }
 

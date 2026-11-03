@@ -45,7 +45,7 @@ class SharedMonitorControlContractTest {
         assertNull(status.elapsedSeconds)
         assertNull(status.timecode)
         assertEquals("--", status.recordingLabel)
-        assertEquals("Recording state unknown", status.recordingAccessibilityLabel)
+        assertEquals("录制状态未知", status.recordingAccessibilityLabel)
         assertNull(snapshot.power.battery.value)
         assertNull(snapshot.storage.value)
         assertNull(snapshot.audioLevels.value)

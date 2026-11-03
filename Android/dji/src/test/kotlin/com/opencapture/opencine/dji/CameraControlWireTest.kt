@@ -822,7 +822,7 @@ class CameraControlWireTest {
         assertEquals(50, CameraModel.isoAutoRangeFloorFor("Osmo Pocket 4"))
         assertEquals(100, CameraModel.isoAutoRangeFloorFor("Osmo Pocket 4 Pro"))
         assertEquals(100, CameraModel.isoAutoRangeFloorFor("OsmoPocket4P-AAAA"))
-        assertEquals(100, CameraModel.isoAutoRangeFloorFor("DJI Osmo camera"))
+        assertEquals(100, CameraModel.isoAutoRangeFloorFor("DJI Osmo 相机"))
         assertEquals(50, parsed.isoAutoRangeFloor)
     }
 
@@ -882,10 +882,10 @@ class CameraControlWireTest {
         assertEquals(CameraReply.WrongState, CameraReply.parse(byteArrayOf(0xD9.toByte())))
         assertEquals(CameraReply.BadParameter, CameraReply.parse(byteArrayOf(0xEE.toByte())))
         assertEquals(CameraReply.Unsupported, CameraReply.parse(byteArrayOf(0xE0.toByte())))
-        assertEquals("camera rejected that value", CameraReply.parse(byteArrayOf(0xEE.toByte())).message)
+        assertEquals("相机不接受此参数值", CameraReply.parse(byteArrayOf(0xEE.toByte())).message)
         assertTrue(!CameraReply.parse(byteArrayOf()).isSuccess)
-        assertEquals("camera reply 0xFF", CameraReply.parse(byteArrayOf()).message)
-        assertEquals("camera reply 0x42", CameraReply.parse(byteArrayOf(0x42)).message)
+        assertEquals("相机返回 0xFF", CameraReply.parse(byteArrayOf()).message)
+        assertEquals("相机返回 0x42", CameraReply.parse(byteArrayOf(0x42)).message)
     }
 
     @Test

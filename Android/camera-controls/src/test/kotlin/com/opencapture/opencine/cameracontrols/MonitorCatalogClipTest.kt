@@ -23,11 +23,11 @@ class MonitorCatalogClipTest {
 
     @Test fun sourceCellShowsTheCatalogCacheStateAndProgress() {
         val cached = monitorCatalogClip(record, MonitorMediaCacheEntry(file, null, null), facts, null, null, sourceCell)
-        assertEquals("CACHED", cached.source)
+        assertEquals("已缓存", cached.source)
         assertEquals("24 MB", cached.mediaBadge); assertEquals("DSC_0001.JPG, view", cached.accessibilityDescription)
         assertEquals("A", cached.id); assertEquals(true, cached.favorite)
-        assertEquals("PROXY", monitorCatalogClip(record, MonitorMediaCacheEntry(null, file, null), facts, null, null, sourceCell).source)
-        assertEquals("ON CAMERA", monitorCatalogClip(record, null, facts, null, null, sourceCell).source)
+        assertEquals("代理", monitorCatalogClip(record, MonitorMediaCacheEntry(null, file, null), facts, null, null, sourceCell).source)
+        assertEquals("相机内", monitorCatalogClip(record, null, facts, null, null, sourceCell).source)
         val partial = monitorCatalogClip(record, null, facts.copy(progress = 0.25), null, 0.9, sourceCell)
         assertEquals(0.25f, partial.progress)
         assertEquals(0.5f, monitorCatalogClip(record, null, facts, null, 0.5, sourceCell).progress)
@@ -44,6 +44,6 @@ class MonitorCatalogClipTest {
     @Test fun defaultCellKeepsItsFactsAndResolvedDuration() {
         val clip = monitorCatalogClip(record, MonitorMediaCacheEntry(file, null, null),
             facts.copy(duration = "00:04"), "00:05", null, null)
-        assertEquals(MonitorClipValue("A", "DSC_0001.JPG", "JPG", "00:05", "CACHED", true, null), clip)
+        assertEquals(MonitorClipValue("A", "DSC_0001.JPG", "JPG", "00:05", "已缓存", true, null), clip)
     }
 }

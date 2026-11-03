@@ -69,11 +69,11 @@ class ManualProblemReportTest {
     fun settingsStatusHidesIdleAndExplainsAHeldReport() {
         assertNull(ManualProblemReportSnapshot(detail = "Saved").settingsStatus)
         assertEquals(
-            MonitorReportStatus("Waiting to send", "This phone keeps one report until Sentry accepts it or you discard it.", "e1"),
+            MonitorReportStatus("等待发送", "本机会保留一份报告，直到 Sentry 接收或你将其丢弃。", "e1"),
             ManualProblemReportSnapshot(ManualProblemReportDelivery.WAITING, eventId = "e1").settingsStatus,
         )
         assertEquals(
-            MonitorReportStatus("Failed", "Rejected by Sentry.", null),
+            MonitorReportStatus("失败", "Rejected by Sentry.", null),
             ManualProblemReportSnapshot(ManualProblemReportDelivery.FAILED, detail = "Rejected by Sentry.").settingsStatus,
         )
     }
@@ -290,7 +290,7 @@ class ManualProblemReportTest {
         gate.setValidInternetForTests(true)
         report.flush()
         assertEquals(ManualProblemReportDelivery.FAILED, report.current().delivery)
-        assertTrue(report.current().detail!!.contains("expired"))
+        assertTrue(report.current().detail!!.contains("过期"))
         assertTrue(report.current().expiredMetadataOnly)
         assertFalse(File(root, "pending.envelope").exists())
         assertTrue(File(root, "pending.json").isFile)
@@ -343,7 +343,7 @@ class ManualProblemReportTest {
         gate.setValidInternetForTests(true)
         report.flush()
         assertEquals(ManualProblemReportDelivery.FAILED, report.current().delivery)
-        assertTrue(report.current().detail!!.contains("destination changed"))
+        assertTrue(report.current().detail!!.contains("接收地址已更改"))
         assertEquals(0, server.requestCount)
         assertFalse(File(root, "pending.envelope").exists())
     }

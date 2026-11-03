@@ -7,22 +7,22 @@ import kotlin.test.assertEquals
 class StationNetworkScanStatusTest {
     @Test fun aCameraThatCannotListNetworksSaysSoInsteadOfAskingToTurnItOn() {
         assertEquals(
-            "This camera can’t list networks" to "Choose a known network, or Other network.",
+            "此相机无法列出网络" to "请选择已知网络或“其他网络”。",
             nearbyScanStatus(scanning = false, scanAvailable = false, cameraScansNetworks = false, scanFailed = false),
         )
     }
 
     @Test fun aCameraThatScansKeepsItsStatusCopy() {
         assertEquals(
-            "Turn the camera on to find networks" to null,
+            "打开相机以查找网络" to null,
             nearbyScanStatus(scanning = false, scanAvailable = false, cameraScansNetworks = true, scanFailed = false),
         )
         assertEquals(
-            "The camera is looking for networks…" to "Networks appear here as it finds them",
+            "相机正在搜索网络…" to "发现的网络将显示在此处",
             nearbyScanStatus(scanning = true, scanAvailable = true, cameraScansNetworks = true, scanFailed = false),
         )
         assertEquals(
-            "No networks found yet" to "The scan did not finish. Try Scan again.",
+            "尚未发现网络" to "扫描未完成，请轻点“重新扫描”。",
             nearbyScanStatus(scanning = false, scanAvailable = true, cameraScansNetworks = true, scanFailed = true),
         )
     }

@@ -611,9 +611,9 @@ enum class FocusTrackMode(val raw: Int, val label: String) {
 enum class FocusOption(val chip: String) {
     SINGLE("AF-S"),
     CONTINUOUS_DEFAULT("AF-C"),
-    PRODUCT_SHOWCASE("商品展示"),
-    SUBJECT_LOCK("锁定"),
-    REGISTERED_PRIORITY("优先"),
+    PRODUCT_SHOWCASE("展示模式"),
+    SUBJECT_LOCK("主角追焦"),
+    REGISTERED_PRIORITY("登记优先"),
     ;
 
     companion object {

@@ -20,7 +20,7 @@ private class PreHopFacts {
     var owned: Int? = null
     var revision = 0
     val service: MonitorDeliveryRemoteService<String, Int, Int> get() = MonitorDeliveryRemoteService(
-        presentation = MonitorDeliveryRemotePresentation("Remote", "Uploading"),
+        presentation = MonitorDeliveryRemotePresentation("Remote", "正在上传"),
         observe = { MonitorDeliveryRemoteFacts(true, true, onCameraNetwork, "project", "Project") },
         load = { calls += "projects"; MonitorDeliveryProjectListing(1, listOf(MonitorDeliveryProject("project", "Project", true, "project"))) },
         create = { name, _ -> MonitorDeliveryProject(name, name, true, name) },
@@ -118,7 +118,7 @@ class MonitorDeliveryPreHopTest {
             { facts.current }) { throw CancellationException("manual poll retired") }.also { it.start() }
         runCurrent(); model.hopToInternet(); runCurrent()
         assertEquals(listOf("begin"), facts.calls); assertFalse(model.state.value.hopping)
-        assertEquals("Couldn't leave the camera's Wi-Fi while another network switch is running.", model.state.value.projectsError)
+        assertEquals("正在切换网络，暂时无法断开相机 Wi-Fi。", model.state.value.projectsError)
         model.close()
     }
 

@@ -24,9 +24,9 @@ class MultiviewValuesTest {
         assertEquals("REC", MultiviewTally.text(true), "no take length reported")
         assertEquals("REC 01:24", MultiviewTally.text(true, seconds = 84))
         assertEquals("REC 00:00", MultiviewTally.text(true, seconds = -3))
-        assertEquals("WAIT", MultiviewTally.text(true, waiting = true, holding = true))
-        assertEquals("HOLD", MultiviewTally.text(null, holding = true, failed = true))
-        assertEquals("CHECK", MultiviewTally.text(false, failed = true))
+        assertEquals("等待", MultiviewTally.text(true, waiting = true, holding = true))
+        assertEquals("保持", MultiviewTally.text(null, holding = true, failed = true))
+        assertEquals("检查", MultiviewTally.text(false, failed = true))
         assertEquals(listOf("A", "B", "C", "D", "E"), (0 until 5).map(MultiviewTile::letter))
     }
 
@@ -43,15 +43,15 @@ class MultiviewValuesTest {
         assertTrue(MultiviewRecordContext(ready).canConfirm)
         assertFalse(MultiviewRecordContext(ready, busy = true).canConfirm)
         assertFalse(MultiviewRecordContext(ready, closing = true).canConfirm)
-        assertEquals("Start recording?", MultiviewRecordContext(ready).question(single = true))
+        assertEquals("开始录制？", MultiviewRecordContext(ready).question(single = true))
 
         val refused = MultiviewRecordContext(
             plan(MulticamSnapshot(listOf(camera.current), busy = setOf(entry.id), now = MonotonicInstant.ZERO)),
         )
-        assertTrue(!refused.canConfirm && refused.refusal == "A camera is busy.")
+        assertTrue(!refused.canConfirm && refused.refusal == "有相机正忙。")
         camera.cameraSwitchesMode(raw = 0x05) // photo
         assertEquals(
-            "A camera is not in a video mode.",
+            "有相机尚未切换到录像模式。",
             MultiviewRecordContext(plan(MulticamSnapshot(listOf(camera.current), now = MonotonicInstant.ZERO))).refusal,
         )
     }

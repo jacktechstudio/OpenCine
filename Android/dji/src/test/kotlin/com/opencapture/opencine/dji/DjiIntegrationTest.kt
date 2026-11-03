@@ -163,13 +163,13 @@ class DjiIntegrationTest {
         // The Wi-Fi step's caption is the phase label main showed when the session reports no progress.
         assertEquals(
             listOf(
-                "LINK 0 - -", "AWAITING_APPROVAL 0 Approve on the camera -", "LINK 1 - Reading Wi-Fi credentials…",
-                "JOINING_NETWORK 1 - Joining camera Wi-Fi…", "NEGOTIATING 2 - -",
+                "LINK 0 - -", "AWAITING_APPROVAL 0 在相机上确认 -", "LINK 1 - 正在读取 Wi-Fi 连接信息…",
+                "JOINING_NETWORK 1 - 正在加入相机 Wi-Fi…", "NEGOTIATING 2 - -",
             ),
             progress.map { "${it.progress.phase} ${it.progress.current} ${it.prompt?.text ?: "-"} ${it.progress.note ?: "-"}" },
         )
         assertEquals(
-            listOf("Connecting over Bluetooth", "Joining camera Wi-Fi", "Opening the video link", "Starting the picture"),
+            listOf("正在通过蓝牙连接", "正在加入相机 Wi-Fi", "正在建立图传连接", "正在启动取景画面"),
             progress.first().progress.steps.map { it.title },
         )
         val record = assertIs<ConnectionEvent.Connected>(events.last()).camera.saved
@@ -183,17 +183,17 @@ class DjiIntegrationTest {
         val events = collect(integration(port).connect(ConnectTarget.Saved(saved, wifi.id)))
         runCurrent()
         assertEquals(Triple(CameraConnectionSetup.WIFI, MultiviewNetworkStore.Network("studio", "pw-studio", false), false), port.setups.single())
-        port.setupProgress.value = "Finding the camera on studio"
+        port.setupProgress.value = "正在查找 studio 上的相机"
         port.phaseFlow.value = ConnectionPhase.JOINING_WIFI
         runCurrent()
         val moving = events.filterIsInstance<ConnectionEvent.Progress>().last().progress
-        assertEquals(listOf("Connecting over Bluetooth", "Moving the camera to studio", "Finding the camera", "Starting the picture"), moving.steps.map { it.title })
+        assertEquals(listOf("正在通过蓝牙连接", "正在将相机切换至studio", "正在查找相机", "正在启动取景画面"), moving.steps.map { it.title })
         assertEquals(2, moving.current)
         port.failureDetail.value = DjiFailures.classify(StationJoin.Failure.JoinRejected(), ConnectionPhase.JOINING_WIFI, "The camera could not join the Wi-Fi.")
         port.phaseFlow.value = ConnectionPhase.FAILED
         runCurrent()
         val failure = assertIs<ConnectionEvent.Failed>(events.last()).failure
-        assertTrue(failure.reason == ConnectionFailure.Reason.CredentialsRejected && failure.title == "Couldn’t connect over studio")
+        assertTrue(failure.reason == ConnectionFailure.Reason.CredentialsRejected && failure.title == "无法通过studio连接")
         assertEquals(listOf(RecoveryAction.EditRoute(wifi.id), RecoveryAction.Retry, RecoveryAction.UseRoute(ap.id)), failure.actions)
     }
 
@@ -202,12 +202,12 @@ class DjiIntegrationTest {
         val port = FakeDjiPort()
         val events = collect(integration(port).connect(ConnectTarget.Saved(saved, wifi.id)))
         runCurrent()
-        port.setupProgress.value = "Finding the camera on studio"
+        port.setupProgress.value = "正在查找 studio 上的相机"
         port.phaseFlow.value = ConnectionPhase.JOINING_WIFI
         runCurrent()
         val finding = events.filterIsInstance<ConnectionEvent.Progress>().last().progress
         assertEquals(2, finding.current)
-        assertEquals("Finding the camera on studio", finding.note)
+        assertEquals("正在查找 studio 上的相机", finding.note)
     }
 
     @Test
@@ -219,11 +219,11 @@ class DjiIntegrationTest {
         runCurrent()
         assertEquals(1, events.filterIsInstance<ConnectionEvent.Progress>().last().progress.current)
         // The station search starts while the session stays in JOINING_WIFI.
-        port.setupProgress.value = "Finding the camera on studio"
+        port.setupProgress.value = "正在查找 studio 上的相机"
         runCurrent()
         val finding = events.filterIsInstance<ConnectionEvent.Progress>().last().progress
         assertEquals(2, finding.current)
-        assertEquals("Finding the camera on studio", finding.note)
+        assertEquals("正在查找 studio 上的相机", finding.note)
     }
 
     @Test
@@ -245,11 +245,11 @@ class DjiIntegrationTest {
     fun typedFailuresKeepTheirCopy() = runTest {
         val silent = DjiFailures.classify(DatalinkHandshakeException("camera never answered the datalink handshake"), ConnectionPhase.OPENING_DATALINK, "camera never answered the datalink handshake")
         assertTrue(silent.reason == ConnectionFailure.Reason.TimedOut && silent.phase == CorePhase.NEGOTIATING)
-        assertEquals("The camera never answered the video link. ${DjiFailures.DJI_APPS_TIP}", silent.message, "the friendly copy with the DJI apps tip")
+        assertEquals("相机未响应图传连接请求。 ${DjiFailures.DJI_APPS_TIP}", silent.message, "the friendly copy with the DJI apps tip")
         val approval = DjiFailures.classify(IllegalStateException("pairing timed out"), ConnectionPhase.AWAITING_APPROVAL, "pairing timed out")
         assertEquals(ConnectionFailure.Reason.NotApproved, approval.reason)
-        assertEquals("Turn off DJI Frame Tap and force quit DJI Mimo on every phone near the camera.", DjiFailures.DJI_APPS_TIP)
-        assertEquals("The camera didn't respond in time. Check Bluetooth and try again. ${DjiFailures.DJI_APPS_TIP}", approval.message)
+        assertEquals("请关闭 DJI FrameTap，并在相机附近的所有手机上彻底退出 DJI Mimo。", DjiFailures.DJI_APPS_TIP)
+        assertEquals("相机响应超时，请检查蓝牙后重试。 ${DjiFailures.DJI_APPS_TIP}", approval.message)
         assertEquals("The camera ended the link.", DjiFailures.classify(null, ConnectionPhase.JOINING_WIFI, "the camera ended the link").message)
         assertEquals(DjiFailures.HOTSPOT_OFF, DjiFailures.classify(null, ConnectionPhase.JOINING_WIFI, "no hotspot", hotspotOff = true).message)
         val denied = DjiFailures.classify(SecurityException("no"), ConnectionPhase.SCANNING, "no")
@@ -393,6 +393,6 @@ class DjiIntegrationTest {
         collect(integration(port).connect(ConnectTarget.Saved(saved.copy(preferredRoute = wifi.id), ap.id)))
         runCurrent()
         assertTrue(port.setups.single().third, "the camera may still be in station role")
-        assertTrue(ConnectionPrompt.ApproveOnCamera(DjiIntegration.APPROVE).text == "Approve on the camera")
+        assertTrue(ConnectionPrompt.ApproveOnCamera(DjiIntegration.APPROVE).text == "在相机上确认")
     }
 }

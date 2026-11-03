@@ -59,13 +59,13 @@ class PairingWizardTest {
         assertEquals(
             MonitorPairingPresentation(
                 steps = listOf(
-                    MonitorPairingStep("Find your camera", "Bluetooth scan"), MonitorPairingStep("Approve on the camera", "Camera prompt"),
-                    MonitorPairingStep("Join camera Wi-Fi", "Camera network"), MonitorPairingStep("Open video link", "Video link"),
+                    MonitorPairingStep("查找相机", "搜索蓝牙设备"), MonitorPairingStep("在相机上确认", "相机提示"),
+                    MonitorPairingStep("加入相机 Wi-Fi", "相机网络"), MonitorPairingStep("建立图传连接", "图传连接"),
                 ),
-                currentStep = 0, title = "Find your camera", body = "Find body", target = "Nothing selected yet",
-                hint = "Choose the camera that matches your screen", progress = "Live label",
+                currentStep = 0, title = "查找相机", body = "Find body", target = "尚未选择",
+                hint = "选择与相机屏幕显示一致的设备", progress = "Live label",
                 instructions = listOf(MonitorPairingInstruction("Check first", MonitorPairingInstructionIcon.PHONE, listOf("Quit the other app."))),
-                emptyTitle = "Looking for cameras", primaryAction = "Continue",
+                emptyTitle = "正在搜索相机", primaryAction = "继续",
             ),
             CamerasMapping.wizard(model, wizard),
         )
@@ -75,7 +75,7 @@ class PairingWizardTest {
         assertFalse(CamerasMapping.wizard(model, wizard).primaryActionEnabled)
         model.select("n2")
         val chosen = CamerasMapping.wizard(model, wizard)
-        assertTrue(chosen.target == "CAM-2" && chosen.hint == "Selected CAM-2" && chosen.primaryActionEnabled)
+        assertTrue(chosen.target == "CAM-2" && chosen.hint == "已选择 CAM-2" && chosen.primaryActionEnabled)
         assertTrue(chosen.devices.map { it.id } == listOf("n2") && chosen.devices[0].selected && chosen.emptyTitle == null)
         assertEquals(null, chosen.backAction)
 
@@ -95,23 +95,23 @@ class PairingWizardTest {
         runCurrent()
         val starting = CamerasMapping.wizard(model, wizard)
         assertTrue(starting.currentStep == 1 && starting.devices.isEmpty() && starting.progress == "Live label")
-        assertTrue(starting.primaryAction == null && !starting.primaryActionEnabled && starting.backAction == "Cancel")
+        assertTrue(starting.primaryAction == null && !starting.primaryActionEnabled && starting.backAction == "取消")
 
-        fake.attempts[0].progress(ConnectionPhase.LINK, 0, note = "Looking for the camera")
+        fake.attempts[0].progress(ConnectionPhase.LINK, 0, note = "正在查找相机")
         runCurrent()
         assertEquals(0, CamerasMapping.wizard(model, wizard).currentStep)
 
         fake.attempts[0].progress(ConnectionPhase.AWAITING_APPROVAL, 0, prompt = ConnectionPrompt.ApproveOnCamera("Approve"))
         runCurrent()
         val approve = CamerasMapping.wizard(model, wizard)
-        assertTrue(approve.currentStep == 1 && approve.title == "Approve on the camera" && approve.body == "Approve body")
-        assertTrue(approve.hint == "Nothing to type. Approve it on the camera" && approve.checks.isEmpty())
+        assertTrue(approve.currentStep == 1 && approve.title == "在相机上确认" && approve.body == "Approve body")
+        assertTrue(approve.hint == "无需输入，请在相机上确认" && approve.checks.isEmpty())
         assertEquals(
             listOf(
-                MonitorPairingInstruction("On the camera", MonitorPairingInstructionIcon.CAMERA, listOf("Tap Allow")),
+                MonitorPairingInstruction("在相机上操作", MonitorPairingInstructionIcon.CAMERA, listOf("Tap Allow")),
                 MonitorPairingInstruction(
-                    "On this phone", MonitorPairingInstructionIcon.PHONE,
-                    listOf("Wait here, we keep the Bluetooth link alive", "Don't force-quit the app"),
+                    "在本机操作", MonitorPairingInstructionIcon.PHONE,
+                    listOf("请停留在此页面，以保持蓝牙连接", "请勿强行关闭应用"),
                 ),
             ),
             approve.instructions,
@@ -120,22 +120,22 @@ class PairingWizardTest {
         fake.attempts[0].progress(ConnectionPhase.JOINING_NETWORK, 1)
         runCurrent()
         val join = CamerasMapping.wizard(model, wizard.copy(joinedNetwork = "LUNA-1"))
-        assertTrue(join.currentStep == 2 && join.hint == "Android asks to join the camera network")
+        assertTrue(join.currentStep == 2 && join.hint == "Android 将提示加入相机网络")
         assertEquals(
             listOf(
-                MonitorPairingInstruction("On the camera", MonitorPairingInstructionIcon.CAMERA, listOf("Leave it on")),
+                MonitorPairingInstruction("在相机上操作", MonitorPairingInstructionIcon.CAMERA, listOf("Leave it on")),
                 MonitorPairingInstruction(
-                    "On this phone", MonitorPairingInstructionIcon.PHONE,
-                    listOf("Tap Join when Android asks to join the camera network", LocalVPNFilter.JOIN_WIFI_PHONE_STEP),
+                    "在本机操作", MonitorPairingInstructionIcon.PHONE,
+                    listOf("Android 提示加入相机网络时，请轻点“连接”", LocalVPNFilter.JOIN_WIFI_PHONE_STEP),
                 ),
             ),
             join.instructions,
         )
         assertEquals(
             listOf(
-                MonitorPairingCheck("Bluetooth link", "CAM-2", MonitorPairingCheckState.COMPLETE, "OK"),
-                MonitorPairingCheck("Camera Wi-Fi", "LUNA-1", MonitorPairingCheckState.ACTIVE, "JOINING"),
-                MonitorPairingCheck("Live picture", "Starts after Wi-Fi joins", MonitorPairingCheckState.WAITING, "WAITING"),
+                MonitorPairingCheck("蓝牙连接", "CAM-2", MonitorPairingCheckState.COMPLETE, "确定"),
+                MonitorPairingCheck("相机 Wi-Fi", "LUNA-1", MonitorPairingCheckState.ACTIVE, "正在加入"),
+                MonitorPairingCheck("取景画面", "加入 Wi-Fi 后启动", MonitorPairingCheckState.WAITING, "等待中"),
             ),
             join.checks,
         )
@@ -143,10 +143,10 @@ class PairingWizardTest {
         fake.attempts[0].progress(ConnectionPhase.LINK, 2)
         runCurrent()
         val video = CamerasMapping.wizard(model, wizard)
-        assertTrue(video.currentStep == 3 && video.instructions.isEmpty() && video.checks.last().stateLabel == "WAITING")
-        assertEquals("Opening the video link…", video.checks.last().subtitle)
+        assertTrue(video.currentStep == 3 && video.instructions.isEmpty() && video.checks.last().stateLabel == "等待中")
+        assertEquals("正在建立图传连接…", video.checks.last().subtitle)
         assertEquals(
-            listOf(MonitorPairingInstruction("Check the connection", MonitorPairingInstructionIcon.PHONE, listOf(LocalVPNFilter.WIZARD_BANNER))),
+            listOf(MonitorPairingInstruction("检查连接", MonitorPairingInstructionIcon.PHONE, listOf(LocalVPNFilter.WIZARD_BANNER))),
             CamerasMapping.wizard(model, wizard.copy(vpnActive = true)).instructions,
         )
     }
@@ -164,10 +164,10 @@ class PairingWizardTest {
         fake.attempts[0].fail(Values.failure)
         runCurrent()
         val failed = CamerasMapping.wizard(model, wizard)
-        assertTrue(failed.currentStep == 0 && failed.title == "Find your camera" && failed.body == "Find body")
+        assertTrue(failed.currentStep == 0 && failed.title == "查找相机" && failed.body == "Find body")
         assertTrue(failed.error == "Turn on Bluetooth for this app." && failed.progress == null && failed.instructions.isEmpty())
         // Android main: Try again even when Settings could fix it.
-        assertTrue(failed.primaryAction == "Try again" && failed.primaryActionEnabled)
+        assertTrue(failed.primaryAction == "重试" && failed.primaryActionEnabled)
 
         model.dismissFailure("n2")
         assertEquals(null, CamerasMapping.wizard(model, wizard).error)
@@ -191,14 +191,14 @@ class PairingWizardTest {
         assertTrue(model.state.value.nearby.isEmpty())
         val failed = CamerasMapping.wizard(model, wizard)
         assertEquals(Values.failure.message, failed.error)
-        assertEquals("Try again", failed.primaryAction)
+        assertEquals("重试", failed.primaryAction)
         assertEquals("CAM-2", failed.target)
     }
 
     @Test
     fun theAppWordsNearbyCards() = runTest {
         val fake = FakeIntegration(id = IntegrationID("test.cameras"))
-        val model = model(fake, backgroundScope, copy = { NearbyCardCopy(it.name, "Brand · nearby", "Needs approval on the camera") })
+        val model = model(fake, backgroundScope, copy = { NearbyCardCopy(it.name, "Brand · 附近", "Needs approval on the camera") })
         fake.publish(
             listOf(
                 Values.sighting,
@@ -212,12 +212,12 @@ class PairingWizardTest {
         assertEquals(
             listOf(
                 CameraItem(
-                    id = "n2", name = "CAM-2", subtitle = "Brand · nearby", badge = "NEW",
-                    status = "Needs approval on the camera", actionTitle = "Pair",
+                    id = "n2", name = "CAM-2", subtitle = "Brand · 附近", badge = "新设备",
+                    status = "Needs approval on the camera", actionTitle = "配对",
                 ),
                 CameraItem(
-                    id = "n3", name = "CAM-3", subtitle = "Brand · nearby", badge = "IN USE",
-                    status = "In use by another device", actionTitle = "Pair", isAvailable = false,
+                    id = "n3", name = "CAM-3", subtitle = "Brand · 附近", badge = "使用中",
+                    status = "其他设备正在使用", actionTitle = "配对", isAvailable = false,
                 ),
             ),
             CamerasMapping.nearby(model),
