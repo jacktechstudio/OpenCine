@@ -561,8 +561,8 @@ class DjiCameraSessionAdapter(
         when (rejection) {
             CommandRejection.SessionClosed, CommandRejection.WrongSession, CommandRejection.NotConnected,
             CommandRejection.StaleEpoch, CommandRejection.NoAuthority,
-            -> port.noteControlRejection("not live")
-            CommandRejection.RecordingStateUnknown -> port.noteControlRejection("Waiting for the camera's record state")
+            -> port.noteControlRejection("尚未进入实时取景")
+            CommandRejection.RecordingStateUnknown -> port.noteControlRejection("正在等待相机报告录制状态")
             else -> Unit
         }
     }

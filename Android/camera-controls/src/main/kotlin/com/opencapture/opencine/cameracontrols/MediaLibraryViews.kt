@@ -585,7 +585,7 @@ fun MediaLibraryPage(
                 modifier = Modifier.windowInsetsPadding(safe).padding(horizontal = 12.dp, vertical = 10.dp),
                 navigationWidth = 206f,
                 back = close?.let { onClose ->
-                    { MonitorChromeButton(MonitorIcon.CHEVRON_LEFT, "Back", Modifier.testTag("monitor.page.back"),
+                    { MonitorChromeButton(MonitorIcon.CHEVRON_LEFT, "返回", Modifier.testTag("monitor.page.back"),
                         onClick = onClose) }
                 },
                 heading = {

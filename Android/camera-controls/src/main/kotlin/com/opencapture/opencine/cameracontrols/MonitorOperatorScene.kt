@@ -236,7 +236,7 @@ private fun <P, L> MonitorOperatorPage(shell: ShellModel, cover: ShellModel.Cove
         } else {
             Column(Modifier.fillMaxSize().background(MonitorPalette.backgroundDeep).padding(24.dp)) {
                 Text("此相机未提供素材服务。", color = MonitorPalette.muted)
-                MonitorSettingsActionPill("Back", modifier = Modifier.testTag("monitor.page.back"), onClick = shell::dismissCover)
+                MonitorSettingsActionPill("返回", modifier = Modifier.testTag("monitor.page.back"), onClick = shell::dismissCover)
             }
         }
     }

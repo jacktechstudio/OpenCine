@@ -458,7 +458,7 @@ internal fun <K, S, M, N> MonitorOperatorLiveComposition(
                 }, settings = { enabled -> MonitorChromeButton(MonitorIcon.SETTINGS, "监看设置", edit(sections.settings)
                     .testTag("monitor.system.settings")) { if (enabled && interactive) { dismiss(); settings() } }
                 }, media = { enabled -> MonitorChromeButton(if (photo) MonitorIcon.IMAGE else MonitorIcon.FILM,
-                    "Media", edit(sections.media).testTag("monitor.system.media")) { if (enabled && interactive) { dismiss(); media() } } },
+                    "素材库", edit(sections.media).testTag("monitor.system.media")) { if (enabled && interactive) { dismiss(); media() } } },
                 record = { enabled ->
                     val decoration = edit(sections.record).testTag("monitor.system.record")
                     if (photo) photoRelease?.invoke(enabled && admitted && recordEnabled, decoration)
