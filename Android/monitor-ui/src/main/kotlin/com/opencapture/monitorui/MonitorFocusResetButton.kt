@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MonitorFocusResetButton(
     modifier: Modifier = Modifier,
-    title: String = "Recenter focus",
+    title: String = "将对焦点移回中心",
     enabled: Boolean = true,
     pending: Boolean = false,
     size: Dp = LiveChromeMetrics.FOCUS_RESET_DP.dp,

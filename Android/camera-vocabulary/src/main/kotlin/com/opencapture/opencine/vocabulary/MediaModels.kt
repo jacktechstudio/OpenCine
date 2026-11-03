@@ -241,10 +241,10 @@ enum class MediaLibrarySort {
     val menuLabel: String
         get() =
             when (this) {
-                NEWEST -> "Newest"
-                OLDEST -> "Oldest"
-                NAME -> "Name"
-                RATING -> "Rating"
+                NEWEST -> "最新优先"
+                OLDEST -> "最早优先"
+                NAME -> "名称"
+                RATING -> "评分"
             }
 }
 

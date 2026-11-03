@@ -36,7 +36,7 @@ class LutLookResolverTest {
             LutLookSource.Asset("Luna_I-Log_to_Rec709_BT1886_s33_v2.cube", MonitorTransfer.ILOG, "I-Log → Rec.709"),
             iLog,
         )
-        assertEquals("Auto · I-Log → Rec.709", LutLookResolver.statusLabel(true, LutCatalog.AUTO, iLog))
+        assertEquals("自动 · I-Log → Rec.709", LutLookResolver.statusLabel(true, LutCatalog.AUTO, iLog))
         assertEquals(LutLookSource.Off, auto(CameraCommands.COLOR_NORMAL))
         assertEquals(LutLookSource.Off, auto(CameraCommands.COLOR_DOLBY_VISION))
         assertEquals(LutLookSource.Off, auto(-1))
@@ -78,11 +78,11 @@ class LutLookResolverTest {
                 profile = declaredLooks,
             )
         assertEquals(
-            "Auto · D-Log2 → Rec.709",
+            "自动 · D-Log2 → Rec.709",
             LutLookResolver.statusLabel(enabled = true, selection = LutCatalog.AUTO, source = autoDlog2),
         )
         assertEquals(
-            "Auto · Off",
+            "自动 · 关",
             LutLookResolver.statusLabel(
                 enabled = true,
                 selection = LutCatalog.AUTO,
@@ -90,11 +90,11 @@ class LutLookResolverTest {
             ),
         )
         assertEquals(
-            "Off · Auto",
+            "关 · 自动",
             LutLookResolver.statusLabel(enabled = false, selection = LutCatalog.AUTO, source = autoDlog2),
         )
         assertEquals(
-            "Auto · D-Log2 → Rec.709",
+            "自动 · D-Log2 → Rec.709",
             LutLookResolver.statusLabel(
                 enabled = true,
                 selection = LutCatalog.OFFICIAL_AUTO,

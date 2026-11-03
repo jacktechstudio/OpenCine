@@ -36,9 +36,9 @@ public data class ManualProblemReportSnapshot(
         get() =
             when (delivery) {
                 ManualProblemReportDelivery.IDLE -> detail.orEmpty()
-                ManualProblemReportDelivery.WAITING -> "Waiting to send"
-                ManualProblemReportDelivery.SENT -> "Sent"
-                ManualProblemReportDelivery.FAILED -> "Failed"
+                ManualProblemReportDelivery.WAITING -> "等待发送"
+                ManualProblemReportDelivery.SENT -> "已发送"
+                ManualProblemReportDelivery.FAILED -> "失败"
             }
 
     public val allowsDiscard: Boolean
@@ -208,7 +208,7 @@ public class ManualProblemReport(
             generation.incrementAndGet()
             cancelUploadLocked()
             val removed = runCatching { directory()?.deleteRecursively() != false }.getOrDefault(false)
-            publishLocked(detail = if (removed) "Report removed from this phone" else "Could not remove this report. Please try again.")
+            publishLocked(detail = if (removed) "报告已从本机移除" else "无法移除此报告，请重试。")
         }
     }
 
@@ -260,14 +260,14 @@ public class ManualProblemReport(
             }
             if (!appInForeground) {
                 cancelUploadLocked()
-                meta.detail = "Waiting to send. Keep the app open after leaving camera Wi-Fi"
+                meta.detail = "等待发送。断开相机 Wi-Fi 后请保持应用开启"
                 writeMeta(meta)
                 publishLocked()
                 return
             }
             if (gate.shouldBlockUpload) {
                 cancelUploadLocked()
-                meta.detail = "Waiting to send. Keep the app open after leaving camera Wi-Fi"
+                meta.detail = "等待发送。断开相机 Wi-Fi 后请保持应用开启"
                 writeMeta(meta)
                 publishLocked()
                 return
@@ -280,7 +280,7 @@ public class ManualProblemReport(
             val currentDsn = dsn.configured()
             if (envelopeUrlOverride == null && currentDsn != null && currentDsn != meta.dsn) {
                 meta.status = "failed"
-                meta.detail = "Reporting destination changed. Remove this report and send again."
+                meta.detail = "报告接收地址已更改。请移除此报告后重新发送。"
                 deleteEnvelopeLocked()
                 meta.envelopePresent = false
                 writeMeta(meta)
@@ -292,7 +292,7 @@ public class ManualProblemReport(
             val decision = ReliabilityReportingNetwork.decision(endpoint.url, endpoint.host, gate)
             if (decision == ReliabilityReportingLoadDecision.REJECT_HOST) {
                 meta.status = "failed"
-                meta.detail = "Reporting is unavailable in this build"
+                meta.detail = "此版本无法发送报告"
                 deleteEnvelopeLocked()
                 meta.envelopePresent = false
                 writeMeta(meta)
@@ -307,7 +307,7 @@ public class ManualProblemReport(
             val bytes = envelopeFile(directory()).takeIf { it.isFile }?.readBytes()
             if (bytes == null) {
                 meta.status = "failed"
-                meta.detail = "The queued report is missing"
+                meta.detail = "排队中的报告已丢失"
                 meta.envelopePresent = false
                 writeMeta(meta)
                 publishLocked()
@@ -408,7 +408,7 @@ public class ManualProblemReport(
             val meta = readMeta() ?: return
             if (meta.eventId != eventId) return
             if (cancelled) {
-                meta.detail = "Waiting to send"
+                meta.detail = "等待发送"
                 writeMeta(meta)
                 publishLocked()
                 return
@@ -418,7 +418,7 @@ public class ManualProblemReport(
             when {
                 code in 200..299 -> {
                     meta.status = "sent"
-                    meta.detail = "Report sent. Thank you for helping improve ${host.product}."
+                    meta.detail = "报告已发送。感谢你帮助改进 ${host.product}。"
                     deleteEnvelopeLocked()
                     meta.envelopePresent = false
                     writeMeta(meta)
@@ -429,17 +429,17 @@ public class ManualProblemReport(
                 code == 429 || code == 408 -> {
                     meta.status = "waiting"
                     meta.nextAttemptAtMs = nowMs() + retryDelayMs(retryAfter, meta.attempts)
-                    meta.detail = "Waiting for a connection. Your report is saved on this phone"
+                    meta.detail = "等待网络连接。报告已保存在本机"
                 }
                 code in 400..499 -> {
                     meta.status = "failed"
                     meta.detail =
-                        "Report couldn't be sent. Remove it and try again, or contact ${host.supportEmail}."
+                        "无法发送报告。请移除后重试，或联系 ${host.supportEmail}。"
                 }
                 else -> {
                     meta.status = "waiting"
                     meta.nextAttemptAtMs = nowMs() + retryDelayMs(retryAfter, meta.attempts)
-                    meta.detail = "Waiting for a connection. Your report is saved on this phone"
+                    meta.detail = "等待网络连接。报告已保存在本机"
                 }
             }
             writeMeta(meta)
@@ -469,7 +469,7 @@ public class ManualProblemReport(
         deleteEnvelopeLocked()
         meta.status = "failed"
         meta.envelopePresent = false
-        meta.detail = "Report expired before it could be sent. Please create a new report."
+        meta.detail = "报告已过期。请新建报告。"
         writeMeta(meta)
         publishLocked()
     }

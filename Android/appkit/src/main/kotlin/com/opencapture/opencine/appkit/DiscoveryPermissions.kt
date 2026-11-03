@@ -63,7 +63,7 @@ public object DiscoveryPermissions {
 
     /** The name Android's app permission page shows for [permissions]. */
     public fun settingsName(permissions: List<String>): String =
-        if (Manifest.permission.BLUETOOTH_SCAN in permissions) "Nearby devices" else "Location"
+        if (Manifest.permission.BLUETOOTH_SCAN in permissions) "附近的设备" else "位置信息"
 
     public enum class Route { REQUEST, SETTINGS }
 

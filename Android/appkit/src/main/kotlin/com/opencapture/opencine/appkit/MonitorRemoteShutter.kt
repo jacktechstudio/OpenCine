@@ -101,9 +101,9 @@ public class MonitorRemoteShutter(context: Context, sessionTag: String) {
 
     public companion object {
         /** The Controls row title and caption every app shows for this owner. */
-        public const val TITLE: String = "Bluetooth Remote Shutter"
+        public const val TITLE: String = "蓝牙快门遥控器"
         public const val CAPTION: String =
-            "A paired Bluetooth shutter remote's button press starts or stops recording while the live view is up front. Android cannot reliably distinguish Bluetooth from phone hardware keys, so Volume Up/Down and Play/Pause also toggle recording. Record Confirmation is skipped for remote presses."
+            "在实时取景界面，按蓝牙快门键可开始或停止录制。Android 无法可靠区分蓝牙按键和手机实体按键，因此音量键和播放/暂停键也可控制录制。使用遥控按键时无需再次确认。"
     }
 }
 

@@ -223,9 +223,9 @@ object MonitorStatusCorner {
 
 /** Operator choice for the on-feed gimbal joystick diameter. */
 enum class MonitorJoystickSize(val raw: String, val side: Float, val label: String) {
-    SMALL("small", 88f, "Small"),
-    MEDIUM("medium", MonitorLayoutPolicy.STICK_SIDE, "Medium"),
-    LARGE("large", 116f, "Large"),
+    SMALL("small", 88f, "小"),
+    MEDIUM("medium", MonitorLayoutPolicy.STICK_SIDE, "中"),
+    LARGE("large", 116f, "大"),
     ;
 
     companion object {

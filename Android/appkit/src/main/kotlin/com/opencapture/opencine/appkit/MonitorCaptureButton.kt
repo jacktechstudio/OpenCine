@@ -93,9 +93,9 @@ public fun MonitorCaptureButton(
                 .monitorMaterial(MonitorMaterial.Expanded, RoundedCornerShape(16.dp))
                 .padding(horizontal = 18.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(if (approval.recording) "Stop recording?" else "Start recording?",
+                Text(if (approval.recording) "停止录制？" else "开始录制？",
                     color = MonitorPalette.text, style = MonitorTypography.text(16f, FontWeight.SemiBold))
-                Text(if (approval.recording) "Stop" else "Start",
+                Text(if (approval.recording) "停止" else "开始",
                     color = if (approval.recording) MonitorPalette.recording else MonitorPalette.accent,
                     style = MonitorTypography.text(16f, FontWeight.SemiBold), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth().clickable(role = Role.Button) {
@@ -103,7 +103,7 @@ public fun MonitorCaptureButton(
                         haptics.selection()
                         if (interactive && !photo) control.commitRecord(approval)
                     }.padding(vertical = 14.dp))
-                Text("Cancel", color = MonitorPalette.muted,
+                Text("取消", color = MonitorPalette.muted,
                     style = MonitorTypography.text(15f, FontWeight.Medium), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth().clickable(role = Role.Button) { haptics.selection(); approved = null }
                         .padding(vertical = 12.dp))

@@ -76,7 +76,7 @@ class MultiviewDiscovery(private val path: SharedWiFi) {
     }
 
     class UnsupportedSubnet :
-        Exception("Automatic discovery needs a shared IPv4 network with at most 1,022 device addresses.")
+        Exception("自动发现需要在同一 IPv4 网络内进行，设备地址数量不得超过 1,022 个。")
 
     private companion object {
         const val BATCH = 24
@@ -127,7 +127,7 @@ class MultiviewProvisioner(context: Context) {
             delay(50)
         }
         android.util.Log.i(
-            "Multiview",
+            "多机监看",
             "multiview: BLE ${"%02x".format(cmdSet)}/${"%02x".format(cmdId)} seq=$seq reply timeout",
         )
         throw MultiviewFailure.Timeout()
@@ -146,7 +146,7 @@ class MultiviewProvisioner(context: Context) {
         } catch (error: kotlinx.coroutines.CancellationException) {
             throw error
         } catch (error: Exception) {
-            android.util.Log.i("Multiview", "multiview: BLE connect failed ${error.javaClass.simpleName}: ${error.message}")
+            android.util.Log.i("多机监看", "multiview: BLE connect failed ${error.javaClass.simpleName}: ${error.message}")
             throw MultiviewFailure.Unavailable()
         }
         if (closed) throw kotlinx.coroutines.CancellationException("provisioner closed")
@@ -154,7 +154,7 @@ class MultiviewProvisioner(context: Context) {
             ble.frames.collect { frame ->
                 if (closed) return@collect
                 android.util.Log.d(
-                    "Multiview",
+                    "多机监看",
                     "ble frame ${"%02x".format(frame.cmdSet)}/${"%02x".format(frame.cmdId)} " +
                         "seq=${frame.seq} flags=${"%02x".format(frame.flags)} bytes=${frame.payload.size}",
                 )
@@ -245,11 +245,11 @@ class MultiviewProvisioner(context: Context) {
 
 /** iOS `MultiviewSession.Failure`. */
 sealed class MultiviewFailure(message: String) : Exception(message) {
-    class Timeout : MultiviewFailure("Camera did not respond. Close other camera apps and try again.")
-    class Unavailable : MultiviewFailure("Camera is not nearby. Check that it is powered on.")
-    class PairingDeferred : MultiviewFailure("Camera is not ready to pair again. Please try again.")
-    class Rejected : MultiviewFailure("Camera could not complete this step. Check the Wi-Fi details and try again.")
-    class Network : MultiviewFailure("Join the shared Wi-Fi network on this device first.")
+    class Timeout : MultiviewFailure("相机无响应。请退出其他相机应用后重试。")
+    class Unavailable : MultiviewFailure("附近未找到相机。请确认相机已开机。")
+    class PairingDeferred : MultiviewFailure("相机尚未准备好重新配对，请重试。")
+    class Rejected : MultiviewFailure("相机未能完成此步骤。请检查 Wi-Fi 设置后重试。")
+    class Network : MultiviewFailure("请先将本机接入共用 Wi-Fi。")
     class Message(text: String) : MultiviewFailure(text)
 }
 

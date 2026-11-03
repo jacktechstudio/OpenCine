@@ -1183,8 +1183,8 @@ class PocketCameraSession(
                     withCredentialIO(credentialSourceCurrent, transaction = wifiCache.ioTransaction) { wifiCache.remove(camera.id) }
                 }
                 error(
-                    "couldn't join camera Wi-Fi. Tap the system Join prompt if Android asked. " +
-                        "On 5.8 GHz the camera Wi-Fi can take about a minute to appear. Try again, or set the camera to 2.4 GHz (Settings, Wireless, Frequency) for a faster join.",
+                    "未能加入相机 Wi-Fi。如 Android 提示是否连接，请轻点“连接”。" +
+                        "在 5.8 GHz 频段，相机 Wi-Fi 可能需约一分钟才会出现。请重试，或在相机的“设置 → 无线连接 → 频段”中选择 2.4 GHz 以加快连接。",
                 )
             }
         }
@@ -1412,16 +1412,16 @@ class PocketCameraSession(
             joinedSSID = null
             // Wi-Fi: this phone joins first. Hotspot: the phone hosts it and joins nothing.
             if (!hotspot) {
-                _setupProgress.value = "Joining ${network.ssid} on this phone"
+                _setupProgress.value = "本机正在加入 ${network.ssid}"
                 if (!station.join(network.ssid, network.password)) {
-                    error("this phone could not join the Wi-Fi. Check the password and that the network is in range")
+                    error("本机未能加入 Wi-Fi。请检查密码并确认设备位于网络覆盖范围内")
                 }
             }
             if (camera.model.family == "nano") {
-                _setupProgress.value = "Waking camera Wi-Fi"
+                _setupProgress.value = "正在唤醒相机 Wi-Fi"
                 val wake = exchangeBle(DjiNative.CMD_SESSION_5310)
                 if (!wake.contentEquals(byteArrayOf(1, 0, 0, 0))) {
-                    error("the Nano did not confirm its Wi-Fi wake. Keep it powered on and try again")
+                    error("Osmo Nano 未确认 Wi-Fi 唤醒请求，请保持相机开机后重试")
                 }
                 delay(1_000)
             }
@@ -1447,14 +1447,14 @@ class PocketCameraSession(
                 log = ::stationLog,
             )
             if (outcome == StationJoin.Outcome.JOINED) {
-                _setupProgress.value = "Finding the camera on ${network.ssid}"
+                _setupProgress.value = "正在查找 ${network.ssid} 上的相机"
                 // A router hands the camera an address, then its services start: about 40 s
                 // after the join on a Pocket 4 Pro on a home /24 (iOS, 2026-09-24).
                 if (!openStationDatalink(camera, identity, patienceMs = STATION_FIND_MS)) {
                     error(
-                        "the camera joined the Wi-Fi, but this phone cannot reach it there. The router is keeping " +
-                            "the two apart: on a Wi-Fi 7 router turn off MLO for this network (or add a camera " +
-                            "network without it), and turn off client isolation. The Hotspot setup avoids the router",
+                        "相机已加入 Wi-Fi，但本机无法访问。请检查路由器设置：" +
+                            "若使用 Wi-Fi 7，请为此网络关闭 MLO（或另建禁用 MLO 的相机网络），" +
+                            "并关闭客户端隔离。也可使用手机热点绕过路由器",
                     )
                 }
             }
@@ -3262,7 +3262,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SHOOT_PHOTO,
             CaptureShutterPolicy.shootPhotoExtra(start = true),
-            "Photo",
+            "拍照",
             retransmits = false,
             onSettle = { _controlBusy.value = false },
         )
@@ -3280,7 +3280,7 @@ class PocketCameraSession(
         fireKind(
             if (trigger) DjiNative.CMD_SHOOT_PHOTO else if (start) DjiNative.CMD_RECORD_START else DjiNative.CMD_RECORD_STOP,
             if (trigger) CaptureShutterPolicy.shootPhotoExtra(start = start) else null,
-            if (trigger) (if (start) "TimeLapse" else "Stop") else if (start) "Record" else "Stop",
+            if (trigger) (if (start) "静止延时" else "停止") else if (start) "录像" else "停止",
             onStage = onStage,
             expect = { reportedRecording == start },
             onSettle = { _controlBusy.value = false },
@@ -3409,7 +3409,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_SHOOTING_MODE,
             "$raw",
-            "Mode",
+            "模式",
             onFail = {
                 if (shootingModeRevision != revision) return@fireKind
                 if (shootingModePin === requestPin && _status.value.shootingMode == raw) {
@@ -4064,7 +4064,7 @@ class PocketCameraSession(
                     inPlayback = { _status.value.inPlayback },
                     pictureFresh = { hasRecoveryPicture(startedAt) },
                     exitPlayback = {
-                        sendDumlWait(0x02, CameraCommands.CMD_PLAYBACK, CameraCommands.exitPlayback(), "Live")
+                        sendDumlWait(0x02, CameraCommands.CMD_PLAYBACK, CameraCommands.exitPlayback(), "监看")
                     },
                     enableLiveView = ::restartLiveViewAfterMedia,
                 )
@@ -4093,7 +4093,7 @@ class PocketCameraSession(
                 0x00,
                 CameraCommands.CMD_MEDIA_DELETE,
                 CameraCommands.deleteMedia(handle, mediaListCounter),
-                "Delete",
+                "删除",
             )
         }
     }
@@ -4107,7 +4107,7 @@ class PocketCameraSession(
                 CameraCommands.setMediaFavorite(
                     handle, favorite, mediaListCounter, connectedCamera?.model?.name.orEmpty(),
                 ),
-                "Favorite",
+                "收藏",
             )
         }
     }
@@ -5033,7 +5033,7 @@ class PocketCameraSession(
         pinAudio(vocal = boost)
         val previous = _status.value.vocalBoost
         _status.value = _status.value.copy(vocalBoost = boost)
-        val label = if (on) "On" else "Off"
+        val label = if (on) "开" else "关"
         enqueueAudio {
             val ok = sendKind(DjiNative.CMD_SET_VOCAL_BOOST, if (on) "1" else "0", "Vocal $label")
             if (!ok) {
@@ -5366,7 +5366,7 @@ class PocketCameraSession(
         if (was) {
             gimbalRestedAt = SystemClock.elapsedRealtime()
             restGimbalStickWire()
-            lastMoveReadout = lastMoveReadout?.copy(phase = "STOP")
+            lastMoveReadout = lastMoveReadout?.copy(phase = "停止")
         }
         publishMoveDebug(gimbalDebugText(), force = true)
     }

@@ -177,7 +177,7 @@ public class MonitorMediaPlaybackModel<P, L>(
             }
             if (!admit(token) || !isActive) return@launch
             loadTask = null
-            mutate { it.copy(loading = false, error = it.error ?: if (library.canTransfer || hasHostSource) "Could not open that clip." else "This clip is not cached on the phone.") }
+            mutate { it.copy(loading = false, error = it.error ?: if (library.canTransfer || hasHostSource) "无法打开此片段。" else "此片段尚未缓存到本机。") }
         }
         loadTask = task; task.start()
     }

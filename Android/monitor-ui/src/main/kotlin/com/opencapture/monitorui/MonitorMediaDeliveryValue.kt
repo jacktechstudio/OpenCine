@@ -6,7 +6,7 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class MonitorMediaDeliveryValue(
     val step: Step,
-    val title: String = "Share",
+    val title: String = "分享",
     val selectionLabel: String,
     val notices: List<Notice> = emptyList(),
     val destinations: List<Destination> = emptyList(),
@@ -47,7 +47,7 @@ data class MonitorMediaDeliveryValue(
     )
     sealed interface Service {
         @Immutable data class InternetGate(val heading: String, val message: String, val busy: Boolean,
-            val busyTitle: String = "Switching networks…") : Service
+            val busyTitle: String = "正在切换网络…") : Service
         @Immutable data class Projects(val heading: String, val help: String, val signInNotice: String? = null,
             val loading: Boolean, val error: String? = null, val choices: List<Choice>?, val selectedID: String?,
             val allowsCreation: Boolean = true, val selectedLabel: String? = null) : Service {

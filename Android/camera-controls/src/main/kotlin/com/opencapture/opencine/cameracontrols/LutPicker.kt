@@ -161,13 +161,13 @@ internal fun lutPickerLibraries(
             caption = cameraCaption(copy, selection, colorMode, profile, isPhoto),
         ),
         LutPickerLibrary(
-            title = "Creative", entries = creativeEntries.map(::entry),
+            title = "创意风格", entries = creativeEntries.map(::entry),
             isCurrent = category == LutCategory.CREATIVE, selectedId = selected(creativeEntries),
             onSelect = pick, representative = representative(creativeEntries, "creativeMono"),
             caption = creativeCaption(copy, selection, colorMode, profile, isPhoto),
         ),
         LutPickerLibrary(
-            title = "Custom", entries = customEntries.map(::entry), layout = LutPickerLayout.FILES,
+            title = "自定义", entries = customEntries.map(::entry), layout = LutPickerLayout.FILES,
             isCurrent = category == LutCategory.CUSTOM, selectedId = selected(customEntries),
             onSelect = pick, empty = LutPickerEmpty(hint = copy.customHint), onImport = onImport,
             onDelete = { look -> customEntries.firstOrNull { it.id == look.id }?.let(onClear) },
@@ -248,7 +248,7 @@ fun LUTPicker(
                     } catch (cancelled: CancellationException) {
                         throw cancelled
                     } catch (error: Exception) {
-                        MonitorLutImportResult.Rejected(error.message ?: "The .cube file could not be read.")
+                        MonitorLutImportResult.Rejected(error.message ?: "无法读取 .cube 文件。")
                     }
                     when (result) {
                         is MonitorLutImportResult.Imported -> {
@@ -283,12 +283,12 @@ fun LUTPicker(
                                     armCurrent()
                                 }
                             } else {
-                                deletionError = "The LUT \u201c${LutCatalog.displayName(fileName)}\u201d could not be deleted."
+                                deletionError = "无法删除 LUT“${LutCatalog.displayName(fileName)}”。"
                             }
                         } catch (cancelled: CancellationException) {
                             throw cancelled
                         } catch (error: Exception) {
-                            deletionError = error.message ?: "The LUT could not be deleted."
+                            deletionError = error.message ?: "无法删除 LUT。"
                         }
                     }
                 }
@@ -324,7 +324,7 @@ fun LUTPicker(
                 Spacer(Modifier.weight(1f))
                 if (onClose != null) {
                     Text(
-                        "Done",
+                        "完成",
                         color = LiveDesign.accent,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -342,9 +342,9 @@ fun LUTPicker(
     if (deletionError != null) {
         AlertDialog(
             onDismissRequest = { deletionError = null },
-            title = { Text("Couldn’t Delete LUT") },
-            text = { Text(deletionError ?: "The LUT could not be deleted.") },
-            confirmButton = { TextButton(onClick = { deletionError = null }) { Text("OK") } },
+            title = { Text("无法删除 LUT") },
+            text = { Text(deletionError ?: "无法删除 LUT。") },
+            confirmButton = { TextButton(onClick = { deletionError = null }) { Text("确定") } },
         )
     }
 }
@@ -435,17 +435,17 @@ fun LUTPicker(
     pendingDeletion?.let { (library, look) ->
         AlertDialog(
             onDismissRequest = { pendingDeletion = null },
-            title = { Text("Clear ${look.title}?") },
-            text = { Text("This removes the stored LUT from this device. This action cannot be undone.") },
+            title = { Text("清除“${look.title}”？") },
+            text = { Text("此操作将从本机移除已保存的 LUT，无法撤销。") },
             confirmButton = {
                 TextButton(
                     onClick = {
                         pendingDeletion = null
                         libraries.firstOrNull { it.title == library }?.onDelete?.invoke(look)
                     }
-                ) { Text("Clear LUT", color = LiveDesign.destructive) }
+                ) { Text("清除 LUT", color = LiveDesign.destructive) }
             },
-            dismissButton = { TextButton(onClick = { pendingDeletion = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { pendingDeletion = null }) { Text("取消") } },
         )
     }
 }
@@ -558,7 +558,7 @@ private fun FilesTab(library: LutPickerLibrary, onDelete: (LutPickerEntry) -> Un
                     .padding(vertical = 8.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("Import .cube", color = LiveDesign.text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                Text("导入 .cube", color = LiveDesign.text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
             }
             Spacer(Modifier.height(6.dp))
         }
@@ -603,7 +603,7 @@ private fun FilesTab(library: LutPickerLibrary, onDelete: (LutPickerEntry) -> Un
                                     .clickable { onDelete(entry) }
                                     .padding(horizontal = 8.dp, vertical = 6.dp),
                             ) {
-                                Text("Clear", color = LiveDesign.destructive, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                Text("清除", color = LiveDesign.destructive, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
@@ -620,13 +620,13 @@ fun LUTExposureCompensationBar(stops: Double, onChange: (Double) -> Unit,
     modifier: Modifier = Modifier) {
     Column(modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("Exposure", style = LiveType.ui(11f, FontWeight.Medium), color = LiveDesign.text)
+            Text("曝光", style = LiveType.ui(11f, FontWeight.Medium), color = LiveDesign.text)
             Spacer(Modifier.weight(1f))
             Text(MonitorLUTExposureCompensation.label(stops) + " EV", style = LiveType.ui(11f, FontWeight.Medium),
                 color = LiveDesign.muted)
         }
         com.opencapture.monitorui.MonitorSlider(stops.toFloat(), -3f..3f,
-            Modifier.semantics { contentDescription = "Exposure compensation in stops" }) {
+            Modifier.semantics { contentDescription = "曝光补偿（档）" }) {
             val next = MonitorLUTExposureCompensation.snap(it.toDouble())
             if (next != stops) onChange(next)
         }
@@ -651,7 +651,7 @@ fun LUTSplitComparisonBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Text("Split comparison", style = LiveType.ui(11f, FontWeight.Medium), color = LiveDesign.text)
+            Text("分屏对比", style = LiveType.ui(11f, FontWeight.Medium), color = LiveDesign.text)
             Spacer(Modifier.weight(1f))
             Row(
                 Modifier.clip(RoundedCornerShape(50))
@@ -679,10 +679,10 @@ fun LUTSplitComparisonBar(
         }
         if (splitComparison) {
             LutSegmentedButtons(
-                items = listOf("Left / Right", "Top / Bottom"),
-                selected = if (splitVertical) "Left / Right" else "Top / Bottom",
+                items = listOf("左 / 右", "上 / 下"),
+                selected = if (splitVertical) "左 / 右" else "上 / 下",
             ) { label ->
-                onSplitVertical(label == "Left / Right")
+                onSplitVertical(label == "左 / 右")
             }
         }
     }
@@ -730,7 +730,7 @@ internal fun creativeCaption(
             copy.noLookCaption, profile?.cameraLooks.orEmpty(),
         )
     } else {
-        "Looks for the displayed picture"
+        "监看画面风格"
     }
 
 internal fun cameraCaption(
@@ -749,7 +749,7 @@ internal fun cameraCaption(
                 copy.noLookCaption, profile?.cameraLooks.orEmpty(),
             )
         selection.startsWith("camera:") ->
-            profile?.cameraLooks?.firstOrNull { it.id == selection }?.caption ?: "Manual camera conversion"
+            profile?.cameraLooks?.firstOrNull { it.id == selection }?.caption ?: "手动色彩转换"
         LutCatalog.categoryOf(selection) == LutCategory.CAMERA -> copy.officialCubeCaption
         else -> copy.cameraLooksCaption
     }

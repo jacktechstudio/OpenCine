@@ -75,7 +75,7 @@ public class AddSetupFlow(
     public val onDismiss: () -> Unit = {},
     public val onNoticeAction: (String) -> Unit = {},
     public val onCancel: () -> Unit = {},
-    public val cancelTitle: String? = "Cancel",
+    public val cancelTitle: String? = "取消",
 )
 
 /** Renders the shared choice before an optional integration destination; dismissal sends no command itself. */

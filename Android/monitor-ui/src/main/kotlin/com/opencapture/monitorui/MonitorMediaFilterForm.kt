@@ -110,14 +110,14 @@ fun MonitorMediaFilterForm(
             FilterChoices("DATE", it.options, setOfNotNull(it.selectedId), chipLayout, it.onToggle)
         }
         if (hasDates) {
-            FilterHeading("DATE")
+            FilterHeading("日期")
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                FilterDateChip("Start", dateStartLabel, Modifier.weight(1f), onPickStart)
+                FilterDateChip("开始", dateStartLabel, Modifier.weight(1f), onPickStart)
                 Text("–", color = MonitorPalette.muted, style = MonitorTypography.text(10.5f, FontWeight.SemiBold))
-                FilterDateChip("End", dateEndLabel, Modifier.weight(1f), onPickEnd)
+                FilterDateChip("结束", dateEndLabel, Modifier.weight(1f), onPickEnd)
             }
         }
         if (colors.isNotEmpty()) {
@@ -129,11 +129,11 @@ fun MonitorMediaFilterForm(
             FilterChoices("STORAGE", it.options, setOfNotNull(it.selectedId), chipLayout, it.onToggle)
         }
         if (empty) {
-            Text("Nothing in this tab to filter by.", color = MonitorPalette.faint, style = MonitorTypography.text(11f))
+            Text("当前分类没有可用的筛选条件。", color = MonitorPalette.faint, style = MonitorTypography.text(11f))
         }
         if (showsInlineClear && active) {
             Text(
-                "Clear all filters",
+                "清除所有筛选条件",
                 color = MonitorPalette.accent,
                 style = MonitorTypography.text(11f, FontWeight.SemiBold),
                 modifier = Modifier.padding(top = 2.dp).clickable(onClick = onClear).testTag("monitor.media.filter.clear"),
@@ -156,7 +156,15 @@ private fun FilterChips(title: String, titles: List<String>, active: Set<String>
 @Composable
 private fun FilterChoices(title: String, choices: List<MonitorMediaFilterChoice>, active: Set<String>, layout: MonitorMediaFilterChipLayout, onToggle: (String) -> Unit) {
     Column(Modifier.padding(bottom = 2.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-        FilterHeading(title)
+        FilterHeading(when (title) {
+            "FORMAT" -> "格式"
+            "RESOLUTION" -> "分辨率"
+            "COLOUR" -> "色彩"
+            "SIZE" -> "大小"
+            "DATE" -> "日期"
+            "STORAGE" -> "存储位置"
+            else -> title
+        })
         if (layout == MonitorMediaFilterChipLayout.HORIZONTAL_SCROLL) {
             Row(
                 Modifier.fillMaxWidth().heightIn(min = 44.dp).horizontalScroll(rememberScrollState()),
@@ -184,7 +192,7 @@ private fun FilterChoice(group: String, choice: MonitorMediaFilterChoice, active
             .semantics {
                 selected = active
                 if (horizontal) {
-                    contentDescription = "${choice.label} filter"
+                    contentDescription = "按“${choice.label}”筛选"
                     role = Role.Checkbox
                 }
             }

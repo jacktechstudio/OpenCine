@@ -6,9 +6,9 @@ package com.opencapture.opencine.dji
  * move the camera off its own access point onto that network. [raw] matches iOS.
  */
 enum class CameraConnectionSetup(val raw: String, val title: String) {
-    CAMERA_WIFI("cameraWiFi", "Camera Wi-Fi"),
+    CAMERA_WIFI("cameraWiFi", "相机 Wi-Fi"),
     WIFI("wifi", "Wi-Fi"),
-    PHONE_HOTSPOT("phoneHotspot", "Hotspot");
+    PHONE_HOTSPOT("phoneHotspot", "热点");
 
     /** The camera leaves its access point (station role) for this setup. */
     val movesCamera: Boolean get() = this != CAMERA_WIFI

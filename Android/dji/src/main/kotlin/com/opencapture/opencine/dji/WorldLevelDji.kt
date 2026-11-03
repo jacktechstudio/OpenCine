@@ -54,7 +54,7 @@ fun WorldLevelSnap.Companion.plan(
 }
 
 fun WorldLevelSnap.Companion.failureNote(errorDeg: Double?): String =
-    if (errorDeg == null) WorldLevelSnap.NO_LEVEL_DATA else String.format(Locale.ROOT, "Couldn't level: %.1f° off", errorDeg)
+    if (errorDeg == null) WorldLevelSnap.NO_LEVEL_DATA else String.format(Locale.ROOT, "调平失败：偏差 %.1f°", errorDeg)
 
 /** Swift `.rounded()`: half away from zero (Kotlin `round` is half-even). */
 private fun roundAway(value: Double): Double = Math.copySign(kotlin.math.floor(abs(value) + 0.5), value)

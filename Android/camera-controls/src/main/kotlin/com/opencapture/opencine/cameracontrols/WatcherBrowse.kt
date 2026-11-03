@@ -61,8 +61,8 @@ public interface WatcherBrowseHost {
 public fun WatcherBrowse(
     host: WatcherBrowseHost,
     modifier: Modifier = Modifier,
-    networkInstructions: String = "Join the same camera Wi-Fi as the sharing phone first. On that phone, open Operator Setup → Sharing → Show Wi-Fi code. Scan it with Camera, join the network, then return here.",
-    emptyMessage: String = "No shared feeds on this network. Check that both devices joined the same camera Wi-Fi and Share this feed is on. Allow Local Network if asked.",
+    networkInstructions: String = "请先接入分享端手机所在的相机 Wi-Fi。在分享端打开“监看设置 → 共享 → 显示 Wi-Fi 二维码”，用相机扫码入网后返回此处。",
+    emptyMessage: String = "当前网络未发现共享画面。请确认两台设备已接入同一相机 Wi-Fi，并已开启“共享此画面”。如有提示，请允许访问本地网络。",
 ): Unit {
     var passcode by remember { mutableStateOf("") }
     val join = { MonitorWatcherPasscodeRule.answer(passcode)?.let(host::retryWatcherPasscode); Unit }
@@ -71,27 +71,27 @@ public fun WatcherBrowse(
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Watch a feed", style = MonitorTypography.text(22f, FontWeight.Bold), color = MonitorPalette.text)
-            TextButton(onClick = host::stopWatching) { Text("Close") }
+            Text("观看共享画面", style = MonitorTypography.text(22f, FontWeight.Bold), color = MonitorPalette.text)
+            TextButton(onClick = host::stopWatching) { Text("关闭") }
         }
         Text(networkInstructions, style = MonitorTypography.text(13f), color = MonitorPalette.muted)
-        Text("Already joined? Choose the shared feed below. Keep the camera connection inside the app on the sharing phone only.",
+        Text("已加入网络？请在下方选择共享画面。仅分享端手机需要在应用内连接相机。",
             style = MonitorTypography.text(13f), color = MonitorPalette.muted)
-        Button(onClick = host::startWatcherBrowse) { Text("Find shared feeds") }
+        Button(onClick = host::startWatcherBrowse) { Text("查找共享画面") }
         when (val status = host.watcherJoinStatus) {
             WatcherJoinStatus.NeedsPasscode -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("This feed needs a passcode.", style = MonitorTypography.text(14f, FontWeight.Medium), color = MonitorPalette.text)
+                Text("此共享画面需要访问码。", style = MonitorTypography.text(14f, FontWeight.Medium), color = MonitorPalette.text)
                 host.watcherPasscodeError?.let { Text(it, color = MonitorPalette.recording) }
                 OutlinedTextField(value = passcode, onValueChange = { passcode = it },
-                    label = { Text("Passcode") }, singleLine = true,
+                    label = { Text("访问码") }, singleLine = true,
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
                     keyboardActions = KeyboardActions(onGo = { join() }))
-                Button(onClick = join, enabled = MonitorWatcherPasscodeRule.answer(passcode) != null) { Text("Join") }
+                Button(onClick = join, enabled = MonitorWatcherPasscodeRule.answer(passcode) != null) { Text("加入") }
             }
             is WatcherJoinStatus.Failed -> Text(status.message, color = MonitorPalette.recording)
-            is WatcherJoinStatus.Reconnecting -> Text("Reconnecting… ${status.attempt} of ${status.maximum}", color = MonitorPalette.muted)
-            WatcherJoinStatus.Connecting -> Text("Joining…", color = MonitorPalette.muted)
+            is WatcherJoinStatus.Reconnecting -> Text("正在重新连接…第 ${status.attempt}/${status.maximum} 次", color = MonitorPalette.muted)
+            WatcherJoinStatus.Connecting -> Text("正在加入…", color = MonitorPalette.muted)
             else -> Unit
         }
         if (host.watcherFeeds.isEmpty()) {

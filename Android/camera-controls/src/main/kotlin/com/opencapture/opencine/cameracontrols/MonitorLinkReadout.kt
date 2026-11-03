@@ -111,11 +111,11 @@ class MonitorLinkMeter {
             measuredFPS: Double,
         ): String = when {
             sessionRecovering -> SessionRecoveryCopy.HELD_FRAME_BADGE
-            connection == ConnectionPhase.FAILED -> "FAIL"
-            feedRecovering -> "RECOV"
+            connection == ConnectionPhase.FAILED -> "失败"
+            feedRecovering -> "恢复中"
             measuredFPS > 0 -> formattedFPS
             connection == ConnectionPhase.IDLE -> IDLE
-            else -> "LINK"
+            else -> "图传"
         }
     }
 

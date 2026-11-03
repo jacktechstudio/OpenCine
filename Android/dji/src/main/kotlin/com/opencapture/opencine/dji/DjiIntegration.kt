@@ -69,12 +69,12 @@ interface DjiConnectPort {
 /** DJI connection failures with the session's own copy (Swift: the app's typed errors). */
 object DjiFailures {
     /** Frame Tap or a running DJI Mimo holds the camera and blocks pairing and the video link. */
-    const val DJI_APPS_TIP = "Turn off DJI Frame Tap and force quit DJI Mimo on every phone near the camera."
-    const val HOTSPOT_OFF = "The camera could not find this phone’s hotspot. Turn on the Wi-Fi hotspot, then try again."
+    const val DJI_APPS_TIP = "请关闭 DJI FrameTap，并在相机附近的所有手机上彻底退出 DJI Mimo。"
+    const val HOTSPOT_OFF = "相机未找到本机热点，请开启 Wi-Fi 热点后重试。"
 
     private fun failure(reason: ConnectionFailure.Reason, code: String, message: String, phase: CorePhase?) =
         ConnectionFailure(
-            reason, phase, "Couldn’t connect over Camera Wi-Fi", message, listOf(RecoveryAction.Retry),
+            reason, phase, "无法通过相机 Wi-Fi 连接", message, listOf(RecoveryAction.Retry),
             "${DjiCameraSessionAdapter.INTEGRATION.rawValue}.$code",
         )
 
@@ -89,10 +89,12 @@ object DjiFailures {
         val tip = "pairing timed out" in lower || "never answered the datalink handshake" in lower
         val sentence =
             when {
-                "never answered the datalink handshake" in lower -> "The camera never answered the video link."
+                "never answered the datalink handshake" in lower -> "相机未响应图传连接请求。"
                 "timed out" in lower || "timeout" in lower ->
-                    "The camera didn't respond in time. Check Bluetooth and try again."
-                "disconnected" in lower -> "The camera ended the connection. Try again."
+                    "相机响应超时，请检查蓝牙后重试。"
+                "disconnected" in lower -> "相机已断开连接，请重试。"
+                "password is missing" in lower -> "本机未保存此连接方案的密码。请编辑连接方案并重新输入密码。"
+                trimmed.any { it in '㐀'..'鿿' } -> if (trimmed.lastOrNull() in listOf('。', '！', '？')) trimmed else "$trimmed。"
                 else -> trimmed.replaceFirstChar { it.uppercase() }.let { if (it.endsWith(".")) it else "$it." }
             }
         return if (tip) "$sentence $DJI_APPS_TIP" else sentence
@@ -198,11 +200,11 @@ class DjiIntegration(
     companion object {
         val ALL_ROUTES = setOf(RouteKind.CAMERA_ACCESS_POINT, RouteKind.INFRASTRUCTURE_NETWORK, RouteKind.PHONE_HOTSPOT)
         val MOVING_ROUTES = StationRoutes.MOVING
-        const val APPROVE = "Approve on the camera"
-        const val LOOKING = "Looking for the camera"
+        const val APPROVE = "在相机上确认"
+        const val LOOKING = "正在查找相机"
         /** The Wi-Fi step's caption while the session reports no setup progress (the apps' phase labels). */
-        const val READING = "Reading Wi-Fi credentials…"
-        const val JOINING = "Joining camera Wi-Fi…"
+        const val READING = "正在读取 Wi-Fi 连接信息…"
+        const val JOINING = "正在加入相机 Wi-Fi…"
 
         /** The connect card's plan: camera Wi-Fi, or moving the camera to a Wi-Fi or hotspot setup. */
         fun steps(route: SavedRoute?): List<ConnectionStep> = StationRoutes.steps(route)
@@ -272,7 +274,7 @@ class DjiIntegration(
                 val network = draft.network
                 val added = StationRoutes.route(draft)
                 if (added == null || network == null) {
-                    send(ConnectionEvent.Failed(DjiFailures.classify(null, ConnectionPhase.IDLE, "This setup cannot be added.").copy(reason = ConnectionFailure.Reason.Unsupported)))
+                    send(ConnectionEvent.Failed(DjiFailures.classify(null, ConnectionPhase.IDLE, "无法添加此连接方案。").copy(reason = ConnectionFailure.Reason.Unsupported)))
                     return@channelFlow
                 }
                 draft.secret?.let { saveNetwork(network, it, draft.kind == RouteKind.PHONE_HOTSPOT) }
@@ -326,7 +328,7 @@ class DjiIntegration(
 
     private fun progress(attempt: ConnectionAttemptID, phase: ConnectionPhase, steps: List<ConnectionStep>, route: SavedRoute?): ConnectionEvent.Progress? {
         val corePhase = DjiFailures.corePhase(phase) ?: return null
-        val finding = port.setupProgress.value?.startsWith("Finding") == true
+        val finding = port.setupProgress.value?.let { it.startsWith("正在查找") || it.startsWith("Finding") } == true
         val step = when (phase) {
             ConnectionPhase.READING_WIFI_CREDS, ConnectionPhase.JOINING_WIFI -> if (finding) 2 else 1
             ConnectionPhase.OPENING_DATALINK -> 2

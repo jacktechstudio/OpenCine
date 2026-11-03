@@ -92,7 +92,7 @@ internal fun namedZoomStops(name: String): List<Double>? {
 
 val CameraModel.Companion.default: CameraModel
     get() {
-        val model = CameraModel(name = "DJI Osmo camera", family = "pocket", pairingToken = "osmo",
+        val model = CameraModel(name = "DJI Osmo 相机", family = "pocket", pairingToken = "osmo",
             supportsFocusMode = true, supportsTapFocus = true, hasGimbal = true, supportsZoom = true,
             tcpPoke = true, usesCapturedLiveEnable = true, sendsLiveViewPrepare = true,
             zoomStops = listOf(1.0, 2.0, 4.0))
@@ -128,9 +128,9 @@ object DjiCaptureCapabilityProfile {
         val modes = CameraCommands.shootingModeCarousel(model.name)
         val labels = CameraLabelProfile(
             shootingModeLabels = if (CameraModel.looksLikePocket3(model.name))
-                mapOf(CameraCommands.SHOOT_SUPER_NIGHT to "Low-Light") else emptyMap(),
+                mapOf(CameraCommands.SHOOT_SUPER_NIGHT to "低光视频") else emptyMap(),
             colorModeLabels = if (model.family == "nano") mapOf(
-                CameraCommands.COLOR_NORMAL to "Normal 8-bit",
+                CameraCommands.COLOR_NORMAL to "普通 8-bit",
                 CameraCommands.COLOR_DLOG_M to "D-Log M 10-bit")
                 else if (model.family == "pocket") mapOf(CameraCommands.COLOR_DLOG_M to "D-Log M")
                 else emptyMap(),

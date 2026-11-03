@@ -7,7 +7,7 @@ data class MonitorFalseColorReferencePlan(
     data class Segment(val lowerFraction: Double, val upperFraction: Double, val band: LiveFalseColorBand)
     data class Marker(val kind: Kind, val sceneStop: Double, val fraction: Double) {
         enum class Kind { STOP, CLIP }
-        val label: String get() = if (kind == Kind.CLIP) "clip" else if (sceneStop == 0.0) "18%"
+        val label: String get() = if (kind == Kind.CLIP) "剪切" else if (sceneStop == 0.0) "18%"
             else if (sceneStop < 0) "−${(-sceneStop).toInt()}" else "+${sceneStop.toInt()}"
     }
     companion object {

@@ -88,7 +88,7 @@ class MonitorPortraitHeaderClearanceTest {
                 InstrumentationRegistry.getInstrumentation().waitForIdleSync()
                 scenario.onActivity { activity ->
                     val nodes = nativeNodes(activity.window.decorView)
-                    val recording = nodes.single { it.config.getOrNull(SemanticsProperties.ContentDescription)?.singleOrNull() == "Standby" }
+                    val recording = nodes.single { it.config.getOrNull(SemanticsProperties.ContentDescription)?.singleOrNull() == "待机" }
                     val clock = nodes.single { it.config.getOrNull(SemanticsProperties.ContentDescription)?.singleOrNull() == "Timecode 01:23:45" }
                     android.util.Log.i("B5NativeTopAlignment", "recording=${recording.boundsInRoot} clock=${clock.boundsInRoot} primary=$primary")
                     assertEquals(recording.boundsInRoot.top, clock.boundsInRoot.top, .5f)
@@ -310,7 +310,7 @@ class MonitorPortraitHeaderClearanceTest {
                     scenario.onActivity { activity ->
                         val nodes = nativeNodes(activity.window.decorView)
                         val recording = nodes.single {
-                            it.config.getOrNull(SemanticsProperties.ContentDescription)?.singleOrNull() == "Standby"
+                            it.config.getOrNull(SemanticsProperties.ContentDescription)?.singleOrNull() == "待机"
                         }
                         val clock = nodes.single {
                             it.config.getOrNull(SemanticsProperties.ContentDescription)?.singleOrNull() == "Timecode 01:23:45:59"
@@ -1239,7 +1239,7 @@ class MonitorPortraitHeaderClearanceTest {
                     val badge = nodes.single {
                         it.config.getOrNull(SemanticsProperties.TestTag) == "monitor.chromeEdit.statusBar"
                     }
-                    assertEquals(if (hidden) "Hidden" else "Shown", badge.config[SemanticsProperties.StateDescription])
+                    assertEquals(if (hidden) "已隐藏" else "已显示", badge.config[SemanticsProperties.StateDescription])
                     fun description(node: SemanticsNode) = node.config.getOrNull(SemanticsProperties.ContentDescription)?.singleOrNull()
                     val reference = nodes.single { description(it) == "SIMULATED original Status edit reference" }
                     val storage = nodes.single {

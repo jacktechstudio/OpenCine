@@ -3,9 +3,9 @@ package com.opencapture.monitorui
 /** How a camera's level assist draws. Swift mirror: `MonitorLevelStyle` in MonitorPresentation. */
 enum class MonitorLevelStyle(val title: String) {
     /** A horizon line through the picture's centre that rolls with the camera. */
-    HORIZON("Horizon"),
+    HORIZON("水平线"),
     /** The two-axis roll and tilt gauge. */
-    GAUGE("Gauge"),
+    GAUGE("双轴水平仪"),
     ;
 
     companion object {

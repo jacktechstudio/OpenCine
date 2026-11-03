@@ -5,8 +5,8 @@ import kotlin.test.assertEquals
 
 class MonitorZoomAccessibilityCopyTest {
     @Test fun zoomStateDescribesTheCommittedScale() {
-        assertEquals("Zoom 1.0x", monitorZoomStateDescription(1f))
-        assertEquals("Zoom 2.5x", monitorZoomStateDescription(2.5f))
-        assertEquals("Zoom 4.0x", monitorZoomStateDescription(4f))
+        assertEquals("放大 1.0 倍", monitorZoomStateDescription(1f))
+        assertEquals("放大 2.5 倍", monitorZoomStateDescription(2.5f))
+        assertEquals("放大 4.0 倍", monitorZoomStateDescription(4f))
     }
 }

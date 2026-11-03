@@ -258,8 +258,8 @@ private fun PeakingOptions(state: MonitorAssistState, host: AssistHost) {
     val haptics = LocalOperatorHaptics.current
     com.opencapture.monitorui.MonitorPeakingMenu(state.peakingSensitivity, state.peakingColor,
         host.peakingColors,
-        "Higher sensitivity catches finer edges but can get noisy on detailed scenes.",
-        "Choose the edge color that stays readable over your typical scene.",
+        "灵敏度越高，越容易显示细小边缘，但复杂场景中也可能出现杂点。",
+        "选择在常拍场景中清晰可见的轮廓颜色。",
         onSensitivity = { haptics.selection(); state.setPeaking(sense = it) },
         onColor = { haptics.selection(); state.setPeaking(color = it) })
 }
@@ -268,27 +268,27 @@ private fun PeakingOptions(state: MonitorAssistState, host: AssistHost) {
 private fun FalseColorOptions(state: MonitorAssistState, transfer: MonitorTransfer, host: AssistHost) {
     val haptics = LocalOperatorHaptics.current
     val scaleHelp =
-            "The camera color mode selects D-Log, D-Log2, D-Log M, Rec.709, or HLG automatically. " +
-                "CineStop paints five stops around 18% gray: dark green −2, yellow-green −1, gray, " +
-                "pink +1 skin, yellow +2 upper skin, red clip, violet crush, flat gray elsewhere. " +
-                "Video paints video-level IRE stripes over " +
-                "luminance grayscale. IRE paints " +
-                "six video-level zones over luminance grayscale. Limits " +
-                "paints only shadow and highlight warnings." +
-                " D-Log M uses a direct 0–100 signal scale. Its gray guide and CineStop stops are " +
-                "Pocket 3 estimates, not calibrated sensor limits. Use IRE on other D-Log M cameras."
+            "根据相机色彩模式自动选择 D-Log、D-Log2、D-Log M、Rec.709 或 HLG。" +
+                "CineStop 以 18% 灰为基准，用五种颜色表示曝光档位：深绿 −2 档、黄绿 −1 档、中灰、" +
+                "粉色 +1 档（肤色）、黄色 +2 档（肤色上限）；红色表示高光溢出，紫色表示暗部死黑，其余为灰色。" +
+                "视频模式在亮度灰阶画面上" +
+                "叠加视频电平 IRE 色带。IRE 模式将" +
+                "灰阶画面划分为六个电平区域。限幅模式" +
+                "仅标示阴影和高光警告。" +
+                "D-Log M 使用 0–100 的直接信号刻度。其中灰基准和 CineStop 档位基于" +
+                "Pocket 3 的估算值，不代表经标定的传感器极限。其他 D-Log M 相机请使用 IRE。"
     val readHelp =
-            "How false color reads log footage. 709 reads the camera's official Rec.709 look, " +
-                "the way RED, ARRI and most monitors apply false color, so clip means clipped in " +
-                "the Rec.709 image. LOG reads the raw signal like WAVE, with the full highlight " +
-                "range and the camera's own clip."
+            "选择假色分析 Log 素材的方式。709 根据相机官方 Rec.709 转换后的画面测量，" +
+                "与 RED、ARRI 及多数监视器的假色方式相同，溢出表示 Rec.709 画面的高光截断。" +
+                "LOG 与波形图一样读取原始信号，保留完整的" +
+                "高光范围，以相机自身的截断点为准。"
     com.opencapture.monitorui.MonitorFalseColorMenu(
-        listOf("CineStop", "Video", "IRE", "Limits").map(MonitorFalseColorSelection::fromMenuLabel),
+        MonitorFalseColorSelection.entries,
         state.falseColorScale, { haptics.selection(); state.setFalseColor(scale = it) }, { it.menuLabel },
         state.falseColorRec709, { haptics.selection(); state.setFalseColorRead(it) },
         falseColorReferenceValues(state, transfer, host.scopeCeiling(state), host.rec709LookCurve(transfer)), state.falseColorReference,
         { haptics.selection(); state.setFalseColor(reference = it) }, scaleHelp, readHelp,
-        "Show a compact color key over live view while False Color is active.")
+        "使用假色时，在取景画面叠加小型颜色图例。")
 }
 
 @Composable
@@ -298,9 +298,9 @@ private fun ZebraOptions(state: MonitorAssistState, transfer: MonitorTransfer, h
     val ceiling = host.scopeCeiling(state)
     com.opencapture.monitorui.MonitorZebraMenu(MonitorZebraUnit.entries, state.zebraUnit, { it.editorLabel },
         { haptics.selection(); state.updateZebraUnit(it) },
-        "Switch between native 0-255 encoded codes and a 0-100 monitoring IRE scale.",
-        "High zebra warns when bright detail approaches clipping after the active log curve is compensated.",
-        "Midtone zebra gives a curve-compensated reference band for faces or key subject exposure.",
+        "在原始 0–255 编码值与 0–100 IRE 监看刻度之间切换。",
+        "根据当前 Log 曲线补偿后，高光接近溢出时显示高光斑马纹。",
+        "中间调斑马纹根据曲线补偿，为肤色或主体曝光提供参考区间。",
         com.opencapture.monitorui.MonitorZebraZone(state.zebraHighlight,
             ZebraEditor.displayValue(state.zebraHighlightIRE, state.zebraUnit, transfer, ceiling),
             maximum, state.zebraHighlightColor, host.highlightColors,
@@ -336,7 +336,7 @@ private fun ParadeOptions(state: MonitorAssistState, supportsCalibratedReference
 @Composable
 private fun HistogramOptions(state: MonitorAssistState, supportsCalibratedReferences: Boolean) {
     if (!supportsCalibratedReferences) {
-        Text("Encoded code percentage. Source calibration unavailable.", color = MonitorPalette.muted, fontSize = 11.sp)
+        Text("编码值百分比。无信号源标定数据。", color = MonitorPalette.muted, fontSize = 11.sp)
         return
     }
     val haptics = LocalOperatorHaptics.current
@@ -359,7 +359,7 @@ private fun LightsOptions(state: MonitorAssistState) {
     val haptics = LocalOperatorHaptics.current
     com.opencapture.monitorui.MonitorCrushClipMenu(state.crushClipCompensation,
         { haptics.selection(); state.setCompensation(it) },
-        "Stops of crush/clip tolerance before a channel indicator glows. Shared with the histogram traffic lights.",
+        "设置通道欠曝或溢出指示灯的容差（档），与直方图通道警示灯共用。",
         showTopDivider = false)
 }
 

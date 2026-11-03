@@ -27,12 +27,12 @@ object LutCatalog {
     const val AUTO = "auto"
     const val OFF = "off"
     const val OFFICIAL_AUTO = "djiAuto"
-    const val PHOTO_REC709_CAPTION = "Photo live view is Rec.709. Log conversions are off"
+    const val PHOTO_REC709_CAPTION = "照片取景采用 Rec.709，Log 转换已关闭。"
 
     private const val CUSTOM_PREFIX = "custom:"
     private const val ASSET_PREFIX = "asset:"
 
-    val auto: LutEntry = LutEntry(AUTO, "Auto", LutCategory.CAMERA)
+    val auto: LutEntry = LutEntry(AUTO, "自动", LutCategory.CAMERA)
     var cameraLooks: List<LutEntry> = emptyList()
         private set
 
@@ -52,17 +52,24 @@ object LutCatalog {
     fun normalizedSelection(id: String): String =
         if (id.isBlank() || id == OFFICIAL_AUTO) AUTO else id
 
-    val officialAuto: LutEntry = LutEntry(OFFICIAL_AUTO, "Auto", LutCategory.CAMERA)
+    val officialAuto: LutEntry = LutEntry(OFFICIAL_AUTO, "自动", LutCategory.CAMERA)
 
     val creative: List<LutEntry> =
         listOf(
-            LutEntry("creativeMono", "Mono", LutCategory.CREATIVE),
-            LutEntry("creativeContrast", "Contrast", LutCategory.CREATIVE),
-            LutEntry("creativeWarm", "Warm", LutCategory.CREATIVE),
-            LutEntry("creativeCool", "Cool", LutCategory.CREATIVE),
+            LutEntry("creativeMono", "黑白", LutCategory.CREATIVE),
+            LutEntry("creativeContrast", "高反差", LutCategory.CREATIVE),
+            LutEntry("creativeWarm", "暖调", LutCategory.CREATIVE),
+            LutEntry("creativeCool", "冷调", LutCategory.CREATIVE),
         )
 
-    fun creativeName(id: String): String? = creative.firstOrNull { it.id == id }?.title
+    /** Swift BuiltInLook names on the JNI boundary. UI titles are localized independently. */
+    fun creativeName(id: String): String? = when (id) {
+        "creativeMono" -> "Mono"
+        "creativeContrast" -> "Contrast"
+        "creativeWarm" -> "Warm"
+        "creativeCool" -> "Cool"
+        else -> null
+    }
 
     /** Legacy app-authored Rec.709 conversions: hidden; reserved so they do not appear as extras. */
     val officialBuiltInLooks: List<LutEntry> =
@@ -170,18 +177,18 @@ object LutCatalog {
     fun titleFor(id: String): String {
         cameraLooks.firstOrNull { it.id == id }?.let { return it.title }
         val canonical = migratedToOfficialCatalog(id)
-        if (canonical.isBlank()) return "Auto"
+        if (canonical.isBlank()) return "自动"
         if (canonical == AUTO || canonical == OFFICIAL_AUTO) return officialAuto.title
         officialCameraCubes.firstOrNull { it.id == canonical }?.let { return it.title }
         creative.firstOrNull { it.id == canonical }?.let { return it.title }
         customFileName(canonical)?.let { return displayName(it) }
         if (canonical.startsWith(ASSET_PREFIX)) return displayName(canonical.removePrefix(ASSET_PREFIX))
         return when (canonical) {
-            "off" -> "Off"
-            "customRec709" -> "Custom"
-            "customDLog" -> "Custom D-Log"
-            "customDLog2" -> "Custom D-Log2"
-            "customFile" -> "Custom"
+            "off" -> "关"
+            "customRec709" -> "自定义"
+            "customDLog" -> "自定义 D-Log"
+            "customDLog2" -> "自定义 D-Log2"
+            "customFile" -> "自定义"
             else -> id
         }
     }

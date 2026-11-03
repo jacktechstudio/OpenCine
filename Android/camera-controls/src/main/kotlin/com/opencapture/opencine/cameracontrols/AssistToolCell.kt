@@ -55,8 +55,8 @@ fun AssistToolCell(
                     // the 9sp "WAVE" abbreviation being read after the name;
                     // plain `semantics` leaves it behind as a second stop, and
                     // the tap and hold actions survive the clear.
-                    val options = if (onLongClick != null) ". Hold for options" else ""
-                    contentDescription = "${tool.title}, ${if (isOn) "on" else "off"}$options"
+                    val options = if (onLongClick != null) "。长按显示选项" else ""
+                    contentDescription = "${tool.title}，${if (isOn) "开启" else "关闭"}${options}"
                     if (!enabled) disabled()
                 }
                 .padding(vertical = 5.dp, horizontal = 8.dp)

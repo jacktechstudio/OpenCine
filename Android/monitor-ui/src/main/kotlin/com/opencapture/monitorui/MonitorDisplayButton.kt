@@ -33,7 +33,7 @@ fun MonitorDisplayButton(clean: Boolean, width: Float, height: Float,
     modifier: Modifier = Modifier, enabled: Boolean = true, onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null) {
     MonitorDisplayButton(activeIndex = if (clean) 1 else 0, modeCount = 2,
-        description = if (clean) "DISP 2 clean" else "DISP 1 live", width = width, height = height,
+        description = if (clean) "DISP 2 净画面" else "DISP 1 监看画面", width = width, height = height,
         modifier = modifier, enabled = enabled, onClick = onClick, onLongClick = onLongClick)
 }
 

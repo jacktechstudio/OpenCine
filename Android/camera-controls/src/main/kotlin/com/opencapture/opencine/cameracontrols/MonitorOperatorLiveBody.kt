@@ -452,10 +452,10 @@ internal fun <K, S, M, N> MonitorOperatorLiveComposition(
                 navigationHidden = state.preview != null || (panel != null && !layout.portrait), interactive = accepts,
                 lock = { enabled ->
                     if (returnToStage == null) LockButton(locked, edit(sections.lock).testTag("monitor.system.lock"), enabled) { if (exposed) setLocked(!locked) }
-                    else MonitorChromeButton(MonitorIcon.LAYOUT_GRID, "Return to Multiview", edit(sections.lock)) {
+                    else MonitorChromeButton(MonitorIcon.LAYOUT_GRID, "返回多机监看", edit(sections.lock)) {
                         if (enabled && exposed) returnToStage()
                     }
-                }, settings = { enabled -> MonitorChromeButton(MonitorIcon.SETTINGS, "Operator Setup", edit(sections.settings)
+                }, settings = { enabled -> MonitorChromeButton(MonitorIcon.SETTINGS, "监看设置", edit(sections.settings)
                     .testTag("monitor.system.settings")) { if (enabled && interactive) { dismiss(); settings() } }
                 }, media = { enabled -> MonitorChromeButton(if (photo) MonitorIcon.IMAGE else MonitorIcon.FILM,
                     "Media", edit(sections.media).testTag("monitor.system.media")) { if (enabled && interactive) { dismiss(); media() } } },
@@ -466,7 +466,7 @@ internal fun <K, S, M, N> MonitorOperatorLiveComposition(
                         busy = !recordEnabled, confirm = confirmRecord,
                         openMode = openMode?.let { action -> { if (admits() && recordEnabled) action() } }, onConfirmingChange = onRecordConfirming)
                 }, display = { enabled -> MonitorDisplayButton(displayIndex, displayCount,
-                    displayTitle ?: displayIndex?.let { "DISP ${it + 1}" } ?: "Display mode unavailable",
+                    displayTitle ?: displayIndex?.let { "DISP ${it + 1}" } ?: "显示模式不可用",
                     layout.display.width, layout.display.height, (sections.display?.let { edit(it) } ?: Modifier).testTag("monitor.system.display"), enabled = enabled && interactive,
                     onClick = cycleDisplay, onLongClick = null, onClickFeedback = { displayHaptics.selection() }) })
         }, tools = { accepts ->
@@ -562,7 +562,7 @@ internal fun <K, S, M, N> MonitorOperatorLiveComposition(
                         .border(1.dp, LiveDesign.hairline, CircleShape)
                         .monitorChromeClickable(enabled = interactive) { if (interactive && currentSource()) { haptics.selection(); value.change() } }
                         .testTag("portrait_aspect_toggle")
-                        .semantics { contentDescription = if (value.fills) "Fit feed in frame" else "Fill frame with feed" },
+                        .semantics { contentDescription = if (value.fills) "完整显示取景画面" else "取景画面铺满屏幕" },
                         contentAlignment = Alignment.Center) {
                         MonitorIcon(if (value.fills) MonitorIcon.MINIMIZE else MonitorIcon.MAXIMIZE, null,
                             Modifier.size(15.dp), LiveDesign.text)

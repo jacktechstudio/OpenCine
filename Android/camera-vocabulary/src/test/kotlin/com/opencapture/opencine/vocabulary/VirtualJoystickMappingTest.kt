@@ -163,7 +163,7 @@ class VirtualJoystickMappingTest {
         )
         assertEquals(
             CameraCommands.VirtualJoystickCurve.LINEAR,
-            CameraCommands.VirtualJoystickCurve.fromLabel("Linear"),
+            CameraCommands.VirtualJoystickCurve.fromLabel("线性"),
         )
         assertEquals(
             CameraCommands.VirtualJoystickCurve.STANDARD,

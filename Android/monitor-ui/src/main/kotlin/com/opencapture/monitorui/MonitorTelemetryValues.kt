@@ -42,10 +42,10 @@ public object MonitorTelemetryValues {
      */
     public fun batterySpokenValue(percent: Int?, bars: Int?, barCount: Int, charging: Boolean?,
         externalPower: Boolean?, exhausted: Boolean): String? {
-        val power = if (externalPower == true) "external power" else if (charging == true) "charging" else null
-        val level = bars?.let { "$it of $barCount bars" } ?: percent?.let { "$it percent" }
-        val parts = listOfNotNull(level, "exhausted".takeIf { exhausted }, power)
-        return if (parts.isEmpty()) null else parts.joinToString(", ")
+        val power = if (externalPower == true) "外接电源" else if (charging == true) "正在充电" else null
+        val level = bars?.let { "$it/$barCount 格" } ?: percent?.let { "$it%" }
+        val parts = listOfNotNull(level, "电量耗尽".takeIf { exhausted }, power)
+        return if (parts.isEmpty()) null else parts.joinToString("，")
     }
 
     /**
@@ -54,7 +54,7 @@ public object MonitorTelemetryValues {
      * cannot say the picture is held or restarting.
      */
     public fun linkValue(fps: String?, signalBars: Int?, showsRate: Boolean): String? =
-        if (fps != null && isStateWord(fps)) fps
+        if (fps != null && isStateWord(fps)) stateLabel(fps)
         // Only a finite rate in frame-rate range is rounded; anything else prints as reported.
         else if (showsRate) fps?.toDoubleOrNull()?.takeIf { it.isFinite() && kotlin.math.abs(it) <= MAXIMUM_RATE }
             ?.let { "${Math.round(it)} fps" } ?: fps ?: "\u2014"
@@ -67,20 +67,31 @@ public object MonitorTelemetryValues {
     public fun linkSpokenLabel(fps: String?, signalBars: Int?): String {
         val word = fps?.takeIf(::isStateWord)
         val signal = when {
-            word in LINK_DOWN_WORDS -> "down"
-            signalBars != null -> "$signalBars of 4 delivery bars"
-            else -> "unavailable"
+            word in LINK_DOWN_WORDS -> "已断开"
+            signalBars != null -> "链路质量 $signalBars/4 格"
+            else -> "不可用"
         }
         val feed = when {
-            word != null -> word
-            fps == null || fps == "\u2014" -> "unavailable"
-            else -> "$fps frames per second"
+            word != null -> stateLabel(word)
+            fps == null || fps == "\u2014" -> "不可用"
+            else -> "每秒 $fps 帧"
         }
-        return "Live link $signal, feed $feed"
+        return "监看链路：$signal，图传：$feed"
     }
 
     /** The held-frame badge (`SessionRecoveryCopy.HELD_FRAME_BADGE`) and the failed-link word. */
-    private val LINK_DOWN_WORDS = setOf("NO LINK", "FAIL")
+    private val LINK_DOWN_WORDS = setOf("NO LINK", "FAIL", "图传中断", "失败")
+
+    /** Keep wire and diagnostic markers stable while the operator sees a readable state. */
+    private fun stateLabel(word: String): String = when (word) {
+        "NO LINK" -> "图传中断"
+        "FAIL" -> "失败"
+        "RECOV" -> "恢复中"
+        "LINK" -> "图传"
+        "BUSY" -> "忙碌"
+        "READY" -> "就绪"
+        else -> word
+    }
 
     /** The largest rate printed as a rounded frame rate. */
     internal const val MAXIMUM_RATE: Double = 100_000.0

@@ -20,7 +20,7 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class MonitorSettingsSwitchAccessibilityTest {
-    private val title = "Full Resolution Caching"
+    private val title = "缓存原始分辨率素材"
 
     @Test fun theTitledNodeIsTheSwitchAndReportsItsDrawnState() {
         ActivityScenario.launch(MonitorTestActivity::class.java).use { scenario ->

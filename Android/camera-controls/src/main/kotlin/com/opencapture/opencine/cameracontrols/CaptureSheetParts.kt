@@ -194,7 +194,7 @@ fun CaptureDrumWheel(
 fun FocusBody(status: CameraStatus, labels: List<String> = CaptureFocusChoices.labels, enabled: Boolean, onSelect: (String) -> Unit) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         CaptureDrumWheel(labels, CaptureFocusChoices.selection(status, labels), interactive = enabled, onSelect = onSelect)
-        Text("AF-S focuses once. AF-C follows focus continuously; the other modes use the camera's supported tracking modes.",
+        Text("AF-S 单次自动对焦，AF-C 连续自动对焦；其余选项取决于相机支持的跟踪模式。",
             style = LiveType.ui(9.5f).copy(lineHeight = 13.3.sp), color = LiveDesign.faint)
     }
 }

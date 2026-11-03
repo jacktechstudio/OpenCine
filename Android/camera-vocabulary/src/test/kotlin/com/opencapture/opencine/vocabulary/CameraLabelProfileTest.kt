@@ -24,19 +24,19 @@ class CameraLabelProfileTest {
     )
 
     @Test fun standardProfileKeepsTheVocabularyNames() {
-        assertEquals("HyperLapse", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_HYPERLAPSE))
+        assertEquals("运动延时", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_HYPERLAPSE))
         assertEquals("Low-Light", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_SUPER_NIGHT, profile = CameraLabelProfile(
             shootingModeLabels = mapOf(CameraCommands.SHOOT_SUPER_NIGHT to "Low-Light"))))
         assertEquals("Normal 8-bit", CameraCommands.colorLabel(CameraCommands.COLOR_NORMAL, profile = CameraLabelProfile(
             colorModeLabels = mapOf(CameraCommands.COLOR_NORMAL to "Normal 8-bit"))))
-        assertEquals("Follow", GimbalMode.FOLLOW.label(CameraLabelProfile.standard))
+        assertEquals("跟随", GimbalMode.FOLLOW.label(CameraLabelProfile.standard))
         assertNull(CameraLabelProfile.standard.colorModes)
         assertEquals(FocusOption.entries.map { it.chip }, CameraLabelProfile.standard.focusLabels)
     }
 
     @Test fun sessionProfileOverridesOnlyItsOwnNames() {
         assertEquals("TimeShift", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_HYPERLAPSE, profile = profile))
-        assertEquals("Video", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_VIDEO, profile = profile))
+        assertEquals("视频", CameraCommands.shootingModeLabel(CameraCommands.SHOOT_VIDEO, profile = profile))
         assertEquals("Standard", CameraCommands.colorLabel(CameraCommands.COLOR_NORMAL, profile = profile))
         assertEquals("HDR", CameraCommands.colorLabel(CameraCommands.COLOR_HDR, profile = profile))
         assertEquals("Roll Lock", GimbalMode.FOLLOW.label(profile))
@@ -47,7 +47,7 @@ class CameraLabelProfileTest {
 
     @Test fun extendedColorIsoAndSizes() {
         assertEquals("I-Log", CameraCommands.colorLabel(CameraCommands.COLOR_ILOG))
-        assertEquals("Dolby Vision", CameraCommands.colorLabel(CameraCommands.COLOR_DOLBY_VISION))
+        assertEquals("杜比视界", CameraCommands.colorLabel(CameraCommands.COLOR_DOLBY_VISION))
         assertEquals("160", CameraCommands.isoLabel(CameraCommands.ISO_160))
         assertEquals(160, CameraCommands.isoValue(CameraCommands.ISO_160))
         assertEquals(CameraCommands.ISO_160, CameraCommands.isoIndexFromValue(160))

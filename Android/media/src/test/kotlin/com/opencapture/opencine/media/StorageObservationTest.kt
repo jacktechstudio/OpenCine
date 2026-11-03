@@ -16,9 +16,9 @@ class StorageObservationTest {
                 duration?.let { ObservedValue(it, origin, null) } ?: ObservedValue.unknown)),
             ObservationOrigin.CAMERA_REPORTED, null,
         )
-        assertEquals("~40 Min", status((40 * 60).seconds, ObservationOrigin.ESTIMATED).recordingTimeLabel)
-        assertEquals("40 Min", status((40 * 60).seconds, ObservationOrigin.CAMERA_REPORTED).recordingTimeLabel)
-        assertEquals("~0 Min", status(Duration.ZERO, ObservationOrigin.ESTIMATED).recordingTimeLabel)
+        assertEquals("~40 分钟", status((40 * 60).seconds, ObservationOrigin.ESTIMATED).recordingTimeLabel)
+        assertEquals("40 分钟", status((40 * 60).seconds, ObservationOrigin.CAMERA_REPORTED).recordingTimeLabel)
+        assertEquals("~0 分钟", status(Duration.ZERO, ObservationOrigin.ESTIMATED).recordingTimeLabel)
         assertEquals(null, status(null, ObservationOrigin.ESTIMATED).recordingTimeLabel)
         assertEquals(null, status((-1).seconds, ObservationOrigin.CAMERA_REPORTED).recordingTimeLabel)
     }
@@ -49,16 +49,16 @@ class StorageObservationTest {
      * percentage; free space is the nearest whole unit in both orientations. Swift twin vectors.
      */
     @Test fun oneCycleAndOnePrecisionForEveryApp() {
-        assertEquals(listOf("88GB", "70%", "~51 Min"), StorageReadoutCycle.forms(87_940_000_000, "70%", "~51 Min", photo = false))
-        assertEquals(listOf("88GB", "70%"), StorageReadoutCycle.forms(87_940_000_000, "70%", "~51 Min", photo = true))
-        assertEquals(listOf("88GB", "51 Min"), StorageReadoutCycle.forms(87_940_000_000, null, "51 Min", photo = false))
+        assertEquals(listOf("88GB", "70%", "~51 分钟"), StorageReadoutCycle.forms(87_940_000_000, "70%", "~51 分钟", photo = false))
+        assertEquals(listOf("88GB", "70%"), StorageReadoutCycle.forms(87_940_000_000, "70%", "~51 分钟", photo = true))
+        assertEquals(listOf("88GB", "51 分钟"), StorageReadoutCycle.forms(87_940_000_000, null, "51 分钟", photo = false))
         assertEquals(listOf("\u2014"), StorageReadoutCycle.forms(null, null, null, photo = false))
         val storage = ObservedValue(listOf(StorageVolume("active",
             freeBytes = ObservedValue(595_840_000_000L, ObservationOrigin.CAMERA_REPORTED, null),
             remainingRecordingTime = ObservedValue((51 * 60).seconds, ObservationOrigin.ESTIMATED, null),
             totalBytes = ObservedValue(1_024_000_000_000L, ObservationOrigin.CAMERA_REPORTED, null))),
             ObservationOrigin.CAMERA_REPORTED, null)
-        assertEquals(listOf("596GB", "58%", "~51 Min"), StorageReadoutCycle.forms(storage, photo = false))
+        assertEquals(listOf("596GB", "58%", "~51 分钟"), StorageReadoutCycle.forms(storage, photo = false))
         assertEquals(listOf("596GB", "58%"), StorageReadoutCycle.forms(storage, photo = true))
         assertEquals(listOf("\u2014"), StorageReadoutCycle.forms(null, photo = false))
         assertEquals("905GB", StorageReadoutCycle.freeSpace(904_750_000_000))

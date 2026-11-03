@@ -146,8 +146,8 @@ public fun MonitorChromeEditBanner(
     ) {
         MonitorIcon(MonitorIcon.EYE, null, Modifier.size(11.dp), MonitorPalette.accent)
         Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
-            Text("Editing $modeTitle", color = MonitorPalette.text, style = MonitorTypography.text(11.5f, FontWeight.SemiBold))
-            Text("Tap an eye to show or hide it", color = MonitorPalette.muted, style = MonitorTypography.text(10f))
+            Text("正在编辑${modeTitle}", color = MonitorPalette.text, style = MonitorTypography.text(11.5f, FontWeight.SemiBold))
+            Text("轻点眼睛图标显示或隐藏项目", color = MonitorPalette.muted, style = MonitorTypography.text(10f))
         }
         Box(
             Modifier
@@ -157,7 +157,7 @@ public fun MonitorChromeEditBanner(
                 .monitorChromeClickable(onClickFeedback = { haptics.selection() }, onClick = onDone)
                 .padding(horizontal = 12.dp, vertical = 6.dp),
         ) {
-            Text("Done", color = MonitorPalette.background, style = MonitorTypography.text(11.5f, FontWeight.Bold))
+            Text("完成", color = MonitorPalette.background, style = MonitorTypography.text(11.5f, FontWeight.Bold))
         }
     }
 }
@@ -194,7 +194,7 @@ public fun <K> MonitorChromeEditBadgeLayer(
         val click =
             Modifier
                 .monitorChromeClickable(onClickFeedback = { haptics.selection() }, onClick = { onToggle(section) })
-                .then(label?.let { name -> Modifier.semantics { contentDescription = name(section); stateDescription = if (on) "Shown" else "Hidden" } } ?: Modifier)
+                .then(label?.let { name -> Modifier.semantics { contentDescription = name(section); stateDescription = if (on) "已显示" else "已隐藏" } } ?: Modifier)
                 .then(tag?.let { Modifier.testTag(it(section)) } ?: Modifier)
         val eye = @Composable {
             MonitorIcon(if (on) MonitorIcon.EYE else MonitorIcon.EYE_OFF, null, Modifier.size(11.dp),

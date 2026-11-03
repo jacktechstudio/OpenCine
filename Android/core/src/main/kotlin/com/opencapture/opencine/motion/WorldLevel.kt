@@ -118,9 +118,9 @@ public class LevelReading {
 }
 
 public enum class WorldLevelTarget(public val tiltDeg: Double, public val successNote: String) {
-    HORIZON(0.0, "Leveled to world"),
-    PLUMB_DOWN(-90.0, "Leveled top-down"),
-    PLUMB_UP(90.0, "Leveled straight up"),
+    HORIZON(0.0, "已按水平面调平"),
+    PLUMB_DOWN(-90.0, "已垂直向下调平"),
+    PLUMB_UP(90.0, "已垂直向上调平"),
     ;
 
     public companion object {
@@ -155,10 +155,10 @@ public data class WorldLevelSnap(public val target: WorldLevelTarget, public val
     public companion object {
         public const val TOLERANCE_DEG: Double = 0.5
         public const val SETTLE_GRACE: Double = 1.5
-        public const val NO_LEVEL_DATA: String = "No level data"
-        public const val FPV_ROLL_NOTE: String = " · roll follows the handle in FPV"
+        public const val NO_LEVEL_DATA: String = "无水平姿态数据"
+        public const val FPV_ROLL_NOTE: String = " · FPV 模式下横滚轴跟随手柄"
         /** No live native pitch, or yaw in the unreachable pan gap. */
-        public const val UNREACHABLE_NOTE: String = "Couldn't level from this pose"
+        public const val UNREACHABLE_NOTE: String = "无法从当前姿态调平"
 
         /** 0.1 s per 2°, clamped 0.5…3.0 s on the 0.1 s wire grid. */
         public fun duration(distanceDeg: Double): Double = (roundAway(abs(distanceDeg) * 0.5) / 10).coerceIn(0.5, 3.0)

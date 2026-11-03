@@ -53,7 +53,7 @@ public object MonitorCapturePresentation {
     public val unreportedMarks: Set<String> = setOf("", "--", "\u2014")
 
     /** Whether a readout's value stands for a value the camera has not reported. */
-    public fun isUnreported(drawn: String?): Boolean = drawn == null || drawn in unreportedMarks || drawn == "Not set"
+    public fun isUnreported(drawn: String?): Boolean = drawn == null || drawn in unreportedMarks || drawn == "未设置" || drawn == "Not set"
 
     /**
      * An unreported readout whose owner offers nothing to edit is inert: it is disabled and opens
@@ -75,23 +75,23 @@ public object MonitorCapturePresentation {
 
     public fun title(key: SettingKey): String? = when (key) {
         SettingKey.ISO -> "ISO"
-        SettingKey.SHUTTER -> "SHUTTER"
-        SettingKey.APERTURE -> "IRIS"
+        SettingKey.SHUTTER -> "快门"
+        SettingKey.APERTURE -> "光圈"
         SettingKey.WHITE_BALANCE -> "WB"
         SettingKey.EXPOSURE_COMPENSATION -> "EV"
-        SettingKey.FOCUS_MODE -> "FOCUS"
+        SettingKey.FOCUS_MODE -> "对焦"
         SettingKey.FRAME_RATE -> "FPS"
         else -> null
     }
 
     public fun label(value: SettingValue): String = when (value) {
         is SettingValue.Iso -> when (val iso = value.value) {
-            ISOValue.Auto -> "Auto"
-            is ISOValue.AutoLimited -> "Auto ${iso.maximum}"
+            ISOValue.Auto -> "自动"
+            is ISOValue.AutoLimited -> "自动 ${iso.maximum}"
             is ISOValue.Manual -> iso.iso.toString()
         }
         is SettingValue.Shutter -> when (val shutter = value.value) {
-            ShutterValue.Auto -> "Auto"
+            ShutterValue.Auto -> "自动"
             is ShutterValue.Duration -> if (shutter.seconds.numerator == 1) "1/${shutter.seconds.denominator}"
                 else "${number(shutter.seconds.doubleValue)}s"
             is ShutterValue.Angle -> "${number(shutter.degrees)}°"
@@ -99,7 +99,7 @@ public object MonitorCapturePresentation {
         // One decimal, as every body and its menus spell it ("f/4.0").
         is SettingValue.Aperture -> "f/%.1f".format(java.util.Locale.ROOT, value.fNumber)
         is SettingValue.WhiteBalance -> when (val wb = value.value) {
-            WhiteBalanceValue.Auto -> "Auto"
+            WhiteBalanceValue.Auto -> "自动"
             is WhiteBalanceValue.Preset -> wb.id
             is WhiteBalanceValue.Kelvin -> "${wb.kelvin}K"
         }

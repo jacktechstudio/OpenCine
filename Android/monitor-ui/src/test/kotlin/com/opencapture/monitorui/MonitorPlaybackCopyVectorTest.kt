@@ -1,22 +1,17 @@
 package com.opencapture.monitorui
 
-import java.io.File
 import java.lang.reflect.Modifier
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * The Kotlin half of `Fixtures/playback-copy.tsv`. Swift owns the same copy in
- * `Sources/MonitorPresentation/MonitorPlaybackCopy.swift` and reads the same rows
- * (`MonitorPlaybackCopyVectorTests`), so the playback screen reads the same on both platforms.
+ * The playback operator and accessibility copy of the Simplified Chinese Android edition.
  */
 class MonitorPlaybackCopyVectorTest {
     private val rows: List<List<String>> =
-        File(System.getProperty("opencine.fixtures"), "playback-copy.tsv")
-            .takeIf { it.isFile }
-            ?.readLines()
-            .orEmpty()
+        requireNotNull(javaClass.getResourceAsStream("/playback-copy-zh.tsv"))
+            .bufferedReader().use { it.readLines() }
             .filter { it.isNotBlank() && !it.startsWith("#") }
             .map { it.split("\t") }
 

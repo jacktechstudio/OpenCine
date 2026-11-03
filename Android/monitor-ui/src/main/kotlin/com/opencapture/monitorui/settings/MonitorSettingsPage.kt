@@ -58,14 +58,15 @@ import com.opencapture.monitorui.monitorTabStrip
 /** Stable operator navigation. Android sharing remains an optional integration section. */
 public enum class MonitorSettingsTab(
     public val title: String, public val subtitle: String, public val pill: String, public val rail: String,
+    internal val tagName: String,
 ) {
-    LINK("Link", "Connection state and link behavior.", "LIVE", "Connection"),
-    SHARING("Sharing", "Coming soon.", "SHARE", "Coming soon"),
-    ASSIST("View Assist", "Behavior for live-view tools.", "ASSIST", "Scopes & overlays"),
-    CONTROLS("Controls", "Touch behavior and safety.", "TOUCH", "Dials and safety"),
-    DISPLAY("Display", "Live view buttons and chrome.", "VISIBILITY", "Live view"),
-    STORAGE("Storage", "Local cache and integrations.", "DATA", "Cache & accounts"),
-    SYSTEM("System", "App-level behavior.", "APP", "App behavior"),
+    LINK("连接", "连接状态与图传设置。", "实时监看", "连接", "Link"),
+    SHARING("共享", "即将推出。", "分享", "即将推出", "Sharing"),
+    ASSIST("监看辅助", "设置实时监看辅助工具。", "辅助", "示波器与叠加显示", "View Assist"),
+    CONTROLS("操控", "触控操作与防误触设置。", "触控", "拨盘与防误触", "Controls"),
+    DISPLAY("显示", "设置监看界面的按键与信息显示。", "显示项目", "实时监看", "Display"),
+    STORAGE("存储", "本地缓存与第三方服务。", "数据", "缓存与账号", "Storage"),
+    SYSTEM("系统", "应用通用设置。", "应用", "应用设置", "System"),
 }
 
 /** Actual operator page navigation, session actions and content scroll ownership. */
@@ -94,7 +95,7 @@ public fun MonitorSettingsPage(
     MonitorPageScaffold(
         modifier = modifier,
         navigationWidth = 190f,
-        heading = { MonitorPageHeading("Operator Setup", brand) },
+        heading = { MonitorPageHeading("操作设置", brand) },
         navigation = { portrait ->
             Column(
                 if (portrait) Modifier.fillMaxWidth() else Modifier.fillMaxSize(),
@@ -148,7 +149,7 @@ public fun MonitorSettingsPage(
                         modifier = Modifier.border(1.dp, MonitorPalette.accent.copy(alpha = 0.16f), CircleShape)
                             .padding(horizontal = 10.dp, vertical = 6.dp))
                     back?.let { action ->
-                        MonitorSettingsActionPill("Back", modifier = Modifier.testTag("monitor.page.back"), onClick = action)
+                        MonitorSettingsActionPill("返回", modifier = Modifier.testTag("monitor.page.back"), onClick = action)
                     }
                 }
             }
@@ -187,7 +188,7 @@ private fun SettingsTab(
         if (!selected) feedback()
         onSelect(tab)
     }, modifier = modifier.height(44.dp).bringIntoViewRequester(bringIntoView)
-        .testTag("monitor.settings.tab.${tab.title}"), vertical = vertical,
+        .testTag("monitor.settings.tab.${tab.tagName}"), vertical = vertical,
         separator = separator, accessibilityLabel = tab.title) {
         Column(Modifier.then(if (vertical) Modifier.fillMaxWidth() else Modifier),
             verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -201,7 +202,7 @@ private fun SettingsTab(
 @Composable
 private fun SettingsDisconnect(onClick: () -> Unit, modifier: Modifier = Modifier) {
     MonitorCameraAction(
-        text = "Disconnect", primary = false, enabled = true, contentDescription = "Disconnect",
+        text = "断开连接", primary = false, enabled = true, contentDescription = "断开连接",
         onClick = onClick, modifier = modifier, destructive = true,
         icon = { tint -> MonitorIcon(MonitorIcon.LINK_2_OFF, null, Modifier.size(14.dp), tint) },
     )
@@ -213,7 +214,7 @@ private fun SettingsSessionStatus(isLive: Boolean, phaseLabel: String, modifier:
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Box(Modifier.size(7.dp).background(if (isLive) Color(0.18f, 0.78f, 0.42f) else MonitorPalette.faint, CircleShape))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(if (isLive) "Active link" else "No camera connected",
+            Text(if (isLive) "当前连接" else "未连接相机",
                 style = MonitorTypography.text(11.5f, FontWeight.SemiBold), color = MonitorPalette.text, maxLines = 1)
             Text(phaseLabel, style = MonitorTypography.text(9f), color = MonitorPalette.muted,
                 maxLines = 1, overflow = TextOverflow.Ellipsis)

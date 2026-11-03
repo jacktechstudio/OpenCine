@@ -271,11 +271,11 @@ private fun MonitorWristBatteryReadout(reading: BatteryReading?, exhausted: Bool
                 if (reading.of > 10) {
                     Text("${reading.filled}/${reading.of}", color = tint, fontSize = 11.sp,
                         maxLines = 1, textAlign = TextAlign.End, modifier = Modifier.semantics {
-                            contentDescription = "Camera battery ${reading.filled} of ${reading.of} bars"
+                            contentDescription = "相机电量 ${reading.filled}/${reading.of} 格"
                         })
                 } else {
                     Row(horizontalArrangement = Arrangement.spacedBy(1.dp), modifier = Modifier.semantics {
-                        contentDescription = "Camera battery ${reading.filled} of ${reading.of} bars"
+                        contentDescription = "相机电量 ${reading.filled}/${reading.of} 格"
                     }) {
                         repeat(reading.of) { index ->
                             Box(Modifier.size(width = 2.5.dp, height = 7.dp).background(

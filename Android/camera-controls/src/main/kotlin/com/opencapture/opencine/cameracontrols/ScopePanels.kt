@@ -114,11 +114,11 @@ fun TrafficLightsPanel(state: MonitorAssistState, modifier: Modifier = Modifier,
 
 object NDAssist {
     const val HELP =
-        "Meters the live picture against middle gray and suggests a screw-on ND (stops and ND number) to balance it. The app cannot set a filter."
+        "以中灰为基准测量实时画面，建议合适的外置 ND 滤镜（减光档数与 ND 值）。请手动安装滤镜。"
     const val METER_TITLE = "ND"
-    const val NOTATION_TITLE = "Units"
+    const val NOTATION_TITLE = "单位"
     const val NOTATION_HELP =
-        "Stops vs middle gray, filter factor (ND16 / ND32 / ND64), or optical density (ND 0.3 = 1 stop)."
+        "显示相对中灰的档数、滤镜系数（ND16 / ND32 / ND64）或光学密度（ND 0.3 = 1 档）。"
 }
 
 @Composable

@@ -84,9 +84,9 @@ public fun MonitorPhotoRelease(
             .semantics {
                 role = Role.Button
                 contentDescription = when {
-                    timerRemaining != null -> "Self-timer, $timerRemaining seconds"
-                    capturing -> "Capturing"
-                    else -> "Take photo"
+                    timerRemaining != null -> "自拍倒计时 ${timerRemaining} 秒"
+                    capturing -> "正在拍摄"
+                    else -> "拍照"
                 }
                 if (enabled) {
                     onClick {

@@ -32,7 +32,7 @@ import com.opencapture.monitorui.monitorScrollFade
 
 /** The four legal pages every app offers, in Settings and wherever privacy is linked. */
 public enum class MonitorLegalPage(public val title: String) {
-    PRIVACY("Privacy"), TERMS("Terms"), LICENSES("Licenses"), NOTICE("NOTICE"),
+    PRIVACY("隐私"), TERMS("条款"), LICENSES("许可证"), NOTICE("NOTICE"),
 }
 
 /** One legal page: text bundled with the app (readable offline) or a page opened in the browser. */
@@ -47,7 +47,7 @@ public sealed interface MonitorLegalDocument {
     public companion object {
         /** Shown, never an empty page, when a bundled legal file is missing from the build. */
         public const val UNAVAILABLE_TEXT: String =
-            "This build does not include this document. It is in the project's source repository."
+            "此版本未附带该文档，可在项目源码仓库查看。"
 
         /** The bundled files joined in order, or the unavailable page when any is missing or blank. */
         public fun bundledText(parts: List<String?>): Text {

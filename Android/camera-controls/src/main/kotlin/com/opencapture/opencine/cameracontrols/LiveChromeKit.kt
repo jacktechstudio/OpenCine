@@ -80,7 +80,7 @@ fun LivePopupCloseButton(
             .size(size)
             .monitorGlass(CircleShape)
             .chromeClickable(onClick = onClick)
-            .semantics { contentDescription = "Close" },
+            .semantics { contentDescription = "关闭" },
         contentAlignment = Alignment.Center,
     ) {
         MonitorIcon(

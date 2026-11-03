@@ -17,6 +17,6 @@ class MonitorDisplayButtonTest {
     @Test fun theDrumSpeaksItsStepHintAfterTheValue() {
         assertEquals("5600K. Use minus 10", monitorDrumDescription("5600K", "Use minus 10"))
         assertEquals("5600K", monitorDrumDescription("5600K", null))
-        assertEquals("Choose value", monitorDrumDescription("", " "))
+        assertEquals("选择数值", monitorDrumDescription("", " "))
     }
 }

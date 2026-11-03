@@ -95,11 +95,11 @@ fun MonitorClipCard(clip: MonitorClipValue, list: Boolean, selecting: Boolean, s
                 role = Role.Button
                 contentDescription = clip.accessibilityDescription ?: clip.title
                 clip.progressCaption?.let { stateDescription = it }
-                onClick(label = if (selecting) "Toggle selection" else "Open") {
+                onClick(label = if (selecting) "切换选择状态" else "打开") {
                     if (selecting) onSelect() else onOpen()
                     true
                 }
-                onLongClick(label = if (selecting) "Toggle selection" else "Select clip") {
+                onLongClick(label = if (selecting) "切换选择状态" else "选择素材") {
                     onSelect()
                     true
                 }
@@ -134,7 +134,7 @@ fun MonitorClipCard(clip: MonitorClipValue, list: Boolean, selecting: Boolean, s
             clip.source?.let { Text(it, color = MonitorPalette.muted, style = MonitorTypography.text(7.5f, FontWeight.SemiBold)) }
         }
         if (favoriteAction != null) {
-            MonitorClipFavorite(clip.favorite, favoriteAction, clip.favoriteLabel ?: if (clip.favorite) "Remove from favorites" else "Add to favorites")
+            MonitorClipFavorite(clip.favorite, favoriteAction, clip.favoriteLabel ?: if (clip.favorite) "取消收藏" else "加入收藏")
         }
     } else Column(surface, verticalArrangement = Arrangement.spacedBy(2.dp)) {
         // The grid card's picture keeps the shape the masonry placed it with; the thumbnail fills
@@ -147,11 +147,11 @@ fun MonitorClipCard(clip: MonitorClipValue, list: Boolean, selecting: Boolean, s
                     MonitorClipSelection(selected, if (clicks) onSelect else null)
                 }
             } else clip.burstCount?.let {
-                ClipBadge("$it frames", Modifier.align(Alignment.TopStart).padding(6.dp))
+                ClipBadge("$it 帧", Modifier.align(Alignment.TopStart).padding(6.dp))
             }
             if (favoriteAction != null) {
                 Box(Modifier.align(Alignment.TopEnd)) {
-                    MonitorClipFavorite(clip.favorite, favoriteAction, clip.favoriteLabel ?: if (clip.favorite) "Remove from favorites" else "Add to favorites")
+                    MonitorClipFavorite(clip.favorite, favoriteAction, clip.favoriteLabel ?: if (clip.favorite) "取消收藏" else "加入收藏")
                 }
             }
             clip.source?.let {
@@ -179,7 +179,7 @@ fun MonitorClipCard(clip: MonitorClipValue, list: Boolean, selecting: Boolean, s
 
 @Composable
 fun MonitorClipFavorite(favorite: Boolean, onClick: () -> Unit,
-    label: String = if (favorite) "Remove from favorites" else "Add to favorites") {
+    label: String = if (favorite) "取消收藏" else "加入收藏") {
     Box(Modifier.size(44.dp).combinedClickable(role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
         MonitorIcon(MonitorIcon.STAR, label,
             Modifier.size(13.dp), if (favorite) Color(0xFFE9C35A) else MonitorPalette.muted, favorite)
@@ -190,7 +190,7 @@ fun MonitorClipFavorite(favorite: Boolean, onClick: () -> Unit,
 fun MonitorClipSelection(selected: Boolean, onClick: (() -> Unit)? = null) {
     Box(Modifier.size(44.dp).then(
         if (onClick != null) Modifier.combinedClickable(role = Role.Checkbox, onClick = onClick) else Modifier,
-    ).semantics { contentDescription = if (selected) "Deselect clip" else "Select clip" }, contentAlignment = Alignment.Center) {
+    ).semantics { contentDescription = if (selected) "取消选择素材" else "选择素材" }, contentAlignment = Alignment.Center) {
         // iOS: circle-check / circle glyph over a 40% black disc.
         MonitorIcon(if (selected) MonitorIcon.CIRCLE_CHECK else MonitorIcon.CIRCLE, null,
             Modifier.size(22.dp).background(Color.Black.copy(alpha = .4f), CircleShape),
@@ -230,9 +230,9 @@ fun MonitorCatalogDisplayControls(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            CatalogLayoutCell(MonitorIcon.LAYOUT_GRID, "Grid view", "monitor.media.layout.grid",
+            CatalogLayoutCell(MonitorIcon.LAYOUT_GRID, "网格视图", "monitor.media.layout.grid",
                 selected = !list, onClick = { onList(false) })
-            CatalogLayoutCell(MonitorIcon.MENU, "List view", "monitor.media.layout.list",
+            CatalogLayoutCell(MonitorIcon.MENU, "列表视图", "monitor.media.layout.list",
                 selected = list, onClick = { onList(true) })
         }
         Row(
@@ -246,7 +246,11 @@ fun MonitorCatalogDisplayControls(
                     .background(if (selected) Color.White.copy(alpha = .14f) else Color.Transparent)
                     .combinedClickable(role = Role.Button, onClick = { onThumbnailSize(size) })
                     .semantics {
-                        contentDescription = "${size.name.lowercase().replaceFirstChar { it.uppercase() }} thumbnails"
+                        contentDescription = when (size) {
+                            MonitorThumbnailSize.SMALL -> "小缩略图"
+                            MonitorThumbnailSize.MEDIUM -> "中缩略图"
+                            MonitorThumbnailSize.LARGE -> "大缩略图"
+                        }
                         this.selected = selected
                     },
                     contentAlignment = Alignment.Center) {
@@ -290,7 +294,7 @@ fun MonitorCatalogHeader(title: String, subtitle: String, compact: Boolean, sort
             Row(Modifier.height(34.dp).clip(RoundedCornerShape(8.dp)).background(MonitorPalette.tile)
                 .combinedClickable(role = Role.Button, onClick = onSort).padding(horizontal = 9.dp),
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                MonitorIcon(MonitorIcon.ARROW_UP_DOWN, "Sort clips", Modifier.size(12.dp), MonitorPalette.muted)
+                MonitorIcon(MonitorIcon.ARROW_UP_DOWN, "素材排序", Modifier.size(12.dp), MonitorPalette.muted)
                 Text(sort, style = MonitorTypography.text(10.5f, FontWeight.Medium), color = MonitorPalette.muted)
             }
             Row(
@@ -301,7 +305,7 @@ fun MonitorCatalogHeader(title: String, subtitle: String, compact: Boolean, sort
                     )
                     .combinedClickable(role = Role.Button, onClick = onFilter)
                     .semantics {
-                        contentDescription = "Filter library"
+                        contentDescription = "筛选素材库"
                         selected = filterActive
                     }
                     .padding(horizontal = 9.dp),
@@ -313,7 +317,7 @@ fun MonitorCatalogHeader(title: String, subtitle: String, compact: Boolean, sort
                     if (filterActive) MonitorPalette.text else MonitorPalette.muted,
                 )
                 Text(
-                    "Filter",
+                    "筛选",
                     style = MonitorTypography.text(10.5f, FontWeight.Medium),
                     color = if (filterActive) MonitorPalette.text else MonitorPalette.muted,
                 )

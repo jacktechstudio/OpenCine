@@ -51,9 +51,9 @@ fun MonitorLinkHealthScale(title: String, caption: String, score: Int) {
         }
     val bandLabel =
         when (band) {
-            MonitorLinkHealth.Band.POOR -> "POOR"
-            MonitorLinkHealth.Band.WATCH -> "WATCH"
-            MonitorLinkHealth.Band.STABLE -> "STABLE"
+            MonitorLinkHealth.Band.POOR -> "差"
+            MonitorLinkHealth.Band.WATCH -> "欠佳"
+            MonitorLinkHealth.Band.STABLE -> "稳定"
         }
     Column(
         Modifier.fillMaxWidth()

@@ -133,18 +133,18 @@ private data class StationRouteCopy(val id: String, val title: String, val body:
 
 private fun stationRouteCopy(kind: RouteKind): StationRouteCopy = when (kind) {
     RouteKind.INFRASTRUCTURE_NETWORK -> StationRouteCopy("wifi", "Wi-Fi",
-        "A router, venue network or another device’s hotspot. Cameras and this phone join the same Wi-Fi.",
-        "Best for studios and several cameras", "Choose Wi-Fi")
-    RouteKind.PHONE_HOTSPOT -> StationRouteCopy("phoneHotspot", "Hotspot",
-        "This phone’s hotspot. Works anywhere you have mobile data.", "Best on the move", "Choose hotspot")
-    RouteKind.CAMERA_ACCESS_POINT -> StationRouteCopy("cameraAccessPoint", "Camera Wi-Fi",
-        "This phone joins the camera’s own Wi-Fi. No router or hotspot needed.",
-        "Best in the field with one camera", "Choose camera Wi-Fi")
+        "相机和手机加入同一 Wi-Fi，可使用路由器、场地网络或其他设备的热点。",
+        "适合摄影棚及多机位拍摄", "选择 Wi-Fi")
+    RouteKind.PHONE_HOTSPOT -> StationRouteCopy("phoneHotspot", "热点",
+        "使用本机热点。有移动数据覆盖即可使用。", "适合移动拍摄", "选择热点")
+    RouteKind.CAMERA_ACCESS_POINT -> StationRouteCopy("cameraAccessPoint", "相机 Wi-Fi",
+        "手机直连相机 Wi-Fi，无需路由器或热点。",
+        "适合单机位外景拍摄", "选择相机 Wi-Fi")
     RouteKind.USB -> StationRouteCopy("usb", "USB-C",
-        "Plug the camera straight into this phone. Nothing to set up.", "Best for a fixed rig", "Choose USB-C")
-    RouteKind.CAPTURE_DEVICE -> StationRouteCopy("captureDevice", "HDMI capture",
-        "A USB HDMI capture device on this phone. Picture only, no camera control.",
-        "Best when the camera has no network", "Choose HDMI capture")
+        "用线缆将相机直接连接至手机，无需设置。", "适合固定机位", "选择 USB-C")
+    RouteKind.CAPTURE_DEVICE -> StationRouteCopy("captureDevice", "HDMI 采集",
+        "手机通过 USB HDMI 采集卡获取画面，不提供相机控制。",
+        "适合无网络功能的相机", "选择 HDMI 采集")
 }
 
 /** The order every app lists its routes in: shared networks first, then the host's own. */
@@ -164,20 +164,20 @@ public fun stationSetupChooser(
     notice: AddSetupNotice? = null,
 ): AddSetupChooser {
     fun detail(kind: RouteKind, body: String, tag: String): String =
-        listOfNotNull(camera?.network(kind)?.let { "Added · $it" }, body, tag).joinToString("\n")
+        listOfNotNull(camera?.network(kind)?.let { "已添加 · ${it}" }, body, tag).joinToString("\n")
     val options = STATION_ROUTE_ORDER.mapNotNull { kind ->
         val route = routes.firstOrNull { it.kind == kind } ?: return@mapNotNull null
         val copy = stationRouteCopy(kind)
         AddSetupOption(copy.id, kind, copy.title, detail(kind, copy.body, copy.tag), route.actionTitle ?: copy.action, route.enabled)
     }
     return AddSetupChooser(
-        title = if (camera == null) "How will your cameras connect?" else "How should this camera connect?",
+        title = if (camera == null) "多台相机将如何连接？" else "选择此相机的连接方式",
         detail = camera?.let { listOf(it.displayName, it.model).filter(String::isNotEmpty).joinToString(" · ") }.orEmpty(),
         options = options,
         footer = when {
-            camera == null -> "Choose the shared network before adding cameras. Saved passwords stay on this phone."
-            options.any { it.kind == RouteKind.CAMERA_ACCESS_POINT } -> "Switch setups from the camera’s chips at any time."
-            else -> "Camera Wi-Fi stays available. Switch setups from the camera’s chips at any time."
+            camera == null -> "请先选择共用网络，再添加相机。已保存的密码仅存储在本机。"
+            options.any { it.kind == RouteKind.CAMERA_ACCESS_POINT } -> "可随时点按相机卡片上的连接方案进行切换。"
+            else -> "仍可使用相机 Wi-Fi。可随时点按相机卡片上的连接方案进行切换。"
         },
         identifierPrefix = "stationSetup",
         notice = notice,
@@ -262,8 +262,8 @@ public fun StationNetworkSetup(
     fun storedPassword(ssid: String, hotspot: Boolean) =
         savedNetworks.lastOrNull { it.hotspot == hotspot && it.ssid == ssid }?.password
     val networkHint =
-        if (camera == null) "This phone joins first. Every camera you add will use the same Wi-Fi."
-        else "The camera and this phone must be on the same Wi-Fi."
+        if (camera == null) "手机先加入网络，之后添加的所有相机将使用同一 Wi-Fi。"
+        else "相机与手机必须连接同一 Wi-Fi。"
     // Saved on this phone with passwords; the store holds no password-less entries.
     val saved = savedNetworks.filter { !it.hotspot }.map { it.ssid }.distinct()
         .filter { it != current && !isCameraNetwork(it) }
@@ -360,12 +360,12 @@ public fun StationNetworkSetup(
             current = ssid?.takeUnless(::isCameraNetwork)
             locationHint = when {
                 ssid != null -> null
-                !permitted && wifiNameAccess.needsSettings -> "Allow Location to show this phone’s Wi-Fi" to
-                    "Settings › Apps › ${brand.appName} › Permissions › Location, with Use precise location on. Only the Wi-Fi name is used."
-                !permitted -> "Allow Location to show this phone’s Wi-Fi" to
-                    "Tap to allow precise location. Only the Wi-Fi name is used."
-                !located -> "Turn on Location to show this phone’s Wi-Fi" to
-                    "Settings › Location. Only the Wi-Fi name is used."
+                !permitted && wifiNameAccess.needsSettings -> "允许访问位置信息以显示本机 Wi-Fi" to
+                    "进入“设置 › 应用 › ${brand.appName} › 权限 › 位置信息”，开启精确位置。仅用于获取 Wi-Fi 名称。"
+                !permitted -> "允许访问位置信息以显示本机 Wi-Fi" to
+                    "轻点允许使用精确位置。仅用于获取 Wi-Fi 名称。"
+                !located -> "开启位置信息以显示本机 Wi-Fi" to
+                    "前往“设置 › 位置信息”。仅用于获取 Wi-Fi 名称。"
                 else -> null
             }
             hotspotDetected = hotspotActive()
@@ -421,7 +421,7 @@ public fun StationNetworkSetup(
     fun networksPage(side: SetupSide?) = columns(side, 7.dp, {
         Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
             if (!landscape) {
-                Text("Choose the network", style = setupFont(22f, FontWeight.SemiBold))
+                Text("选择网络", style = setupFont(22f, FontWeight.SemiBold))
                 SetupHint(networkHint, Modifier.padding(bottom = 8.dp))
             }
             val here = current
@@ -430,7 +430,7 @@ public fun StationNetworkSetup(
                 SetupSectionHeader("THIS PHONE IS ON", Modifier.testTag("stationSetup.currentHeader"))
                 SetupGroup {
                     if (here != null) {
-                        networkRow(here, if (hasPassword(here)) "Connected · password saved" else "Connected", good)
+                        networkRow(here, if (hasPassword(here)) "已连接 · 密码已保存" else "已连接", good)
                     } else if (hint != null) {
                         SetupRow(MonitorIcon.WIFI, hint.first, hint.second,
                             modifier = Modifier.setupClickable(!working) {
@@ -441,11 +441,11 @@ public fun StationNetworkSetup(
                 }
             }
             if (saved.isNotEmpty()) {
-                SetupSectionHeader("SAVED ON THIS PHONE", Modifier.padding(top = 6.dp))
+                SetupSectionHeader("本机已保存", Modifier.padding(top = 6.dp))
                 SetupGroup {
                     saved.forEachIndexed { index, name ->
                         if (index > 0) SetupDivider()
-                        networkRow(name, if (hasPassword(name)) "Password saved" else null)
+                        networkRow(name, if (hasPassword(name)) "密码已保存" else null)
                     }
                 }
             }
@@ -459,7 +459,7 @@ public fun StationNetworkSetup(
             ) {
                 Row(Modifier.align(Alignment.CenterStart), horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically) {
-                    SetupSection("NEARBY")
+                    SetupSection("附近的相机")
                     if (scanning) SetupSpinner(12.dp)
                 }
                 if (!scanning && scan != null) {
@@ -468,7 +468,7 @@ public fun StationNetworkSetup(
                             .setupClickable(!working, ::rescan).testTag("stationSetup.rescan"),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text("Scan again", style = setupFont(12f, FontWeight.SemiBold))
+                        Text("重新扫描", style = setupFont(12f, FontWeight.SemiBold))
                     }
                 }
             }
@@ -476,7 +476,7 @@ public fun StationNetworkSetup(
                 val nearby = found.filter { it !in saved && it != current }
                 nearby.forEachIndexed { index, name ->
                     if (index > 0) SetupDivider()
-                    networkRow(name, if (hasPassword(name)) "Password saved" else null)
+                    networkRow(name, if (hasPassword(name)) "密码已保存" else null)
                 }
                 if (scan == null || scanning || nearby.isEmpty()) {
                     if (nearby.isNotEmpty()) SetupDivider()
@@ -495,7 +495,7 @@ public fun StationNetworkSetup(
     fun passwordPage(ssid: String, side: SetupSide?) {
         val summary: @Composable () -> Unit = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                SetupSectionHeader("NETWORK")
+                SetupSectionHeader("网络")
                 Row(
                     Modifier.fillMaxWidth().setupCard().padding(horizontal = 16.dp, vertical = 13.dp)
                         .semantics(mergeDescendants = true) {}.testTag("stationSetup.networkSummary"),
@@ -507,7 +507,7 @@ public fun StationNetworkSetup(
                     }
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(ssid, style = setupFont(16f, FontWeight.SemiBold))
-                        Text(if (ssid == current) "This phone’s current network" else "This phone joins it too",
+                        Text(if (ssid == current) "本机当前连接的网络" else "本机也将加入此网络",
                             color = MonitorPalette.muted, style = setupFont(11.5f))
                     }
                 }
@@ -518,10 +518,10 @@ public fun StationNetworkSetup(
                 Modifier.fillMaxWidth().setupCard().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(13.dp),
             ) {
-                SetupSection("BEFORE YOU CONNECT")
-                SetupCheck("WPA2 or WPA2/WPA3 mixed", if (landscape) null else "WPA3-only networks can refuse some cameras.")
-                SetupCheck("Devices can see each other", if (landscape) null else "Guest networks with client isolation block the picture.")
-                SetupCheck("Camera within range", if (landscape) null else "The camera leaves its own Wi-Fi and joins this one.")
+                SetupSection("连接前请确认")
+                SetupCheck("WPA2 或 WPA2/WPA3 混合模式", if (landscape) null else "仅启用 WPA3 的网络可能拒绝部分相机连接。")
+                SetupCheck("设备间可互相访问", if (landscape) null else "启用了客户端隔离的访客网络无法传输画面。")
+                SetupCheck("相机在网络覆盖范围内", if (landscape) null else "相机将断开自身 Wi-Fi 并加入此网络。")
             }
         }
         LaunchedEffect(ssid) {
@@ -530,11 +530,11 @@ public fun StationNetworkSetup(
         }
         val field: @Composable () -> Unit = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                SetupSecureField("PASSWORD", password, reveal, !working, "stationSetup.password", { reveal = !reveal }) { password = it }
+                SetupSecureField("密码", password, reveal, !working, "stationSetup.password", { reveal = !reveal }) { password = it }
                 stationPasswordNote(password, securedFor(ssid))?.let {
                     Box(Modifier.testTag("stationSetup.passwordNote")) { SetupHint(it) }
                 }
-                SetupHint("Saved on this phone. Multiview can reuse it.")
+                SetupHint("密码保存在本机，可用于多机监看。")
             }
         }
         // Portrait keeps the password under the network, above the checklist.
@@ -559,16 +559,16 @@ public fun StationNetworkSetup(
             ) {
                 MonitorIcon(if (hotspotDetected) MonitorIcon.RADIO else MonitorIcon.TRIANGLE_ALERT, null, Modifier.size(18.dp), tint)
                 Text(
-                    if (hotspotDetected) "Hotspot is on" else "Hotspot not detected yet. It can appear once the camera joins.",
+                    if (hotspotDetected) "热点已开启" else "尚未检测到热点，可能在相机加入后才显示。",
                     color = tint, style = setupFont(13f, FontWeight.SemiBold),
                 )
             }
         }
         val checklist: @Composable () -> Unit = {
             Column(Modifier.fillMaxWidth().setupCard().padding(16.dp), verticalArrangement = Arrangement.spacedBy(13.dp)) {
-                SetupSection("IN SETTINGS › HOTSPOT")
-                SetupNumbered(1, "Turn on Hotspot", if (landscape) null else "Lets the camera join this phone.")
-                SetupNumbered(2, "Use the 2.4 GHz band", if (landscape) null else "Every ${brand.cameraFamily} camera supports 2.4 GHz.")
+                SetupSection("在“设置 › 热点”中")
+                SetupNumbered(1, "打开热点", if (landscape) null else "允许相机连接本机。")
+                SetupNumbered(2, "使用 2.4 GHz 频段", if (landscape) null else "所有 ${brand.cameraFamily} 相机均支持 2.4 GHz。")
                 Row(
                     Modifier.fillMaxWidth().heightIn(min = 44.dp).clip(RoundedCornerShape(12.dp)).background(MonitorPalette.tile)
                         .setupClickable(!working) { settings(Intent(Settings.ACTION_WIRELESS_SETTINGS)) },
@@ -576,16 +576,16 @@ public fun StationNetworkSetup(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     MonitorIcon(MonitorIcon.SETTINGS, null, Modifier.size(16.dp), MonitorPalette.text)
-                    Text("Open Settings", style = setupFont(13.5f, FontWeight.SemiBold))
+                    Text("打开设置", style = setupFont(13.5f, FontWeight.SemiBold))
                 }
             }
         }
         val name: @Composable () -> Unit = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                SetupSectionHeader("HOTSPOT NAME")
+                SetupSectionHeader("热点名称")
                 SetupInput(
-                    hotspotName, { hotspotTouched = true; hotspotName = it }, "Hotspot name", !working,
-                    Modifier.testTag("stationSetup.hotspotName").semantics { contentDescription = "Hotspot name" },
+                    hotspotName, { hotspotTouched = true; hotspotName = it }, "热点名称", !working,
+                    Modifier.testTag("stationSetup.hotspotName").semantics { contentDescription = "热点名称" },
                 )
                 if (phones.size > 1 || (phones.size == 1 && phones.single() != hotspotName)) {
                     val chips = rememberScrollState()
@@ -607,19 +607,19 @@ public fun StationNetworkSetup(
                 if (scanning && hotspotName.isEmpty()) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         SetupSpinner(12.dp)
-                        SetupHint("The camera is looking for this phone’s hotspot…")
+                        SetupHint("相机正在查找本机热点…")
                     }
                 } else if (!landscape) {
-                    SetupHint("The network name shown in Settings › Hotspot.")
+                    SetupHint("“设置 › 热点”中显示的网络名称。")
                 }
             }
         }
         val pass: @Composable () -> Unit = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                SetupSecureField("HOTSPOT PASSWORD", hotspotPassword, reveal, !working, "stationSetup.hotspotPassword",
+                SetupSecureField("热点密码", hotspotPassword, reveal, !working, "stationSetup.hotspotPassword",
                     { reveal = !reveal }) { hotspotPassword = it }
                 if (!landscape) {
-                    SetupHint("Android keeps it private: copy it from Settings › Hotspot once. It is remembered here.")
+                    SetupHint("Android 不会公开此密码。请从“设置 › 热点”复制一次，之后本机会记住密码。")
                 }
             }
         }
@@ -627,7 +627,7 @@ public fun StationNetworkSetup(
             columns(side, 10.dp, {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        SetupSectionHeader("THIS PHONE’S HOTSPOT")
+                        SetupSectionHeader("本机热点")
                         status()
                     }
                     checklist()
@@ -664,7 +664,7 @@ public fun StationNetworkSetup(
                 Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     SetupSpinner(20.dp)
-                    Text(if (scanning) "Finishing camera scan…" else "Connecting…", color = MonitorPalette.muted,
+                    Text(if (scanning) "正在完成相机扫描…" else "正在连接…", color = MonitorPalette.muted,
                         style = setupFont(15f))
                 }
             }
@@ -681,23 +681,23 @@ public fun StationNetworkSetup(
         Box(Modifier.fillMaxWidth().padding(start = inset, end = inset, top = 8.dp, bottom = 16.dp)) {
             when (page) {
                 StationSetupPage.Networks -> SetupRow(
-                    MonitorIcon.PLUS, "Other network…", null,
+                    MonitorIcon.PLUS, "其他网络…", null,
                     modifier = Modifier.setupCard().setupClickable(!working) { otherName = ""; otherNetwork = true }
                         .testTag("stationSetup.otherNetwork"),
                 )
                 is StationSetupPage.Password -> MonitorCameraAction(
-                    "Connect over Wi-Fi", primary = true,
+                    "通过 Wi-Fi 连接", primary = true,
                     enabled = !working && validStationCredentials(page.ssid, password, hotspot = false, secured = securedFor(page.ssid)),
-                    contentDescription = "Connect over Wi-Fi",
+                    contentDescription = "通过 Wi-Fi 连接",
                     onClick = { submit(StationNetwork(page.ssid, password, false)) },
                     modifier = Modifier.fillMaxWidth().testTag("stationSetup.connect"),
                 )
                 StationSetupPage.Hotspot -> {
                     val trimmed = hotspotName.trim()
                     MonitorCameraAction(
-                        "Connect over Hotspot", primary = true,
+                        "通过热点连接", primary = true,
                         enabled = !working && validStationCredentials(trimmed, hotspotPassword, hotspot = true),
-                        contentDescription = "Connect over Hotspot",
+                        contentDescription = "通过热点连接",
                         onClick = { submit(StationNetwork(trimmed, hotspotPassword, true)) },
                         modifier = Modifier.fillMaxWidth().testTag("stationSetup.connect"),
                     )
@@ -734,9 +734,9 @@ public fun StationNetworkSetup(
                     }
                 }
                 val title = when {
-                    lockedNetwork != null -> "Shared Wi-Fi"
-                    top == null -> if (camera == null) "Connect your cameras" else "Add setup"
-                    top == StationSetupPage.Hotspot -> "Hotspot"
+                    lockedNetwork != null -> "共用 Wi-Fi"
+                    top == null -> if (camera == null) "连接相机" else "添加连接方案"
+                    top == StationSetupPage.Hotspot -> "热点"
                     else -> "Wi-Fi"
                 }
                 SetupNavigationBar(
@@ -760,7 +760,7 @@ public fun StationNetworkSetup(
                                 MonitorIcon(MonitorIcon.WIFI, null, Modifier.size(20.dp), MonitorPalette.text)
                                 Text(lockedNetwork.ssid, style = setupFont(15f))
                             }
-                            Text("Cameras are using this network. Remove them before changing it.",
+                            Text("有相机正在使用此网络。请先移除这些相机，再更改网络。",
                                 color = MonitorPalette.muted, style = setupFont(15f))
                         }
                     }
@@ -797,12 +797,12 @@ public fun StationNetworkSetup(
                 .padding(horizontal = 16.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp), horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("Other network", style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = MonitorPalette.text))
-            SetupInput(otherName, { otherName = it }, "Network name", true,
-                Modifier.focusRequester(focus).semantics { contentDescription = "Network name" }, capsule = true)
+            Text("其他网络", style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = MonitorPalette.text))
+            SetupInput(otherName, { otherName = it }, "网络名称", true,
+                Modifier.focusRequester(focus).semantics { contentDescription = "网络名称" }, capsule = true)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                SetupAlertButton("Cancel", Modifier.weight(1f)) { otherNetwork = false }
-                SetupAlertButton("Next", Modifier.weight(1f)) {
+                SetupAlertButton("取消", Modifier.weight(1f)) { otherNetwork = false }
+                SetupAlertButton("下一步", Modifier.weight(1f)) {
                     otherNetwork = false
                     val name = otherName.trim()
                     if (name.isNotEmpty()) open(StationSetupPage.Password(name))
@@ -817,10 +817,10 @@ public fun StationNetworkSetup(
  * one that is not nearby, or an empty or failed scan.
  */
 internal fun nearbyScanStatus(scanning: Boolean, scanAvailable: Boolean, cameraScansNetworks: Boolean, scanFailed: Boolean): Pair<String, String?> = when {
-    scanning -> "The camera is looking for networks…" to "Networks appear here as it finds them"
-    !cameraScansNetworks -> "This camera can’t list networks" to "Choose a known network, or Other network."
-    !scanAvailable -> "Turn the camera on to find networks" to (if (scanFailed) "The scan did not finish. Try Scan again." else null)
-    else -> "No networks found yet" to (if (scanFailed) "The scan did not finish. Try Scan again." else null)
+    scanning -> "相机正在搜索网络…" to "发现的网络将显示在此处"
+    !cameraScansNetworks -> "此相机无法列出网络" to "请选择已知网络或“其他网络”。"
+    !scanAvailable -> "打开相机以查找网络" to (if (scanFailed) "扫描未完成，请轻点“重新扫描”。" else null)
+    else -> "尚未发现网络" to (if (scanFailed) "扫描未完成，请轻点“重新扫描”。" else null)
 }
 
 /**
@@ -837,9 +837,9 @@ public fun validStationCredentials(ssid: String, password: String, hotspot: Bool
 /** The line under the password field: why Connect waits, or what an empty password means. */
 public fun stationPasswordNote(password: String, secured: Boolean?): String? = when {
     password.isNotEmpty() -> null
-    secured == true -> "This network is secured. Enter its password."
+    secured == true -> "此网络已加密，请输入密码。"
     secured == false -> null
-    else -> "Leave it empty only for an open network."
+    else -> "仅开放网络可不填密码。"
 }
 
 /**
@@ -900,11 +900,11 @@ private fun SetupNavigationBar(
             Text(title, Modifier.semantics { heading() }, maxLines = 1, overflow = TextOverflow.Ellipsis,
                 style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.SemiBold, color = MonitorPalette.text))
             when (leading) {
-                SetupBarAction.Cancel -> SetupBarButton("Cancel", enabled, Modifier, onLeading)
+                SetupBarAction.Cancel -> SetupBarButton("取消", enabled, Modifier, onLeading)
                 SetupBarAction.Back -> SetupBarButton(null, enabled, Modifier, onLeading)
                 null -> Box(Modifier)
             }
-            if (trailingDone) SetupBarButton("Done", enabled, Modifier, onDone) else Box(Modifier)
+            if (trailingDone) SetupBarButton("完成", enabled, Modifier, onDone) else Box(Modifier)
         },
         modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 8.dp).height(44.dp),
     ) { measurables, constraints ->
@@ -942,7 +942,7 @@ private fun SetupBarButton(text: String?, enabled: Boolean, modifier: Modifier, 
         modifier.height(44.dp).widthIn(min = 44.dp).alpha(if (enabled) 1f else .4f).clip(CircleShape)
             .background(Color.White.copy(alpha = .03f)).border(1.dp, Color.White.copy(alpha = .1f), CircleShape)
             .setupClickable(enabled, onClick)
-            .semantics { if (text == null) contentDescription = "Back" }
+            .semantics { if (text == null) contentDescription = "返回" }
             .padding(horizontal = if (text == null) 0.dp else 16.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -1098,13 +1098,13 @@ private fun SetupSecureField(
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         SetupSectionHeader(label)
         SetupInput(
-            value, onChange, "Password", enabled,
+            value, onChange, "密码", enabled,
             Modifier.testTag(tag).semantics { contentDescription = label.lowercase().replaceFirstChar { it.uppercase() } },
             secure = true, reveal = reveal,
         ) {
             Box(
                 Modifier.size(44.dp).setupClickable(enabled, onReveal)
-                    .semantics { contentDescription = if (reveal) "Hide password" else "Show password" },
+                    .semantics { contentDescription = if (reveal) "隐藏密码" else "显示密码" },
                 contentAlignment = Alignment.Center,
             ) {
                 MonitorIcon(if (reveal) MonitorIcon.EYE_OFF else MonitorIcon.EYE, null, Modifier.size(18.dp), MonitorPalette.muted)

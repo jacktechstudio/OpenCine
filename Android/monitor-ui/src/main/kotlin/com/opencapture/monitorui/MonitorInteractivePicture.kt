@@ -30,13 +30,13 @@ import androidx.compose.ui.unit.IntOffset
 import java.util.Locale
 import kotlin.math.roundToInt
 
-internal const val ZOOM_IN_ACTION = "Zoom in"
-internal const val ZOOM_OUT_ACTION = "Zoom out"
-internal const val RESET_ZOOM_ACTION = "Reset zoom"
+internal const val ZOOM_IN_ACTION = "放大"
+internal const val ZOOM_OUT_ACTION = "缩小"
+internal const val RESET_ZOOM_ACTION = "重置缩放"
 
 /** The screen reader's zoom state for a page or playback picture: the same label on both pages. */
 internal fun monitorZoomStateDescription(scale: Float): String =
-    String.format(Locale.US, "Zoom %.1fx", scale)
+    String.format(Locale.US, "放大 %.1f 倍", scale)
 
 /** One retained bounded picture, with source/size/cover cancellation and independent pinch/pan. */
 @Composable

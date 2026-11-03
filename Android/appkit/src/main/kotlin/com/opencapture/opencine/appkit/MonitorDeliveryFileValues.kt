@@ -12,7 +12,7 @@ public object MonitorDeliveryFileNaming {
 public data class MonitorDeliveryMetadataFacts(public val filename: String, public val captureDate: String?, public val sizeBytes: Long?)
 public object MonitorDeliveryMetadataSummary {
     public fun text(files: List<MonitorDeliveryMetadataFacts>, formatBytes: (Long) -> String): String = files.joinToString("\n") {
-        "${it.filename} · ${it.captureDate ?: "unknown date"} · ${it.sizeBytes?.let(formatBytes) ?: "unknown size"}"
+        "${it.filename} · ${it.captureDate ?: "日期未知"} · ${it.sizeBytes?.let(formatBytes) ?: "大小未知"}"
     }
 }
 public data class MonitorDeliveryMetadataSelection(public val included: Boolean, public val bakedLook: Boolean,

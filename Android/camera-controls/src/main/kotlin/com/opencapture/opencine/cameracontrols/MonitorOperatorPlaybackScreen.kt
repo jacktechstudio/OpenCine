@@ -190,20 +190,20 @@ public fun <P, L> MonitorOperatorPlaybackScreen(
     val width = value.metadata.width ?: asset.pixelSize?.width?.toDouble() ?: listed?.width?.toDouble() ?: 16.0
     val height = value.metadata.height ?: asset.pixelSize?.height?.toDouble() ?: listed?.height?.toDouble() ?: 9.0
     val sourceLabel = when (value.item?.role) {
-        MediaRepresentationRole.ORIGINAL -> "ORIGINAL"
-        MediaRepresentationRole.PROXY -> "PROXY"
+        MediaRepresentationRole.ORIGINAL -> "原片"
+        MediaRepresentationRole.PROXY -> "代理"
         null -> null
     }
     val favorite = library.records.firstOrNull { it.asset.id == asset.id }?.favorite ?: record.favorite
     val metadata = buildList {
         fun row(label: String, text: String?) { if (!text.isNullOrBlank()) add(MonitorMetadataRow(label, text)) }
-        row("File", asset.filename); row("Format", record.facts.format); row("Resolution", record.facts.resolution)
-        row("Frame rate", asset.frameRate?.let { number(it) + " fps" }); row("Duration", clock(duration))
-        row("Playback source", sourceLabel)
-        row("Size", asset.representations.firstOrNull { it.role == MediaRepresentationRole.ORIGINAL }
+        row("文件", asset.filename); row("格式", record.facts.format); row("分辨率", record.facts.resolution)
+        row("帧率", asset.frameRate?.let { number(it) + " fps" }); row("时长", clock(duration))
+        row("回放来源", sourceLabel)
+        row("大小", asset.representations.firstOrNull { it.role == MediaRepresentationRole.ORIGINAL }
             ?.byteCount?.takeIf { it > 0 }?.let(MediaClipFormatting::byteLabel))
-        row("Created", MonitorPlaybackCapturedAt.label(asset.capturedAt, record.facts.orderKey))
-        row("Favorite", if (favorite) "Yes" else "No")
+        row("创建时间", MonitorPlaybackCapturedAt.label(asset.capturedAt, record.facts.orderKey))
+        row("收藏", if (favorite) "是" else "否")
         facts.metadata.forEach { row(it.title, it.value) }
     }
     val access = operations.access?.invoke(record)
@@ -336,13 +336,13 @@ public fun MonitorOperatorMediaUnavailable(closeEnabled: Boolean = true, close: 
     Column(Modifier.fillMaxSize().background(Color.Black).padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Media unavailable", color = LiveDesign.text, style = LiveType.ui(20f, FontWeight.SemiBold),
+        Text("素材不可用", color = LiveDesign.text, style = LiveType.ui(20f, FontWeight.SemiBold),
             modifier = Modifier.testTag("monitor.media.unavailable"))
-        Text("This media is no longer available.", color = LiveDesign.muted,
+        Text("此素材已不可用。", color = LiveDesign.muted,
             style = LiveType.ui(14f, FontWeight.Medium))
         TextButton(onClick = close, enabled = closeEnabled,
-            modifier = Modifier.testTag("monitor.media.unavailable.close").semantics { contentDescription = "Close" }) {
-            Text("Close", color = LiveDesign.text, style = LiveType.ui(14f, FontWeight.SemiBold))
+            modifier = Modifier.testTag("monitor.media.unavailable.close").semantics { contentDescription = "关闭" }) {
+            Text("关闭", color = LiveDesign.text, style = LiveType.ui(14f, FontWeight.SemiBold))
         }
     }
 }

@@ -125,7 +125,7 @@ internal fun MonitorOperatorSettingsBody(inputs: MonitorOperatorSettingsInputs) 
     }
 }
 
-internal const val MONITOR_LINK_UNAVAILABLE: String = "No app is available for that action."
+internal const val MONITOR_LINK_UNAVAILABLE: String = "没有可处理此操作的应用。"
 
 @Composable
 private fun MonitorOperatorSettingsRows(
@@ -182,10 +182,10 @@ private fun MonitorOperatorSettingsRows(
 @Composable
 private fun SessionAssistSettings(source: MonitorOperatorPictureSettings.Session) {
     val assist = source.assist
-    MonitorSettingsRowCard("View Assist") {
+    MonitorSettingsRowCard("监看辅助") {
         source.availableAssistTools.forEach { tool ->
             MonitorSettingsSwitchInlineRow(tool.title, assist.isOn(tool),
-                help = "Apply this monitor tool to the displayed picture.", testTag = "monitor.assist.${tool.name}") {
+                help = "将此监看工具应用于显示画面。", testTag = "monitor.assist.${tool.name}") {
                 assist.toggle(tool)
             }
             if (tool !in setOf(MonitorAssistTool.EV, MonitorAssistTool.LEVEL) &&
@@ -203,7 +203,7 @@ private fun SessionDisplaySettings(source: MonitorOperatorPictureSettings.Sessio
     @Suppress("UNUSED_VARIABLE") val observedRevision = revision.intValue
     val preferences = source.preferences
     val session = source.session
-    MonitorPanelSettings(preferences.hdrDisplay, "Show the native monitor in HDR when the display supports it.",
+    MonitorPanelSettings(preferences.hdrDisplay, "在支持 HDR 的屏幕上以 HDR 显示监看画面。",
         { preferences.hdrDisplay = it; onPreferenceChanged() })
     OperatorDisplaySections(session, setOf(MonitorDisplaySection.STATUS_BAR, MonitorDisplaySection.CAMERA_VALUES,
         MonitorDisplaySection.LOCK_BUTTON, MonitorDisplaySection.REC_READOUT, MonitorDisplaySection.TIMECODE,

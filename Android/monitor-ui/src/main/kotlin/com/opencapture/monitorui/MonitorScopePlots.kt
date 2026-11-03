@@ -112,7 +112,7 @@ fun MonitorWaveformScopePlot(bundle: ScopeAssistBundle, axis: ScopeLevelAxis,
         val livePlot = MonitorScopeGeometry.waveformPlot(this.size.width, this.size.height, this.density)
         blitScopePlot(trace, livePlot)
         drawWaveGuides(livePlot, if (axis.supportsCalibratedReferences) guides else MonitorScopeGuides(false, false, false), axis.middleGrayIre, this.density)
-        drawScopeTitle(measurer, "WAVE", mode.label.uppercase())
+        drawScopeTitle(measurer, "波形", mode.label.uppercase())
     }
 }
 
@@ -146,7 +146,7 @@ fun MonitorParadeScopePlot(bundle: ScopeAssistBundle, axis: ScopeLevelAxis,
         blitScopePlot(trace, livePlot)
         // iOS ParadeOverlay does not paint lane letters or vertical dividers.
         drawWaveGuides(livePlot, if (axis.supportsCalibratedReferences) guides else MonitorScopeGuides(false, false, false), axis.middleGrayIre, this.density)
-        drawScopeTitle(measurer, "PARADE", mode.label.uppercase())
+        drawScopeTitle(measurer, "分量波形", mode.label.uppercase())
     }
 }
 
@@ -208,7 +208,7 @@ fun MonitorVectorscopeScopePlot(bundle: ScopeAssistBundle,
                 TextStyle(color = VectorRing, fontSize = 6.5.sp, fontFamily = MonitorTypography.fontFamily, fontWeight = FontWeight.Bold),
             )
         }
-        drawScopeTitle(measurer, "VECTOR", "MON · ${zoom.label.uppercase()}")
+        drawScopeTitle(measurer, "矢量", "MON · ${zoom.label.uppercase()}")
     }
 }
 

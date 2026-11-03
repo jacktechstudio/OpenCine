@@ -68,7 +68,7 @@ private val ChromeShape = RoundedCornerShape(12.dp)
 /** The Settings support card's report status, or null while this phone holds no report. */
 public val ManualProblemReportSnapshot.settingsStatus: MonitorReportStatus?
     get() = if (delivery == ManualProblemReportDelivery.IDLE) null else
-        MonitorReportStatus(statusLabel, detail ?: "This phone keeps one report until Sentry accepts it or you discard it.", eventId)
+        MonitorReportStatus(statusLabel, detail ?: "本机会保留一份报告，直到 Sentry 接收或你将其丢弃。", eventId)
 
 @Composable
 private fun Modifier.settingsClickable(role: Role, onClick: () -> Unit): Modifier =
@@ -101,15 +101,15 @@ public fun ManualProblemReportDialog(
     if (!manualReport.isConfigured()) {
         AlertDialog(
             onDismissRequest = onClose,
-            title = { Text("Report unavailable", color = MonitorPalette.text) },
+            title = { Text("无法报告", color = MonitorPalette.text) },
             text = {
                 Text(
-                    "This build cannot send a report. Use Share Diagnostics in the pairing menu, or Diagnostic options in System, to save a diagnostic report.",
+                    "此版本无法发送报告。可通过配对菜单的“分享诊断信息”或系统设置的“诊断选项”保存报告。",
                     color = MonitorPalette.muted,
                 )
             },
             confirmButton = {
-                TextButton(onClick = onClose) { Text("OK", color = MonitorPalette.accent) }
+                TextButton(onClick = onClose) { Text("确定", color = MonitorPalette.accent) }
             },
             containerColor = MonitorPalette.surface,
         )
@@ -148,7 +148,7 @@ public fun ManualProblemReportDialog(
         } catch (cancelled: CancellationException) {
             throw cancelled
         } catch (_: Exception) {
-            error = "Couldn’t prepare technical details. You can still send your description."
+            error = "无法准备技术信息，仍可发送问题描述。"
             includeTech = false
         }
     }
@@ -174,21 +174,21 @@ public fun ManualProblemReportDialog(
                                         prepared += ManualImageDraft(result.jpeg, bitmap)
                                     } else {
                                         rejected =
-                                            "Couldn't open this image. Please choose another photo or screenshot."
+                                            "无法打开图片，请选择其他照片或截图。"
                                     }
                                 }
                                 ManualReportImageNormalizer.Result.Unreadable ->
                                     rejected =
-                                        "Couldn't open this image. Please choose another photo or screenshot."
+                                        "无法打开图片，请选择其他照片或截图。"
                                 ManualReportImageNormalizer.Result.TooLarge ->
-                                    rejected = "This image is too large to attach. Please choose a smaller image."
+                                    rejected = "图片过大，请选择较小的图片。"
                             }
                         }
                     }
                     val accepted = ManualReportImages.accept(images.map { it.jpeg } + prepared.map { it.jpeg })
                     if (accepted == null) {
                         prepared.forEach { if (!it.preview.isRecycled) it.preview.recycle() }
-                        error = "You can attach up to three photos, 1 MB each and 3 MB total."
+                        error = "最多可附加三张图片，每张不超过 1 MB，总计不超过 3 MB。"
                     } else {
                         images = images + prepared
                         adopted = true
@@ -197,7 +197,7 @@ public fun ManualProblemReportDialog(
                 } catch (cancelled: CancellationException) {
                     throw cancelled
                 } catch (_: Exception) {
-                    error = "Couldn’t prepare this image. Please choose another photo or screenshot."
+                    error = "无法处理此图片，请选择其他照片或截图。"
                 } finally {
                     if (!adopted) prepared.forEach { if (!it.preview.isRecycled) it.preview.recycle() }
                     preparingImages = false
@@ -226,12 +226,12 @@ public fun ManualProblemReportDialog(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Text(
-                "Report a problem",
+                "报告问题",
                 style = MonitorTypography.text(16f, FontWeight.SemiBold),
                 color = MonitorPalette.text,
             )
             Text(
-                "Tell us what happened. Technical details stay off unless you include them. You can attach up to three photos. Sending does not turn on automatic reports.",
+                "请描述遇到的问题。你可以选择是否附上技术信息，并添加最多三张照片。发送报告不会开启自动报告。",
                 style = MonitorTypography.text(12f, FontWeight.Normal),
                 color = MonitorPalette.muted,
             )
@@ -242,7 +242,7 @@ public fun ManualProblemReportDialog(
                     color = MonitorPalette.accent,
                 )
                 Text(
-                    "Discard the queued report before sending another.",
+                    "请先丢弃排队中的报告，再发送新报告。",
                     style = MonitorTypography.text(12f, FontWeight.Normal),
                     color = MonitorPalette.muted,
                 )
@@ -261,7 +261,7 @@ public fun ManualProblemReportDialog(
                     value = message,
                     onValueChange = { message = it.take(ManualProblemReport.MESSAGE_MAX) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("What happened?") },
+                    label = { Text("发生了什么？") },
                     supportingText = {
                         Text("${message.length}/${ManualProblemReport.MESSAGE_MAX}", color = MonitorPalette.faint)
                     },
@@ -273,7 +273,7 @@ public fun ManualProblemReportDialog(
                     value = email,
                     onValueChange = { email = it.take(ManualProblemReport.EMAIL_MAX) },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Reply email (optional)") },
+                    label = { Text("回复邮箱（选填）") },
                     supportingText = {
                         Text("${email.length}/${ManualProblemReport.EMAIL_MAX}", color = MonitorPalette.faint)
                     },
@@ -289,12 +289,12 @@ public fun ManualProblemReportDialog(
                 ) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(
-                            "Include technical details",
+                            "包含技术信息",
                             style = MonitorTypography.text(13f, FontWeight.SemiBold),
                             color = MonitorPalette.text,
                         )
                         Text(
-                            "Off by default. Review the preview before sending. App and device versions, connection events and errors. No footage.",
+                            "默认关闭。发送前可查看预览，其中包含应用和设备版本、连接事件及错误，不含拍摄素材。",
                             style = MonitorTypography.text(11f, FontWeight.Normal),
                             color = MonitorPalette.muted,
                         )
@@ -303,7 +303,7 @@ public fun ManualProblemReportDialog(
                 }
                 if (includeTech && preview.isNotEmpty()) {
                     Text(
-                        "Technical details preview",
+                        "技术信息预览",
                         style = MonitorTypography.text(11f, FontWeight.SemiBold),
                         color = MonitorPalette.muted,
                     )
@@ -319,18 +319,18 @@ public fun ManualProblemReportDialog(
                     )
                 }
                 Text(
-                    "Photos or screenshots (optional)",
+                    "照片或截图（选填）",
                     style = MonitorTypography.text(13f, FontWeight.SemiBold),
                     color = MonitorPalette.text,
                 )
                 Text(
-                    "Choose up to 3 images you have permission to share. Location metadata is removed. Not taken automatically. Images are sent only with this report.",
+                    "最多可选择三张有权分享的图片。位置信息会被移除。应用不会自动截图，图片仅随本次报告发送。",
                     style = MonitorTypography.text(11f, FontWeight.Normal),
                     color = MonitorPalette.muted,
                 )
                 if (remainingSlots > 0) {
                     SettingsActionPill(
-                        "Add photos or screenshots",
+                        "添加照片或截图",
                         enabled = !preparingImages,
                     ) {
                         val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -339,7 +339,7 @@ public fun ManualProblemReportDialog(
                 }
                 if (preparingImages) {
                     Text(
-                        "Preparing images…",
+                        "正在准备图片…",
                         style = MonitorTypography.text(11f, FontWeight.Normal),
                         color = MonitorPalette.muted,
                     )
@@ -352,7 +352,7 @@ public fun ManualProblemReportDialog(
                     ) {
                         Image(
                             bitmap = draft.preview.asImageBitmap(),
-                            contentDescription = "Selected photo ${index + 1}",
+                            contentDescription = "已选照片 ${index + 1}",
                             modifier =
                                 Modifier
                                     .width(72.dp)
@@ -361,7 +361,7 @@ public fun ManualProblemReportDialog(
                             contentScale = ContentScale.Fit,
                         )
                         SettingsActionPill(
-                            "Remove",
+                            "移除",
                             tint = MonitorPalette.recording,
                             background = MonitorPalette.recording.copy(alpha = 0.15f),
                             enabled = !preparingImages,
@@ -375,7 +375,7 @@ public fun ManualProblemReportDialog(
                 }
             }
             Text(
-                "OpenCapture receives this through Sentry. Sending does not turn on automatic reports. Only share images you have permission to send. Do not include passwords or other sensitive information.",
+                "报告将通过 Sentry 发送至 OpenCapture。发送不会启用自动报告。请仅分享有权发送的图片，勿包含密码等敏感信息。",
                 style = MonitorTypography.text(11f, FontWeight.Normal),
                 color = MonitorPalette.muted,
             )
@@ -388,14 +388,14 @@ public fun ManualProblemReportDialog(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 TextButton(onClick = onPrivacy) {
-                    Text("Reporting Privacy", color = MonitorPalette.muted)
+                    Text("报告隐私说明", color = MonitorPalette.muted)
                 }
-                SettingsActionPill("Cancel", tint = MonitorPalette.muted, background = MonitorPalette.faint.copy(alpha = 0.2f), onClick = onClose)
+                SettingsActionPill("取消", tint = MonitorPalette.muted, background = MonitorPalette.faint.copy(alpha = 0.2f), onClick = onClose)
                 if (report.allowsNewSubmit) {
-                    SettingsActionPill("Send report", enabled = !sendBlocked) {
+                    SettingsActionPill("发送报告", enabled = !sendBlocked) {
                         if (sendBlocked) return@SettingsActionPill
                         if (includeTech && !previewReady) {
-                            error = "Technical details are not ready. Wait, or turn them off to send your description."
+                            error = "技术信息尚未准备就绪。请稍候，或关闭此选项，仅发送问题描述。"
                             return@SettingsActionPill
                         }
                         when (
@@ -413,17 +413,17 @@ public fun ManualProblemReportDialog(
                         ) {
                             ManualSubmitResult.QUEUED -> onClose()
                             ManualSubmitResult.INVALID ->
-                                error = "Add a description and check the optional email address."
+                                error = "请填写问题描述并检查回复邮箱（选填）。"
                             ManualSubmitResult.UNAVAILABLE ->
-                                error = "This build cannot send a report."
+                                error = "此版本无法发送报告。"
                             ManualSubmitResult.STORAGE_ERROR ->
-                                error = "Could not save this report. Your text is still here; please try again."
+                                error = "无法保存报告。已保留输入的内容，请重试。"
                             ManualSubmitResult.PENDING_EXISTS ->
-                                error = "A report is already waiting to send."
+                                error = "已有一份报告正在等待发送。"
                         }
                     }
                 } else if (report.allowsDiscard) {
-                    SettingsActionPill("Discard") {
+                    SettingsActionPill("丢弃") {
                         manualReport.discard()
                         onClose()
                     }
@@ -463,12 +463,12 @@ public fun AutomaticReportsPrompt(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    "Help improve $product",
+                    "帮助改进 ${product}",
                     style = MonitorTypography.text(21f, FontWeight.SemiBold),
                     color = MonitorPalette.text,
                 )
                 Text(
-                    "Optional crash, error and feed-dropout reports are used only to improve app stability and reliability. Sent to OpenCapture through Sentry. Automatic reports exclude all images. No footage, screenshots or GPS location. You can change this in System.",
+                    "可选择通过 Sentry 向 OpenCapture 发送崩溃、错误和图传中断报告，以改进应用稳定性与可靠性。自动报告不含图片、拍摄素材、截图或 GPS 位置。可随时在“系统”中更改。",
                     style = MonitorTypography.text(14f, FontWeight.Normal),
                     color = MonitorPalette.muted,
                 )
@@ -480,7 +480,7 @@ public fun AutomaticReportsPrompt(
                     contentAlignment = Alignment.CenterStart,
                 ) {
                     Text(
-                        "Reporting privacy",
+                        "报告隐私说明",
                         style = MonitorTypography.text(14f, FontWeight.Normal),
                         color = MonitorPalette.accent,
                     )
@@ -500,7 +500,7 @@ public fun AutomaticReportsPrompt(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            "Enable automatic reports",
+                            "启用自动报告",
                             style = MonitorTypography.text(14f, FontWeight.SemiBold),
                             color = MonitorPalette.accent,
                             textAlign = TextAlign.Center,
@@ -517,7 +517,7 @@ public fun AutomaticReportsPrompt(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            "Not now",
+                            "暂不开启",
                             style = MonitorTypography.text(14f, FontWeight.SemiBold),
                             color = MonitorPalette.muted,
                             textAlign = TextAlign.Center,

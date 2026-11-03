@@ -89,9 +89,9 @@ public fun MonitorTelemetry(signalBars: Int?, fps: String?, power: List<MonitorT
         if (showsPower) power.forEach { reading ->
             val percent = reading.percent?.takeIf { it in 0..100 }
             val tint = batteryTint(MonitorBatteryUrgency.of(percent, reading.bars, reading.barCount, reading.warning, reading.exhausted))
-            val label = "${if (reading.camera) "Camera" else "Phone"} battery " +
+            val label = "${if (reading.camera) "相机" else "手机"}电量：" +
                 (MonitorTelemetryValues.batterySpokenValue(percent, reading.bars, reading.barCount, reading.charging,
-                    reading.externalPower, reading.exhausted) ?: "unavailable")
+                    reading.externalPower, reading.exhausted) ?: "不可用")
             val opacity = if (reading.exhausted && (reading.bars != null || percent != null)) {
                 val transition = rememberInfiniteTransition(label = "reportedLiveBatteryExhaustion")
                 val alpha by transition.animateFloat(initialValue = 1f, targetValue = 0.35f,
@@ -142,7 +142,7 @@ private fun batteryTint(urgency: MonitorBatteryUrgency?): Color = when (urgency)
 @Composable
 private fun MonitorCameraBatteryGauge(percent: Int, stacked: Boolean = false, showsIcon: Boolean = true) {
     TelemetryGauge(MonitorIcon.CAMERA.takeIf { showsIcon }, batteryTint(percent), if (percent in 0..100) percent / 100f else 0f,
-        if (percent in 0..100) "Camera battery $percent percent" else "Camera battery unavailable",
+        if (percent in 0..100) "相机电量 $percent%" else "无法获取相机电量",
         stacked, percent.takeIf { it in 0..100 }?.let { "$it%" } ?: "\u2014")
 }
 
@@ -235,7 +235,7 @@ internal fun monitorGaugeReadoutWidth(filled: Int, count: Int, minimum: Float, i
 private fun MonitorGaugeStepText(filled: Int, count: Int, tint: Color) {
     MonitorScaleToFit(minScale = 0.5f) {
         Text("$filled/$count", color = tint, style = MonitorTypography.readout(10f, FontWeight.Bold),
-            maxLines = 1, softWrap = false, modifier = Modifier.semantics { contentDescription = "$filled of $count bars" })
+            maxLines = 1, softWrap = false, modifier = Modifier.semantics { contentDescription = "电量 $filled/$count 格" })
     }
 }
 

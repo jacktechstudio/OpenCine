@@ -150,7 +150,7 @@ fun MonitorChromeButton(
 
 @Composable
 fun LockButton(locked: Boolean, modifier: Modifier = Modifier, enabled: Boolean = true, onClick: () -> Unit) {
-    LockButton(locked, if (locked) "Unlock monitor controls" else "Lock monitor controls",
+    LockButton(locked, if (locked) "解锁监看控件" else "锁定监看控件",
         modifier, enabled, onClick)
 }
 
@@ -183,7 +183,7 @@ fun LiveAutoExposureUnlockButton(modifier: Modifier = Modifier, onClick: () -> U
             .background(Color.Black.copy(alpha = 0.55f))
             .border(1.dp, LiveDesign.hairline, CircleShape)
             .chromeClickable(onClick = onClick)
-            .semantics { contentDescription = "Unlock exposure" },
+            .semantics { contentDescription = "解除曝光锁定" },
         horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -221,7 +221,7 @@ fun LiveGimbalStick(
     Box(
         modifier
             .fillMaxSize()
-            .semantics { contentDescription = "Gimbal stick" }
+            .semantics { contentDescription = "云台摇杆" }
             .pointerInput(enabled) {
                 if (!enabled) return@pointerInput
                 var taps = 0

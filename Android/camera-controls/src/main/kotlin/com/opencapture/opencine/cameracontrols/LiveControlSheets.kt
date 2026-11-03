@@ -122,9 +122,9 @@ private fun RecordingSetupPanel(
     var tab by remember(initial, tabNames) {
         mutableStateOf(
             when {
-                "Mode" in tabNames && (initial == LiveSheet.MODE || tabNames == listOf("Mode")) -> "Mode"
-                initial == LiveSheet.COLOR && "Color" in tabNames -> "Color"
-                else -> tabNames.firstOrNull() ?: "Format"
+                "模式" in tabNames && (initial == LiveSheet.MODE || tabNames == listOf("模式")) -> "模式"
+                initial == LiveSheet.COLOR && "色彩" in tabNames -> "色彩"
+                else -> tabNames.firstOrNull() ?: "格式"
             },
         )
     }
@@ -136,14 +136,14 @@ private fun RecordingSetupPanel(
         }
     }
     androidx.compose.runtime.key(tab) {
-        if (tab == "Mode" || tabNames == listOf("Mode")) {
+        if (tab == "模式" || tabNames == listOf("模式")) {
             val modeScroll = rememberScrollState()
             Column(Modifier.fillMaxWidth().then(if (maxHeightDp != null) Modifier.heightIn(max = maxHeightDp.dp) else Modifier)
                 .then(if (chromeless) Modifier else Modifier.pickerPanelGlass(capturePanelShape(fromTop = true, portrait = viewportIsPortrait()))
                     .monitorScrollFade(modeScroll).verticalScroll(modeScroll, enabled = preview == null).padding(14.dp)),
                 verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                androidx.compose.runtime.SideEffect { onHeaderChanged("SHOOTING MODE", "Capture mode") }
-                if (!chromeless) SheetHeader("SHOOTING MODE", "Capture mode", onDismiss)
+                androidx.compose.runtime.SideEffect { onHeaderChanged("拍摄模式", "拍摄模式") }
+                if (!chromeless) SheetHeader("拍摄模式", "拍摄模式", onDismiss)
                 val bodyName = host.camera?.name
                 val labels = CaptureLists.shootingModeLabels(bodyName, status.shootingMode, host.labelProfile)
                 CaptureDrumWheel(labels, CameraCommands.shootingModeLabel(status.shootingMode, bodyName, host.labelProfile).orEmpty()
@@ -156,13 +156,13 @@ private fun RecordingSetupPanel(
                 ) {
                     categories()
                 }
-                if (status.isRecording) Text("Stop recording to change mode.", color = LiveDesign.muted, style = LiveType.text(11f))
+                if (status.isRecording) Text("请先停止录制，再切换模式。", color = LiveDesign.muted, style = LiveType.text(11f))
                 if (!chromeless && com.opencapture.monitorui.MonitorLayoutPolicy.showsCaptureGrabber(preview != null, fromTop = true)) {
                     com.opencapture.monitorui.MonitorPanelGrabber()
                 }
             }
         } else {
-            LiveControlSheetContent(if (tab == "Color") LiveSheet.COLOR else LiveSheet.FORMAT,
+            LiveControlSheetContent(if (tab == "色彩") LiveSheet.COLOR else LiveSheet.FORMAT,
                 host, status, locked, onDismiss, maxHeightDp, footer = categories,
                 showsHeader = !chromeless, chromeless = chromeless, onHeaderChanged = onHeaderChanged)
         }
@@ -487,7 +487,7 @@ private fun LiveControlSheetContent(
     val portrait = viewportIsPortrait()
     val topPadding = if (showsHeader) com.opencapture.monitorui.MonitorLayoutPolicy.captureTopPadding(fromTop, portrait, compact) else 0f
     val headerTitle = CaptureLists.headerTitle(sheet, status.expoMode, status.shootingMode)
-    val headerSubtitle = if (compact) "drag to set" else CaptureLists.headerSubtitle(sheet, status.expoMode,
+    val headerSubtitle = if (compact) "拖动调节" else CaptureLists.headerSubtitle(sheet, status.expoMode,
         selectedMode, prefs.facePriorityExposure, status.shootingMode)
     androidx.compose.runtime.SideEffect { onHeaderChanged(headerTitle, headerSubtitle) }
     // Every drum has the same 86dp viewport; the card hugs its own controls.
@@ -517,7 +517,7 @@ private fun LiveControlSheetContent(
                 title = if (sheet == LiveSheet.COLOR) host.recordingCodecColor(status).title
                     else CaptureLists.headerTitle(sheet, status.expoMode, status.shootingMode),
                 subtitle =
-                    if (compact) "drag to set"
+                    if (compact) "拖动调节"
                     else
                         CaptureLists.headerSubtitle(
                             sheet,
@@ -724,7 +724,7 @@ private fun LiveControlSheetContent(
                             applyDrum(it)
                         },
                     )
-                    if (status.isRecording) Text("Stop recording to change mode.",
+                    if (status.isRecording) Text("请先停止录制，再切换模式。",
                         color = LiveDesign.muted, style = LiveType.text(11f))
                 }
             }
@@ -819,18 +819,18 @@ private fun AudioBody(status: CameraStatus, enabled: Boolean, selectedMode: Int,
     val sourceID = remember(host) { service?.sourceID }
     var refusal by remember(host) { mutableStateOf<String?>(null) }
     val field = service?.fields?.getOrNull(selectedMode)
-    if (field == null) Text("Audio controls unavailable", color = LiveDesign.faint)
+    if (field == null) Text("音频控制不可用", color = LiveDesign.faint)
     else CheckedRows(field.choices.map { it.label }, field.observed?.label,
         enabled && field.isEditable && service?.sourceID == sourceID) { label ->
         val current = host.audioService
         val currentField = current?.fields?.firstOrNull { it.id == field.id }
         val value = currentField?.choices?.firstOrNull { it.label == label }
         refusal = if (current == null || current.sourceID != sourceID || currentField?.isEditable != true || value == null)
-            "Audio control unavailable"
+            "音频控制不可用"
         else when (current.commit(value)) {
             CaptureAudioCommitResult.SUBMITTED -> null
-            CaptureAudioCommitResult.UNAVAILABLE -> "Audio control unavailable"
-            CaptureAudioCommitResult.REFUSED -> "Audio control refused"
+            CaptureAudioCommitResult.UNAVAILABLE -> "音频控制不可用"
+            CaptureAudioCommitResult.REFUSED -> "相机拒绝了音频控制"
         }
     }
     refusal?.let { Text(it, color = LiveDesign.faint) }

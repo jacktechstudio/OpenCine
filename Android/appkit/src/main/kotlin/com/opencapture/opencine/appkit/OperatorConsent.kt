@@ -11,7 +11,7 @@ public class OperatorConsentRequest(
     public val title: String,
     public val message: String,
     public val confirmTitle: String,
-    public val cancelTitle: String = "Cancel",
+    public val cancelTitle: String = "取消",
     public val id: String = UUID.randomUUID().toString(),
     internal val onConfirm: () -> Unit,
     internal val onCancel: () -> Unit = {},

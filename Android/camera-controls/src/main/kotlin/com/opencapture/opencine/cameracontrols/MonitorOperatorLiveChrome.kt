@@ -38,7 +38,7 @@ public class MonitorOperatorMeteringTile(
     public val toggle: () -> Unit,
 ) {
     /** The strip value, with the strip placeholder while the mode is unknown. */
-    public val label: String get() = face?.let { if (it) "Face" else "Matrix" } ?: "--"
+    public val label: String get() = face?.let { if (it) "人脸" else "矩阵" } ?: "--"
 
     /** Acts only on a known mode, for the source and phase the tile was drawn for. */
     public fun perform() { if (face != null && isCurrent()) toggle() }
@@ -78,19 +78,19 @@ public fun MonitorOperatorCaptureStrip(source: MonitorOperatorCaptureSource, sta
         MonitorValue(sheet.name, title, readout, active == sheet, annotation, icon, badge)
     val values = buildList {
         add(value(LiveSheet.ISO, "ISO", source.readout(LiveSheet.ISO, status, CaptureLists.isoChipValue(status))))
-        add(value(LiveSheet.SHUTTER, if (auto) MonitorExposureReadout.autoEvCaption(status.shutterDenom) else "SHUTTER",
+        add(value(LiveSheet.SHUTTER, if (auto) MonitorExposureReadout.autoEvCaption(status.shutterDenom) else "快门",
             source.readout(LiveSheet.SHUTTER, status, if (auto) EvComp.fromRaw(status.evComp)?.label ?: "--" else shutter),
             if (auto && preferences.facePriorityExposure) CaptureLists.FACE_PRIORITY_TITLE else null,
             badge = if (auto && preferences.facePriorityExposure) MonitorIcon.SCAN else null))
-        add(value(LiveSheet.EXPO, "EXPOSURE", if (native.aeLocked) CaptureLists.AE_LOCK
+        add(value(LiveSheet.EXPO, "曝光", if (native.aeLocked) CaptureLists.AE_LOCK
             else controlState.snapshot?.exposureProgram?.value?.let(com.opencapture.opencine.appkit.MonitorCapturePresentation::exposureProgram) ?: "--"))
-        metering?.let { add(MonitorValue(METER, "METER", it.label)) }
+        metering?.let { add(MonitorValue(METER, "测光", it.label)) }
         add(value(LiveSheet.WB, "WB", source.readout(LiveSheet.WB, status, CaptureLists.wbChipValue(status, native.awbLockKelvin != null)),
             icon = if (CaptureLists.wbIsAuto(status) && native.awbLockKelvin == null) MonitorIcon.APERTURE else null))
-        if (controls.focus.isOffered) add(value(LiveSheet.FOCUS, "FOCUS", source.readout(LiveSheet.FOCUS, status, status.focusLabel)))
-        if (controls.iris.isOffered) add(value(LiveSheet.APERTURE, "APERTURE", source.readout(LiveSheet.APERTURE, status, ApertureStrategy.tileValue(status))))
+        if (controls.focus.isOffered) add(value(LiveSheet.FOCUS, "对焦", source.readout(LiveSheet.FOCUS, status, status.focusLabel)))
+        if (controls.iris.isOffered) add(value(LiveSheet.APERTURE, "光圈", source.readout(LiveSheet.APERTURE, status, ApertureStrategy.tileValue(status))))
         if (controls.audio.isOffered && CaptureShutterPolicy.showsAudioControls(status.shootingMode))
-            add(value(LiveSheet.AUDIO, "AUDIO", status.audioLabel))
+            add(value(LiveSheet.AUDIO, "音频", status.audioLabel))
     }
     com.opencapture.monitorui.MonitorCameraValues(values, enabled && lifetime.active, portrait, modifier,
         itemModifier = { id -> Modifier.reportChromeFrame { if (id != METER) onTileFrame(LiveSheet.valueOf(id), it) } },

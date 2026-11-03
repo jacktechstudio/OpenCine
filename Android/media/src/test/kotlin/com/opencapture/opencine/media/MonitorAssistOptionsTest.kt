@@ -20,7 +20,7 @@ class MonitorAssistOptionsTest {
         assertEquals(MonitorPeakingColor.BLUE, MonitorPeakingColor.fromPersisted("BLUE"))
         assertEquals(MonitorPeakingSense.HIGH, MonitorPeakingSense.fromPersisted("High"))
         assertEquals(MonitorPeakingSense.MED, MonitorPeakingSense.fromPersisted("MED"))
-        assertEquals(listOf("White", "Amber", "Red", "Cyan", "Green"), MonitorZebraPaint.entries.map { it.label })
+        assertEquals(listOf("白色", "琥珀色", "红色", "青色", "绿色"), MonitorZebraPaint.entries.map { it.label })
         assertEquals(listOf(Triple(1.0, 1.0, 1.0), Triple(1.0, 0.72, 0.2),
             Triple(1.0, 0.15, 0.15), Triple(0.0, 0.85, 0.9), Triple(0.2, 0.9, 0.35)),
             MonitorZebraPaint.entries.map { it.rgb })

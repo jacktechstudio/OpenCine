@@ -89,7 +89,7 @@ object MonitorConnectProgress {
     /** One caption at a time: the active step and its detail. */
     fun caption(steps: List<MonitorConnectStep>): String {
         val step = steps.firstOrNull { it.state == MonitorConnectStep.State.ACTIVE }
-            ?: steps.lastOrNull { it.state == MonitorConnectStep.State.DONE } ?: return "Connecting"
+            ?: steps.lastOrNull { it.state == MonitorConnectStep.State.DONE } ?: return "正在连接"
         return if (step.detail.isEmpty()) step.title else "${step.title} · ${step.detail}"
     }
 
@@ -127,10 +127,10 @@ internal fun MonitorSetupChips(
                 Modifier.heightIn(min = 44.dp)
                     .combinedClickable(
                         enabled = enabled, role = Role.Button, onClick = { onSetup(setup) },
-                        onLongClickLabel = "Setup options",
+                        onLongClickLabel = "连接配置选项",
                         onLongClick = if (onRenameSetup != null || setup.canForget && onForgetSetup != null) ({ menu = true }) else null,
                     )
-                    .semantics { contentDescription = "Connect $cameraName over ${setup.title}" }
+                    .semantics { contentDescription = "通过“${setup.title}”连接 $cameraName" }
                     .testTag("cameras.setup.${setup.kind ?: setup.id}"),
                 contentAlignment = Alignment.Center,
             ) {
@@ -147,13 +147,13 @@ internal fun MonitorSetupChips(
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                     if (onRenameSetup != null) {
                         DropdownMenuItem(
-                            text = { Text("Rename setup") }, enabled = enabled,
+                            text = { Text("重命名连接配置") }, enabled = enabled,
                             onClick = { menu = false; if (enabled) onRenameSetup(setup) },
                         )
                     }
                     if (setup.canForget && onForgetSetup != null) {
                         DropdownMenuItem(
-                            text = { Text("Forget ${setup.title} setup", color = MonitorPalette.recording) }, enabled = enabled,
+                            text = { Text("忘记连接配置“${setup.title}”", color = MonitorPalette.recording) }, enabled = enabled,
                             onClick = { menu = false; if (enabled) onForgetSetup(setup) },
                         )
                     }
@@ -165,7 +165,7 @@ internal fun MonitorSetupChips(
             Row(
                 Modifier.heightIn(min = 44.dp)
                     .clickable(enabled = enabled, role = Role.Button, onClick = onAddSetup)
-                    .semantics { contentDescription = "Add a setup for $cameraName" }
+                    .semantics { contentDescription = "为 $cameraName 添加连接配置" }
                     .testTag("cameras.addSetup"),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -182,7 +182,7 @@ internal fun MonitorSetupChips(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     MonitorIcon(MonitorIcon.PLUS, null, Modifier.size(11.dp), tint = MonitorPalette.muted)
-                    Text("Add setup", color = MonitorPalette.muted, style = MonitorTypography.text(11f, FontWeight.SemiBold))
+                    Text("添加连接配置", color = MonitorPalette.muted, style = MonitorTypography.text(11f, FontWeight.SemiBold))
                 }
             }
         }

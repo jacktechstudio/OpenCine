@@ -199,7 +199,7 @@ public fun MultiviewStage(
         }
         if (!clean) {
             ChromeButton(
-                MonitorIcon.X, "Exit Multiview", Modifier.at(layout.sessionControls),
+                MonitorIcon.X, "退出多机监看", Modifier.at(layout.sessionControls),
                 enabled = !busy && !groupBusy, feedback = actions.feedback, onClick = actions.close,
             )
             if (arrangement == MultiviewArrangement.CENTER_STAGE && readouts != null) {
@@ -321,10 +321,10 @@ private fun AssistPalette(
         }
     }
     fun title(tool: MultiviewTool) = when (tool) {
-        MultiviewTool.LUT -> if (services?.automaticLUT == false) "Toggle LUT for all cameras" else "Toggle Auto LUT for all cameras"
-        MultiviewTool.FIT -> if (fill) "Fit feed in frame" else "Fill frame with feed"
-        MultiviewTool.LAYOUT -> if (grid) "Show Focused stage" else "Show Grid"
-        MultiviewTool.CAMERA -> "Camera settings"
+        MultiviewTool.LUT -> if (services?.automaticLUT == false) "切换所有机位的 LUT" else "切换所有机位的自动 LUT"
+        MultiviewTool.FIT -> if (fill) "完整显示取景画面" else "取景画面铺满屏幕"
+        MultiviewTool.LAYOUT -> if (grid) "显示主机位视图" else "显示分屏视图"
+        MultiviewTool.CAMERA -> "相机设置"
     }
     fun isOn(tool: MultiviewTool) = tool == MultiviewTool.LUT && lut
     fun isAvailable(tool: MultiviewTool) = (tool != MultiviewTool.LUT && tool != MultiviewTool.CAMERA) || cameras
@@ -379,7 +379,7 @@ private fun AssistPalette(
                         .testTag(identifier(tool))
                         .semantics {
                             contentDescription = title(tool)
-                            if (tool == MultiviewTool.LUT) stateDescription = if (isOn(tool)) "On" else "Off"
+                            if (tool == MultiviewTool.LUT) stateDescription = if (isOn(tool)) "开" else "关"
                             role = Role.Button
                         }
                         .monitorChromeClickable(enabled = available, onClickFeedback = actions.feedback,
@@ -403,16 +403,16 @@ private fun AssistPalette(
             isOn = ::isOn,
             title = ::title, label = { tool -> when (tool) {
                 MultiviewTool.LUT -> "LUT"
-                MultiviewTool.FIT -> if (fill) "FILL" else "FIT"
-                MultiviewTool.LAYOUT -> if (grid) "FOCUS" else "GRID"
-                MultiviewTool.CAMERA -> "CAM"
+                MultiviewTool.FIT -> if (fill) "填充" else "适应"
+                MultiviewTool.LAYOUT -> if (grid) "主画面" else "网格"
+                MultiviewTool.CAMERA -> "机位"
             } },
             hasOptions = { it == MultiviewTool.LUT && services?.configureLUT != null }, onOptions = ::configure,
             isAvailable = ::isAvailable,
             accessibilityLabel = ::title,
             accessibilityIdentifier = ::identifier,
-            accessibilityValue = { if (it == MultiviewTool.LUT) { if (lut) "On" else "Off" } else null },
-            expansionAccessibilityName = "Multiview tools", expansionAccessibilityIdentifier = "multiview.tools.expand",
+            accessibilityValue = { if (it == MultiviewTool.LUT) { if (lut) "开" else "关" } else null },
+            expansionAccessibilityName = "多机监看工具", expansionAccessibilityIdentifier = "multiview.tools.expand",
             cellSize = cell, maxExpandedHeight = maxExpandedHeight,
             idOf = { it.name }, usage = presentation.toolUsage, onUsageChange = { presentation.toolUsage = it },
             onToggle = ::toggle,
@@ -432,8 +432,8 @@ private fun DisplayButton(clean: Boolean, modifier: Modifier, feedback: () -> Un
     Column(
         modifier.glass(ControlShape).monitorChromeClickable(onClickFeedback = feedback, onClick = onClick)
             .semantics {
-                contentDescription = "Change display mode"
-                stateDescription = if (clean) "Clean" else "Live"
+                contentDescription = "切换显示模式"
+                stateDescription = if (clean) "净画面" else "监看"
                 role = Role.Button
             },
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -504,7 +504,7 @@ private fun RecordAllButton(
                 }
             }
             .semantics {
-                contentDescription = if (recording) "Stop all recording" else "Record all"
+                contentDescription = if (recording) "全部停止录制" else "全部开始录制"
                 if (refusal != null) stateDescription = refusal
                 role = Role.Button
             }.testTag("multiview.recordAll"),
@@ -533,17 +533,17 @@ public fun MultiviewRecordConfirmation(
                     .padding(18.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(prompt ?: if (stopping) "Stop recording?" else "Start recording?", color = MonitorPalette.text,
+                Text(prompt ?: if (stopping) "停止录制？" else "开始录制？", color = MonitorPalette.text,
                     style = MonitorTypography.text(16f, FontWeight.SemiBold))
-                (single ?: "All connected cameras".takeIf { prompt == null })?.let {
+                (single ?: "所有已连接的相机".takeIf { prompt == null })?.let {
                     Text(it, color = MonitorPalette.muted, style = MonitorTypography.text(13f))
                 }
                 TextButton(onClick = onConfirm, modifier = Modifier.fillMaxWidth()) {
-                    Text(if (stopping) "Stop" else "Start",
+                    Text(if (stopping) "停止" else "开始",
                         color = if (stopping) MonitorPalette.recording else MonitorPalette.accent)
                 }
                 TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-                    Text("Cancel", color = MonitorPalette.muted)
+                    Text("取消", color = MonitorPalette.muted)
                 }
             }
         }
@@ -591,8 +591,8 @@ private fun TileView(
                         onTap = { current.select(index) },
                     )
                 }.semantics {
-                    contentDescription = "Select camera ${MultiviewTile.letter(index)}, ${tile.name}"
-                    stateDescription = if (focused) "Selected" else "Not selected"
+                    contentDescription = "选择机位 ${MultiviewTile.letter(index)}，${tile.name}"
+                    stateDescription = if (focused) "已选择" else "未选择"
                     role = Role.Button
                     if (enabled) onClick { actions.select(index); true }
                 },
@@ -651,12 +651,12 @@ private fun TileView(
                         .monitorChromeClickable(
                             enabled = enabled && !busy && !groupBusy, onClickFeedback = actions.feedback,
                         ) { actions.add(index) }
-                        .semantics { contentDescription = "Add camera"; role = Role.Button },
+                        .semantics { contentDescription = "添加相机"; role = Role.Button },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
                 ) {
                     MonitorIcon(MonitorIcon.PLUS, null, Modifier.size(if (compact) 24.dp else 34.dp), MonitorPalette.muted)
-                    Text("Add camera", color = MonitorPalette.muted,
+                    Text("添加相机", color = MonitorPalette.muted,
                         style = MonitorTypography.text(if (compact) 10f else 14f, FontWeight.SemiBold))
                 }
             } else if (!clean) {
@@ -784,7 +784,7 @@ private fun TileOverlay(
                     .background(Color.Black.copy(alpha = 0.8f), RoundedCornerShape(8.dp))
                     .monitorChromeClickable(enabled = enabled, onClickFeedback = feedback, onClick = onOptions)
                     .semantics {
-                        contentDescription = "${status.text} Camera ${MultiviewTile.letter(index)} options"
+                        contentDescription = "${status.text} 机位 ${MultiviewTile.letter(index)} 选项"
                         role = Role.Button
                     }
                     .padding(horizontal = 8.dp),
@@ -842,7 +842,7 @@ private fun TileChrome(
                     Text(tile.model, color = Color.White.copy(alpha = 0.7f), style = MonitorTypography.text(small),
                         maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text("TC $timecode", color = Color.White, style = MonitorTypography.readout(small),
-                        maxLines = 1, modifier = Modifier.semantics { contentDescription = "Timecode $timecode" })
+                        maxLines = 1, modifier = Modifier.semantics { contentDescription = "时间码 ${timecode}" })
                 }
             }
         }
@@ -850,7 +850,7 @@ private fun TileChrome(
         Box(
             Modifier.align(Alignment.TopEnd).size(44.dp)
                 .monitorChromeClickable(enabled = enabled, onClickFeedback = actions.feedback, onClick = onOptions)
-                .semantics { contentDescription = "Camera $letter options"; role = Role.Button },
+                .semantics { contentDescription = "机位 ${letter} 选项"; role = Role.Button },
             contentAlignment = Alignment.TopEnd,
         ) {
             MonitorIcon(MonitorIcon.ELLIPSIS, null, Modifier.padding(top = edge, end = edge).size(20.dp), Color.White)
@@ -871,7 +871,7 @@ private fun TileChrome(
                 BatteryPill(tile.battery, tile.batteryBars, tile.batteryBarCount)
                 Text(tile.storage, color = Color.White, style = MonitorTypography.readout(small), maxLines = 1,
                     modifier = (if (values == null) Modifier.weight(1f) else Modifier)
-                        .semantics { contentDescription = "Storage ${tile.storage}" })
+                        .semantics { contentDescription = "存储空间 ${tile.storage}" })
                 if (values != null) {
                     // Inline with both sides; the values take what is left over.
                     Row(Modifier.weight(1f),
@@ -924,8 +924,8 @@ private fun BatteryPill(percent: Int?, bars: Int?, barCount: Int) {
     Row(
         Modifier.size(40.dp, 20.dp).glass(RoundedCornerShape(7.dp)).padding(horizontal = 6.dp)
             .semantics {
-                contentDescription = bars?.let { "Camera battery $it of $barCount bars" }
-                    ?: percent?.let { "Camera battery $it percent" } ?: "Camera battery unavailable"
+                contentDescription = bars?.let { "相机电量 ${it}/${barCount} 格" }
+                    ?: percent?.let { "相机电量 ${it}%" } ?: "无法获取相机电量"
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -946,7 +946,7 @@ public fun MultiviewCameraPicker(
     rows: List<MultiviewPickerRow>,
     onCancel: () -> Unit,
     onPick: (String) -> Unit,
-    searching: String = "Looking for nearby cameras…",
+    searching: String = "正在查找附近的相机…",
     empty: String? = null,
     footer: String? = null,
     feedback: () -> Unit = {},
@@ -957,7 +957,7 @@ public fun MultiviewCameraPicker(
             Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Add camera", color = MonitorPalette.text, style = MonitorTypography.text(20f, FontWeight.SemiBold),
+            Text("添加相机", color = MonitorPalette.text, style = MonitorTypography.text(20f, FontWeight.SemiBold),
                 modifier = Modifier.weight(1f))
             Box(
                 Modifier.heightIn(min = 44.dp).widthIn(min = 64.dp)
@@ -965,7 +965,7 @@ public fun MultiviewCameraPicker(
                     .semantics { role = Role.Button },
                 contentAlignment = Alignment.CenterStart,
             ) {
-                Text("Cancel", color = MonitorPalette.accent, style = MonitorTypography.text(16f))
+                Text("取消", color = MonitorPalette.accent, style = MonitorTypography.text(16f))
             }
         }
         val pickerScroll = rememberScrollState()

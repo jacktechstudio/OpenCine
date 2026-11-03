@@ -36,17 +36,17 @@ class StationJoin(
     }
 
     sealed class Failure(message: String) : Exception(message) {
-        class Rejected : Failure("Camera could not complete this step. Check the Wi-Fi details and try again.")
+        class Rejected : Failure("相机未能完成此步骤。请检查 Wi-Fi 设置后重试。")
         class UnsupportedRole : Failure(
-            "This camera did not report a supported Wi-Fi mode. Shared Wi-Fi setup is experimental for this model.")
-        class RoleRefused : Failure("The camera did not accept shared Wi-Fi mode.")
-        class RoleStarting : Failure("Camera Wi-Fi is still starting. Retry with the camera nearby.")
-        class JoinSilent : Failure("Camera Wi-Fi did not respond. Retry setup with the camera nearby.")
+            "相机未报告受支持的 Wi-Fi 模式。此机型的共用 Wi-Fi 连接仍为实验功能。")
+        class RoleRefused : Failure("相机未接受共用 Wi-Fi 模式。")
+        class RoleStarting : Failure("相机 Wi-Fi 正在启动，请靠近相机后重试。")
+        class JoinSilent : Failure("相机 Wi-Fi 无响应，请靠近相机后重新连接。")
         class JoinRejected : Failure(
-            "The camera could not join the Wi-Fi. Check the password and that the network is in range. " +
-                "WPA3-only networks refuse some cameras: use WPA2/WPA3 with PMF optional.")
+            "相机未能加入 Wi-Fi。请检查密码，并确认相机位于网络覆盖范围内。" +
+                "仅启用 WPA3 的网络可能拒绝部分相机连接。请使用 WPA2/WPA3 混合模式，并将 PMF 设为可选。")
         class HotspotUnavailable : Failure(
-            "Turn on the hotspot and let other devices join, then retry. The hotspot network is not available yet.")
+            "热点网络尚未就绪。请打开热点并允许其他设备加入，然后重试。")
     }
 
     /** Core `MulticamJoinPolicy`. */
@@ -88,7 +88,7 @@ class StationJoin(
     ): Outcome {
         if (identity.size <= 2 || identity[0].toInt() != 0) throw Failure.Rejected()
         if (hasPreview && !experimental) {
-            status("Selecting Video mode")
+            status("正在选择录像模式")
             send(DjiNative.CMD_MULTICAM_VIDEO_MODE)
             sleep(2_000)
         }
@@ -101,7 +101,7 @@ class StationJoin(
         val missingRoleQuery = decision == "setWithoutReadback"
         log("station experimental=$experimental decision=$decision")
         if (decision == "alreadyStation" && probeExistingStation && (!hotspot || hotspotReady())) {
-            status("Finding camera on Wi-Fi")
+            status("正在查找 Wi-Fi 网络上的相机")
             if (verifyOnNetwork()) return Outcome.VERIFIED
         }
         if (decision != "alreadyStation") {
@@ -128,11 +128,11 @@ class StationJoin(
                 if (!stationReady) throw Failure.RoleStarting()
             }
         }
-        status("Waiting for camera Wi-Fi")
+        status("正在等待相机 Wi-Fi")
         sleep(policy.prepareSettleMs)
         var attempt = 1
         joinLoop@ while (attempt <= policy.maximumAttempts) {
-            status("Joining Wi-Fi · attempt $attempt of ${policy.maximumAttempts}")
+            status("正在加入 Wi-Fi · 第 ${attempt}/${policy.maximumAttempts} 次")
             val joined = try {
                 exchange(DjiNative.CMD_MULTICAM_JOIN, "$ssid\u001f$password", policy.replyTimeoutMs)
             } catch (error: TimeoutCancellationException) {
@@ -168,7 +168,7 @@ class StationJoin(
             when (decide("joinDecision", JSONObject().put("reply", hex(joined)).put("attempt", attempt).toString())) {
                 "connected" -> break@joinLoop
                 "retry" -> {
-                    status("Retrying Wi-Fi connection")
+                    status("正在重新连接 Wi-Fi")
                     sleep(policy.retryDelayMs)
                     attempt += 1
                 }
@@ -177,7 +177,7 @@ class StationJoin(
         }
         if (hotspot) {
             // The phone's hotspot bridge may appear only after the camera associates.
-            status("Waiting for the hotspot")
+            status("正在等待热点")
             var waited = 0L
             while (!hotspotReady() && waited < HOTSPOT_WAIT_MS) {
                 sleep(250)

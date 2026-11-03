@@ -14,10 +14,10 @@ sealed class CameraReply {
         get() =
             when (this) {
                 Ok -> "ok"
-                WrongState -> "camera rejected that in this mode"
-                BadParameter -> "camera rejected that value"
-                Unsupported -> "camera does not support that command"
-                is Other -> "camera reply 0x%02X".format(code)
+                WrongState -> "当前模式下相机不接受此操作"
+                BadParameter -> "相机不接受此参数值"
+                Unsupported -> "相机不支持此命令"
+                is Other -> "相机返回 0x%02X".format(code)
             }
 
     companion object {

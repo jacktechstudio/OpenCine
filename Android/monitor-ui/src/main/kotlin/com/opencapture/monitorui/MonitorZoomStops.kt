@@ -31,13 +31,13 @@ data class MonitorZoomTapStops(val singleTap: List<Double>, val doubleTap: List<
 
 object MonitorZoomCaption {
     fun label(factor: Double, opticalStops: List<Double>): String {
-        if (!factor.isFinite()) return "WIDE"
-        if (abs(factor - 1.0) < 0.05) return "WIDE"
+        if (!factor.isFinite()) return "广角"
+        if (abs(factor - 1.0) < 0.05) return "广角"
         if (opticalStops.any { abs(it - 3.0) < 0.01 }) {
-            if (abs(factor - 3.0) < 0.05) return "TELE"
-            return if (factor > 3.0) "DIGITAL · SOFT" else "WIDE CROP"
+            if (abs(factor - 3.0) < 0.05) return "长焦"
+            return if (factor > 3.0) "数码变焦 · 画质下降" else "广角裁切"
         }
-        return "DIGITAL CROP"
+        return "数码裁切"
     }
 
     /** Past the last optical stop the picture is a digital crop (detail loss). */

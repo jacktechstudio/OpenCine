@@ -489,7 +489,7 @@ object LiveFeedFocusGesture {
     const val FOCUS_BOX_SIDE_FRACTION = 0.14f
     /** Room around the focus box that still counts as pressing it, in dp. */
     const val FOCUS_BOX_HIT_MARGIN = 14f
-    const val FOCUS_LOCKED_NOTE = "Focus box locked. Long-press it to unlock."
+    const val FOCUS_LOCKED_NOTE = "对焦框已锁定，长按可解锁。"
 
     /** iOS `hitsFocusBox`: whether (x, y) in a width x height well presses the box at camera point [focus]. */
     fun hitsFocusBox(

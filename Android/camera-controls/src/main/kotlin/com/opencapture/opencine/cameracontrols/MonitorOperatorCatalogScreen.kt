@@ -129,9 +129,9 @@ public fun <P> MonitorOperatorCatalogScreen(
         layout = MediaBrowserLayout.valueOf((presentation?.layout ?: value.layout).name),
         thumbnailSize = MediaThumbnailSize.valueOf((presentation?.thumbnailSize ?: value.thumbnailSize).name), sortOrder = sort,
         headerCount = when {
-            value.fetching && value.fetchedCount == 0 -> "Scanning…"
-            value.fetching -> "Listing… ${value.fetchedCount} found"
-            else -> (presentation?.projection?.displayIDs?.size ?: records.size).let { "$it item${if (it == 1) "" else "s"}" }
+            value.fetching && value.fetchedCount == 0 -> "正在扫描…"
+            value.fetching -> "正在读取…已找到 ${value.fetchedCount} 项"
+            else -> (presentation?.projection?.displayIDs?.size ?: records.size).let { "${it} 项" }
         }, fetchInProgress = value.fetching, isLive = sourceAvailable, isSelecting = value.selecting,
         filterOpen = state.filterPopupPresented, activeFilterCount = presentation?.activeFilterCount ?: value.activeFilterCount,
         selectedCount = selected.size,
@@ -225,8 +225,8 @@ public fun <P> MonitorOperatorCatalogScreen(
     if (state.confirmationPresented) {
         val confirmation = state.deleteRequestID
         MonitorConfirmPopup(
-            title = state.deletionMessage ?: "Delete ${state.deleteCount} item${if (state.deleteCount == 1) "" else "s"} from the camera?",
-            confirmTitle = "Delete", onClickFeedback = haptics::selection,
+            title = state.deletionMessage ?: "从相机删除所选的 ${state.deleteCount} 项素材？",
+            confirmTitle = "删除", onClickFeedback = haptics::selection,
             cancelDescription = MonitorPlaybackCopy.DELETE_CANCEL_DESCRIPTION,
             confirmDescription = MonitorPlaybackCopy.DELETE_CONFIRM_DESCRIPTION,
             onDismiss = { gallery.cancelDelete(confirmation) }, onConfirm = { gallery.confirmDelete(confirmation) },
@@ -234,7 +234,7 @@ public fun <P> MonitorOperatorCatalogScreen(
     }
     state.failure?.let { message ->
         AlertDialog(onDismissRequest = gallery::dismissFailure, title = { Text(message) },
-            confirmButton = { TextButton(onClick = gallery::dismissFailure) { Text("OK") } })
+            confirmButton = { TextButton(onClick = gallery::dismissFailure) { Text("确定") } })
     }
 }
 
@@ -400,7 +400,7 @@ internal fun <P> monitorCatalogClip(
     resolvedDuration: String?, libraryProgress: Double?, cell: MonitorClipValue?,
     libraryRate: MediaTransferRate? = null, showsRate: Boolean = true,
 ): MonitorClipValue {
-    val source = if (entry?.original != null) "CACHED" else if (entry?.proxy != null) "PROXY" else "ON CAMERA"
+    val source = if (entry?.original != null) "已缓存" else if (entry?.proxy != null) "代理" else "相机内"
     val progress = (facts.progress ?: libraryProgress)?.toFloat()
     val rate = if (showsRate) (facts.transferRate ?: libraryRate)?.label else null
     // A source cell's own speed wins, as on iOS.

@@ -156,12 +156,12 @@ class MonitorFeedEffectsPlans(
     ): Pair<FeedEffectsRenderPlan, String> {
         val source = LutLookResolver.resolve(LutCatalog.AUTO, true, colorMode, profile = lookProfile)
         if (source == LutLookSource.Off) {
-            val caption = if (colorMode < 0) "Waiting for camera color" else "Auto · no conversion needed"
+            val caption = if (colorMode < 0) "等待相机色彩模式" else "自动 · 无需转换"
             return FeedEffectsRenderPlan.IDENTITY to caption
         }
-        val caption = "Auto · " + LutLookResolver.sourceTitle(source)
+        val caption = "自动 · " + LutLookResolver.sourceTitle(source)
         if (!enabled) return FeedEffectsRenderPlan.IDENTITY to caption
-        val cube = lutCube(lutBytes, source, 0.0, colorMode) ?: return FeedEffectsRenderPlan.IDENTITY to "LUT unavailable"
+        val cube = lutCube(lutBytes, source, 0.0, colorMode) ?: return FeedEffectsRenderPlan.IDENTITY to "LUT 不可用"
         val identity = FeedEffectsRenderPlan.IDENTITY
         return FeedEffectsRenderPlan(
             lutCube = cube,

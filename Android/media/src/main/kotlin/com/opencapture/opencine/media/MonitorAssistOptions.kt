@@ -6,7 +6,7 @@ import kotlin.math.roundToInt
 
 /** Detector paint values, independent of display-theme swatches. */
 enum class MonitorPeakingColor(val label: String) {
-    WHITE("White"), BLUE("Blue"), RED("Red"), GREEN("Green");
+    WHITE("白色"), BLUE("蓝色"), RED("红色"), GREEN("绿色");
     val rgb: Triple<Double, Double, Double> get() = when (this) {
         WHITE -> Triple(246.0 / 255, 241.0 / 255, 226.0 / 255)
         BLUE -> Triple(64.0 / 255, 142.0 / 255, 1.0)
@@ -15,17 +15,17 @@ enum class MonitorPeakingColor(val label: String) {
     }
     companion object {
         fun fromPersisted(raw: String): MonitorPeakingColor =
-            entries.firstOrNull { it.label == raw || it.name == raw } ?: RED
+            entries.firstOrNull { it.label == raw || it.name.equals(raw, ignoreCase = true) } ?: RED
     }
 }
 
 enum class MonitorPeakingSense(val label: String) {
-    LOW("Low"), MED("Med"), HIGH("High");
+    LOW("低"), MED("中"), HIGH("高");
     val ratioThreshold: Double get() = when (this) { LOW -> 2.30; MED -> 2.10; HIGH -> 1.90 }
     val noiseGate: Double get() = when (this) { LOW -> 0.00522; MED -> 0.00174; HIGH -> 0.00058 }
     companion object {
         fun fromPersisted(raw: String): MonitorPeakingSense =
-            entries.firstOrNull { it.label == raw || it.name == raw } ?: MED
+            entries.firstOrNull { it.label == raw || it.name.equals(raw, ignoreCase = true) } ?: MED
     }
 }
 
@@ -40,7 +40,7 @@ data class MonitorPeakingOverlaySpec(val color: MonitorPeakingColor, val sensiti
 }
 
 enum class MonitorZebraPaint(val label: String) {
-    WHITE("White"), AMBER("Amber"), RED("Red"), CYAN("Cyan"), GREEN("Green");
+    WHITE("白色"), AMBER("琥珀色"), RED("红色"), CYAN("青色"), GREEN("绿色");
     val rgb: Triple<Double, Double, Double> get() = when (this) {
         WHITE -> Triple(1.0, 1.0, 1.0)
         AMBER -> Triple(1.0, 0.72, 0.2)
@@ -50,7 +50,7 @@ enum class MonitorZebraPaint(val label: String) {
     }
     companion object {
         fun fromPersisted(raw: String): MonitorZebraPaint =
-            entries.firstOrNull { it.label == raw || it.name == raw } ?: WHITE
+            entries.firstOrNull { it.label == raw || it.name.equals(raw, ignoreCase = true) } ?: WHITE
     }
 }
 
@@ -76,7 +76,7 @@ enum class MonitorDesqueezePreset(val label: String, val factor: Double) {
         fun matching(factor: Double): MonitorDesqueezePreset? = entries.firstOrNull { abs(it.factor - factor) < 0.005 }
     }
 }
-enum class MonitorDesqueezeDirection(val label: String) { HORIZONTAL("Horizontal"), VERTICAL("Vertical") }
+enum class MonitorDesqueezeDirection(val label: String) { HORIZONTAL("水平"), VERTICAL("垂直") }
 object MonitorAnamorphicDesqueeze {
     val factorRange = 1.0..2.0
     const val FACTOR_STEP = 0.01

@@ -59,8 +59,8 @@ object GamepadOperatorMap {
 
 /** Controls Gimbal joystick. Default Left. The other analog stick must not drive. */
 enum class GamepadGimbalStick(val raw: String, val label: String) {
-    LEFT("left", "Left"),
-    RIGHT("right", "Right"),
+    LEFT("left", "左摇杆"),
+    RIGHT("right", "右摇杆"),
     ;
 
     fun axes(leftX: Float, leftY: Float, rightX: Float, rightY: Float): Pair<Float, Float> =

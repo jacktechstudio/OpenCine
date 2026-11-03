@@ -55,8 +55,8 @@ public class ProgressiveMediaCacheReader internal constructor(
         if (available <= 0) {
             return when (snapshot.state) {
                 ProgressiveMediaCacheState.COMPLETE -> -1
-                ProgressiveMediaCacheState.FAILED -> throw IOException("Camera media transfer failed.", snapshot.failure)
-                ProgressiveMediaCacheState.CANCELLED -> throw InterruptedIOException("Camera media transfer was cancelled.")
+                ProgressiveMediaCacheState.FAILED -> throw IOException("相机素材传输失败。", snapshot.failure)
+                ProgressiveMediaCacheState.CANCELLED -> throw InterruptedIOException("相机素材传输已取消。")
                 ProgressiveMediaCacheState.ACTIVE -> throw EOFException("Media cache length changed while reading.")
             }
         }

@@ -87,17 +87,17 @@ public fun PairingCalloutStack(
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (!coreLoaded) {
             PairingCallout(
-                title = "Swift core",
-                body = "Swift core isn't loaded. Build with `just android-core` on an arm64 device.",
+                title = "Swift 核心",
+                body = "未载入 Swift 核心。请在 arm64 设备上使用 `just android-core` 构建。",
                 icon = MonitorIcon.TRIANGLE_ALERT,
             )
         }
         if (!radioOn) {
             PairingCallout(
-                title = "Bluetooth",
+                title = "蓝牙",
                 body = PairingCalloutRules.bluetoothBody(copy),
                 icon = MonitorIcon.RADIO,
-                action = "Turn on",
+                action = "开启",
                 onAction = onEnableBluetooth,
             )
         }
@@ -109,23 +109,23 @@ public fun PairingCalloutStack(
                     copy, name, discovery.needsSettings, DiscoveryPermissions.discoveryNeedsLocationServices(),
                 ),
                 icon = MonitorIcon.RADIO,
-                action = if (discovery.needsSettings) "Open Settings" else "Allow",
+                action = if (discovery.needsSettings) "打开设置" else "允许",
                 onAction = discovery::request,
             )
         }
         if (permissionsGranted && locationOff) {
             PairingCallout(
-                title = "Location",
-                body = "Android 10 and 11 only find Bluetooth cameras while Location is on.",
+                title = "位置信息",
+                body = "在 Android 10 和 11 上，需开启位置信息才能通过蓝牙发现相机。",
                 icon = MonitorIcon.RADIO,
-                action = "Turn on",
+                action = "开启",
                 onAction = { runCatching { context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)) } },
             )
         }
         if (slowScan && waitingForCamera) {
-            PairingCallout(title = "Still looking", body = copy.stillLooking, icon = MonitorIcon.RADIO)
+            PairingCallout(title = "仍在搜索", body = copy.stillLooking, icon = MonitorIcon.RADIO)
         } else if (choosing) {
-            PairingCallout(title = "Before you pair", body = copy.precheck, icon = MonitorIcon.TRIANGLE_ALERT)
+            PairingCallout(title = "配对前准备", body = copy.precheck, icon = MonitorIcon.TRIANGLE_ALERT)
         }
     }
 }
@@ -143,15 +143,15 @@ internal object PairingCalloutRules {
     ): Boolean = choosing && scanning && radioOn && permissionsGranted && !locationOff && nothingNearby
 
     fun bluetoothBody(copy: PairingCalloutCopy): String =
-        "Turn Bluetooth on so we can find your ${copy.cameraNoun}."
+        "请打开蓝牙，以便查找${copy.cameraNoun}。"
 
     fun permissionBody(copy: PairingCalloutCopy, name: String, needsSettings: Boolean, needsLocation: Boolean): String =
         when {
             needsSettings ->
-                "Android won’t ask again. Open Settings › Permissions › $name and choose Allow."
+                "Android 不会再次询问。请前往“设置 › 权限 › ${name}”并选择“允许”。"
             needsLocation ->
-                "Android 10 and 11 need Location to scan for Bluetooth cameras. It is only used to find your ${copy.cameraNoun}."
-            else -> "Allow Nearby devices so we can find your ${copy.cameraNoun} over Bluetooth. Location isn’t needed."
+                "在 Android 10 和 11 上，通过蓝牙扫描相机需要位置权限，仅用于查找${copy.cameraNoun}。"
+            else -> "请允许访问附近设备，以便通过蓝牙查找${copy.cameraNoun}。无需位置权限。"
         }
 }
 

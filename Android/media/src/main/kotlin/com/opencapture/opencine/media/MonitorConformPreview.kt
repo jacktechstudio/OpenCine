@@ -17,7 +17,7 @@ public object MonitorConformPreview {
     val targetRates: List<Double> = listOf(23.976, 24.0, 25.0, 29.97, 30.0)
     const val rateTolerance: Double = 0.01
     const val conformFloor: Double = 0.99
-    const val audioLabel: String = "Audio muted during conform preview"
+    const val audioLabel: String = "变帧率回放预览时静音"
 
     val cinemaRates: List<Double> =
         listOf(
@@ -48,10 +48,10 @@ public object MonitorConformPreview {
             get() =
                 when (this) {
                     is Available -> null
-                    UnknownRate -> "Frame rate unavailable for this clip"
-                    VariableRate -> "Variable frame rate: conform preview unavailable"
-                    AlreadyConformed -> "Already conformed in camera"
-                    NotHighFrameRate -> "Not a high-frame-rate clip"
+                    UnknownRate -> "无法获取此片段的帧率"
+                    VariableRate -> "可变帧率素材不支持变帧率回放预览"
+                    AlreadyConformed -> "已在相机内完成帧率转换"
+                    NotHighFrameRate -> "此片段并非高帧率素材"
                 }
     }
 
@@ -143,7 +143,7 @@ public object MonitorConformPreview {
         return "${rateLabel(targetRate)} fps · ${percentLabel(percent)}%"
     }
 
-    fun menuHeader(captureRate: Double): String = "Conform ${rateLabel(captureRate)} fps to"
+    fun menuHeader(captureRate: Double): String = "将 ${rateLabel(captureRate)} fps 素材按以下帧率回放"
 
     private fun percentLabel(percent: Double): String =
         if (abs(percent - round(percent)) < 0.05) {

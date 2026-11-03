@@ -103,7 +103,7 @@ private fun physicalZoomInsets(view: android.view.View, observed: IntRect): IntR
 @Composable
 fun MonitorZoomDisc(initial: Double, maximum: Double, label: (Double) -> String,
     onChange: (Double) -> Unit, onDismiss: () -> Unit,
-    opticalStops: List<Double> = listOf(1.0), caption: (Double) -> String = { "ZOOM" },
+    opticalStops: List<Double> = listOf(1.0), caption: (Double) -> String = { "变焦" },
     trailingInset: Float = 0f, attachment: MonitorZoomAttachment = MonitorZoomAttachment.Trailing,
     bottomClearance: Float = 0f, onDetent: () -> Unit = {}) {
     val maxZoom = maximum.takeIf { it.isFinite() }?.coerceAtLeast(1.0) ?: 1.0
@@ -199,10 +199,10 @@ fun MonitorZoomDisc(initial: Double, maximum: Double, label: (Double) -> String,
                     alpha = motion }
                 .monitorMaterial(MonitorMaterial.Zoom, MonitorZoomDiscShape(attachment))) {
                 Canvas(Modifier.fillMaxSize().semantics {
-                    contentDescription = "Zoom ${MonitorZoomScale.dialLabel(factor, maximum = maxZoom)}"
+                    contentDescription = "变焦 ${MonitorZoomScale.dialLabel(factor, maximum = maxZoom)}"
                     progressBarRangeInfo = ProgressBarRangeInfo(position.toFloat(), 0f..1f)
                     setProgress { update(it.toDouble(), accessibility = true); true }
-                    customActions = listOf(CustomAccessibilityAction("Close zoom") { closing = true; true })
+                    customActions = listOf(CustomAccessibilityAction("关闭变焦面板") { closing = true; true })
                 }.pointerInput(pixelDisc) {
                     detectTapGestures { if (!pixelDisc.contains(it.x, it.y)) closing = true }
                 }.pointerInput(geometry, closing) {

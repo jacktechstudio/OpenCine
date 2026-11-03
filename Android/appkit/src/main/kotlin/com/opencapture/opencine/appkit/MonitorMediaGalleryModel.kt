@@ -307,7 +307,7 @@ public class MonitorMediaGalleryModel<P>(public val library: MonitorMediaLibrary
                         // only this batch's own cancellation ends the batch.
                         if (failure is CancellationException) currentCoroutineContext().ensureActive()
                         if (isActive && lifetime == origin && isCurrent(snapshot))
-                            mutable.value = mutable.value.copy(failure = "Could not delete that clip.")
+                            mutable.value = mutable.value.copy(failure = "无法删除此片段。")
                     }
                 }
                 if (isActive && lifetime == origin && isCurrent(snapshot)) library.clearSelection()

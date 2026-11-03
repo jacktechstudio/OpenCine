@@ -90,7 +90,7 @@ fun MonitorInstantReview(
             .background(Color.Black)
             .clickable(remember { MutableInteractionSource() }, indication = null, onClick = onDismiss)
             .testTag(MonitorInstantReviewIds.REVIEW)
-            .semantics { contentDescription = "Instant playback" },
+            .semantics { contentDescription = "即时回放" },
     ) {
         val aspect = displayAspect?.takeIf { it.isFinite() && it > 0f }
         val fitted = Layout.imageFrame(aspect ?: image.width.toFloat(), if (aspect != null) 1f else image.height.toFloat(),
@@ -124,7 +124,7 @@ fun MonitorInstantReview(
                         .chromeClickable { onToggleFavorite(!starred) }
                         .testTag(MonitorInstantReviewIds.FAVORITE)
                         .semantics {
-                            contentDescription = if (starred) "Remove favorite star" else "Favorite this shot"
+                            contentDescription = if (starred) "取消收藏" else "收藏此镜头"
                         },
                     contentAlignment = Alignment.Center,
                 ) {

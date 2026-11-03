@@ -27,7 +27,7 @@ import com.opencapture.opencine.media.ScopeHistogramDisplay
 import com.opencapture.opencine.media.ScopeTrafficLightsReading
 
 object MonitorHistogramGeometry {
-    const val PANEL_TITLE = "Histo"
+    const val PANEL_TITLE = "直方图"
     const val CHIP = "RGBL"
     const val CLIP_ZONE_IRE = 95.0
     const val TRAFFIC_LAMP_WIDTH = 7.5f

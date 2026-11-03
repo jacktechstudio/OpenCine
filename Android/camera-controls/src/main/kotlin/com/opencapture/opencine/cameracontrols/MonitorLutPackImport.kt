@@ -37,7 +37,7 @@ public suspend fun MonitorLutLibrary.importPack(
     val cubes = try {
         MonitorLutArchive.extractCubes(file)
     } catch (error: Exception) {
-        return@withContext MonitorLutPackImportResult(0, archiveError = error.message ?: "unknown error")
+        return@withContext MonitorLutPackImportResult(0, archiveError = error.message ?: "未知错误")
     }
     if (cubes.isEmpty()) return@withContext MonitorLutPackImportResult(0, foundCubeEntries = 0)
     val staging = File(stagingRoot, "run-${System.nanoTime()}")

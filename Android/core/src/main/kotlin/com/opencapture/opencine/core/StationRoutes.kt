@@ -20,10 +20,10 @@ public object StationRoutes {
     public fun steps(route: SavedRoute?): List<ConnectionStep> {
         val moving = route != null && moves(route.kind)
         return listOf(
-            ConnectionStep("Connecting over Bluetooth"),
-            ConnectionStep(if (moving) "Moving the camera to ${name(route)}" else "Joining camera Wi-Fi"),
-            ConnectionStep(if (moving) "Finding the camera" else "Opening the video link"),
-            ConnectionStep("Starting the picture"),
+            ConnectionStep("正在通过蓝牙连接"),
+            ConnectionStep(if (moving) "正在将相机切换至${name(route)}" else "正在加入相机 Wi-Fi"),
+            ConnectionStep(if (moving) "正在查找相机" else "正在建立图传连接"),
+            ConnectionStep("正在启动取景画面"),
         )
     }
 
@@ -80,7 +80,7 @@ public object StationRoutes {
         val ap = camera?.routes?.firstOrNull { it.kind == RouteKind.CAMERA_ACCESS_POINT }
         val actions = failure.actions.filter { it != RecoveryAction.Retry } + RecoveryAction.EditRoute(route.id) +
             RecoveryAction.Retry + listOfNotNull(ap?.let { RecoveryAction.UseRoute(it.id) })
-        return failure.copy(title = "Couldn’t connect over ${route.title ?: name(route)}", actions = actions)
+        return failure.copy(title = "无法通过${route.title ?: name(route)}连接", actions = actions)
     }
 
     /**
@@ -88,8 +88,8 @@ public object StationRoutes {
      * when the network's security was not known, so the setup could be saved without it.
      */
     public fun checkPasswordMessage(network: String): String =
-        "The camera could not join “$network” without a password. Check the Wi-Fi password: edit the setup and enter it."
+        "相机缺少密码，无法加入“${network}”。请编辑连接方案并输入 Wi-Fi 密码。"
 
     private fun name(route: SavedRoute?): String =
-        route?.network ?: if (route?.kind == RouteKind.PHONE_HOTSPOT) "Hotspot" else "Wi-Fi"
+        route?.network ?: if (route?.kind == RouteKind.PHONE_HOTSPOT) "热点" else "Wi-Fi"
 }

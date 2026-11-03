@@ -25,4 +25,4 @@ class MonitorLutArchiveBudget(
 }
 
 /** A decoder must propagate this failure instead of skipping an entry or retrying without a bound. */
-class MonitorLutArchiveLimitExceeded : IOException("The LUT archive exceeds the import limits.")
+class MonitorLutArchiveLimitExceeded : IOException("LUT 压缩包超过导入限制。")

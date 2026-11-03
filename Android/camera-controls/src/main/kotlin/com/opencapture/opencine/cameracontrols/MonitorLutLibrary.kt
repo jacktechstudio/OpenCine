@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
 @JvmInline
 value class MonitorLutCategory(val name: String) {
     companion object {
-        val CUSTOM: MonitorLutCategory = MonitorLutCategory("CUSTOM")
+        val CUSTOM: MonitorLutCategory = MonitorLutCategory("自定义")
     }
 }
 
@@ -65,10 +65,10 @@ sealed interface MonitorLutImportResult {
 
 /** Why a stored cube cannot be selected or rendered now. */
 enum class MonitorLutFailure(val operatorMessage: String) {
-    MISSING("This LUT is no longer in the app library. Remove it or choose another look."),
-    TOO_LARGE("This LUT exceeds the 16 MB import limit. Remove it or import a smaller .cube."),
-    INVALID("This LUT can no longer be validated. Remove it or import the original again."),
-    READ_FAILED("This LUT could not be read from the app library. Remove it or import it again."),
+    MISSING("此 LUT 已从应用库移除。请删除此选择或选择其他 LUT。"),
+    TOO_LARGE("此 LUT 超过 16 MB 的导入上限。请移除它或导入较小的 .cube 文件。"),
+    INVALID("无法再校验此 LUT。请移除后重新导入原始文件。"),
+    READ_FAILED("无法读取库中的此 LUT。请移除后重新导入。"),
 }
 
 /**
@@ -112,11 +112,11 @@ class MonitorLutLibrary(
         category: MonitorLutCategory = MonitorLutCategory.CUSTOM,
     ): MonitorLutImportResult = withContext(Dispatchers.IO) {
         val bytes = try {
-            readBounded(resolver.openInputStream(uri) ?: throw IOException("No input stream."))
+            readBounded(resolver.openInputStream(uri) ?: throw IOException("无法打开输入流。"))
         } catch (_: IOException) {
-            return@withContext MonitorLutImportResult.Rejected("The selected document could not be read.")
+            return@withContext MonitorLutImportResult.Rejected("无法读取所选文档。")
         } catch (_: SecurityException) {
-            return@withContext MonitorLutImportResult.Rejected("The app can no longer read that document.")
+            return@withContext MonitorLutImportResult.Rejected("应用已失去对此文档的读取权限。")
         }
         importCube(category, bytes, documentName(resolver, uri) ?: uri.lastPathSegment)
     }
@@ -125,7 +125,7 @@ class MonitorLutLibrary(
     suspend fun importFile(category: MonitorLutCategory, file: File): MonitorLutImportResult =
         withContext(Dispatchers.IO) {
             val bytes = try { readBounded(FileInputStream(file)) } catch (_: IOException) {
-                return@withContext MonitorLutImportResult.Rejected("The .cube file could not be read.")
+                return@withContext MonitorLutImportResult.Rejected("无法读取 .cube 文件。")
             }
             importCube(category, bytes, file.name)
         }
@@ -134,19 +134,19 @@ class MonitorLutLibrary(
     suspend fun importCube(category: MonitorLutCategory, bytes: ByteArray, sourceName: String?): MonitorLutImportResult =
         withContext(Dispatchers.IO) {
             if (bytes.size > MAXIMUM_SOURCE_BYTES) {
-                return@withContext MonitorLutImportResult.Rejected("This .cube is larger than the 16 MB import limit.")
+                return@withContext MonitorLutImportResult.Rejected("此 .cube 文件超过 16 MB 的导入上限。")
             }
             val name = sourceName?.let { File(it).name }?.let(LutCatalog::normalizedCubeFileName) ?: FALLBACK_NAME
             val selection = MonitorLutSelection.of(category, name)?.takeIf { fileFor(it) != null }
-                ?: return@withContext MonitorLutImportResult.Rejected("This LUT library is not available.")
+                ?: return@withContext MonitorLutImportResult.Rejected("此 LUT 库不可用。")
             val cube = packed(bytes)
-                ?: return@withContext MonitorLutImportResult.Rejected("That document is not a supported .cube LUT.")
+                ?: return@withContext MonitorLutImportResult.Rejected("此文档不是受支持的 .cube LUT。")
             try {
                 writeAtomically(selection, bytes)
             } catch (_: IOException) {
-                return@withContext MonitorLutImportResult.Rejected("The LUT could not be saved in the app library.")
+                return@withContext MonitorLutImportResult.Rejected("无法将 LUT 保存到应用库。")
             } catch (_: SecurityException) {
-                return@withContext MonitorLutImportResult.Rejected("The LUT could not be saved in the app library.")
+                return@withContext MonitorLutImportResult.Rejected("无法将 LUT 保存到应用库。")
             }
             val entry = MonitorLutEntry(selection, displayName(selection.fileName), cube.cubeSize)
             synchronized(lock) {
@@ -224,11 +224,11 @@ class MonitorLutLibrary(
     private fun writeAtomically(selection: MonitorLutSelection, bytes: ByteArray) {
         val destination = requireNotNull(fileFor(selection))
         val directory = requireNotNull(destination.parentFile)
-        if (!directory.isDirectory && !directory.mkdirs()) throw IOException("Cannot create the LUT library directory.")
+        if (!directory.isDirectory && !directory.mkdirs()) throw IOException("无法建立 LUT 库目录。")
         val temporary = File.createTempFile("import-", ".tmp", directory)
         try {
             FileOutputStream(temporary).use { it.write(bytes); it.fd.sync() }
-            if (!temporary.renameTo(destination)) throw IOException("Cannot store the LUT.")
+            if (!temporary.renameTo(destination)) throw IOException("无法保存 LUT。")
         } finally {
             if (temporary.exists()) temporary.delete()
         }
@@ -254,7 +254,7 @@ class MonitorLutLibrary(
                 val read = stream.read(buffer)
                 if (read < 0) break
                 total += read
-                if (total > MAXIMUM_SOURCE_BYTES) throw IOException("LUT source too large.")
+                if (total > MAXIMUM_SOURCE_BYTES) throw IOException("LUT 源文件过大。")
                 output.write(buffer, 0, read)
             }
             output.toByteArray()

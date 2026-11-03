@@ -43,9 +43,9 @@ enum class MediaThumbnailSize {
     val accessibilityLabel: String
         get() =
             when (this) {
-                SMALL -> "Small thumbnails"
-                MEDIUM -> "Medium thumbnails"
-                LARGE -> "Large thumbnails"
+                SMALL -> "小缩略图"
+                MEDIUM -> "中缩略图"
+                LARGE -> "大缩略图"
             }
 }
 
@@ -82,27 +82,27 @@ object MediaClipPresentation {
 
 /** Operator-facing media-browser copy. Never name a sister app. */
 object MediaLibraryCopy {
-    const val FILTER_EMPTY = "Nothing in this tab matches the filters."
-    const val EMPTY_ALL = "Nothing on this camera yet. Record a clip, then pull to refresh."
-    const val EMPTY_FAVORITES = "Nothing favorited yet. Star a clip to find it here."
-    const val EMPTY_VIDEOS = "No videos on this camera yet. Record a clip, then pull to refresh."
-    const val EMPTY_PHOTOS = "No photos on this camera yet. Capture a still, then pull to refresh."
-    const val DISCONNECTED = "Connect the camera to list clips on the body."
+    const val FILTER_EMPTY = "当前分类没有符合筛选条件的素材。"
+    const val EMPTY_ALL = "相机中暂无素材。拍摄后下拉刷新。"
+    const val EMPTY_FAVORITES = "暂无收藏。为片段标星后即可在此查看。"
+    const val EMPTY_VIDEOS = "相机中暂无视频。录制后下拉刷新。"
+    const val EMPTY_PHOTOS = "相机中暂无照片。拍摄后下拉刷新。"
+    const val DISCONNECTED = "连接相机以查看机身存储的素材。"
     const val DISCONNECTED_EMPTY_CACHE =
-        "No cached clips here. Connect the camera to list clips on the body."
+        "本机没有缓存。连接相机以查看机身存储的素材。"
     /**
      * Offline, the gallery shows only clips cached on this phone; the last card listing stays
      * hidden (the documented offline browse: downloaded clips only), and the gallery says so.
      */
-    const val DISCONNECTED_CACHED_ONLY = "Camera disconnected. Showing clips cached on this phone."
-    const val BROWSE_HINT = "Tap to open · Hold, then drag to select"
-    const val SELECTING_HINT = "Swipe to scroll · Hold or drag sideways to select"
-    const val READING_HINT = "Reading camera media…"
-    const val LISTING_TITLE = "Listing clips on camera…"
-    const val FILTER_EMPTY_TITLE = "No matching clips"
-    const val DISCONNECTED_TITLE = "Camera disconnected"
-    const val NO_CACHED_TITLE = "No cached clips"
-    const val EMPTY_TITLE = "No clips yet"
+    const val DISCONNECTED_CACHED_ONLY = "相机已断开。当前显示本机缓存的素材。"
+    const val BROWSE_HINT = "轻点打开 · 长按后拖动多选"
+    const val SELECTING_HINT = "滑动浏览 · 长按或横向拖动选择"
+    const val READING_HINT = "正在读取相机素材…"
+    const val LISTING_TITLE = "正在读取相机素材列表…"
+    const val FILTER_EMPTY_TITLE = "无符合条件的素材"
+    const val DISCONNECTED_TITLE = "相机已断开"
+    const val NO_CACHED_TITLE = "无缓存素材"
+    const val EMPTY_TITLE = "暂无素材"
 
     /** The gallery's hint line under its item count (Swift `MonitorMediaGalleryCopy.galleryHint`). */
     fun galleryHint(fetching: Boolean, selecting: Boolean, isLive: Boolean): String =
@@ -125,15 +125,15 @@ object MediaLibraryCopy {
             !isLive -> NO_CACHED_TITLE
             else -> EMPTY_TITLE
         }
-    const val PROXY_TAG = "Proxy"
-    const val PROXY_HELP = "720p preview. Connect the camera to share the original."
+    const val PROXY_TAG = "代理文件"
+    const val PROXY_HELP = "720p 预览。连接相机以分享原片。"
 
     fun headerTitle(category: MediaLibraryTab): String =
         when (category) {
-            MediaLibraryTab.ALL -> "All clips"
-            MediaLibraryTab.VIDEOS -> "Videos"
-            MediaLibraryTab.PHOTOS -> "Photos"
-            MediaLibraryTab.FAVORITES -> "Favorites"
+            MediaLibraryTab.ALL -> "全部素材"
+            MediaLibraryTab.VIDEOS -> "视频"
+            MediaLibraryTab.PHOTOS -> "照片"
+            MediaLibraryTab.FAVORITES -> "收藏"
         }
 
     /**
@@ -153,17 +153,17 @@ object MediaLibraryCopy {
 }
 
 object MediaOperatorCopy {
-    const val LISTING = "Listing camera clips…"
-    const val NOT_CONNECTED = "Connect the camera to list clips."
-    const val PLAYBACK_FAILED = "Camera did not enter playback."
-    const val BROWSING_ON_CAMERA = "Playback is open on the camera. Close to return to live view."
-    const val NO_CLIPS = "No clips on the camera."
-    const val LIST_FAILED = "Could not list camera clips."
-    const val NOT_DELETABLE = "That clip cannot be deleted from here."
-    const val DELETE_FAILED = "Could not delete that clip."
-    const val DOWNLOAD_FAILED = "Could not download that clip."
-    const val THUMB_FAILED = "Could not load that thumbnail."
-    const val CLIP_OPEN_FAILED = "Could not open that clip."
-    const val CLIP_LOADING = "Loading clip from camera…"
-    const val CLIP_NOT_CACHED = "This clip is not cached on the phone."
+    const val LISTING = "正在读取相机素材列表…"
+    const val NOT_CONNECTED = "连接相机以查看素材。"
+    const val PLAYBACK_FAILED = "相机未进入回放模式。"
+    const val BROWSING_ON_CAMERA = "相机正在回放。关闭回放即可返回实时取景。"
+    const val NO_CLIPS = "相机中没有素材。"
+    const val LIST_FAILED = "无法读取相机素材列表。"
+    const val NOT_DELETABLE = "无法在此删除该片段。"
+    const val DELETE_FAILED = "无法删除此片段。"
+    const val DOWNLOAD_FAILED = "无法下载此片段。"
+    const val THUMB_FAILED = "无法载入缩略图。"
+    const val CLIP_OPEN_FAILED = "无法打开此片段。"
+    const val CLIP_LOADING = "正在从相机载入片段…"
+    const val CLIP_NOT_CACHED = "此片段尚未缓存到本机。"
 }

@@ -67,7 +67,7 @@ object MonitorGridGeometry {
     val phiFractions = listOf(0.382f, 0.618f)
     const val STROKE_OPACITY = 0.22f
     const val STROKE_WIDTH_DP = 1f
-    val optionLabels = listOf("Thirds", "Phi Grid", "Diagonal")
+    val optionLabels = listOf("三分线", "黄金分割线", "对角线")
 
     fun segments(
         feed: MonitorScopeRect,
@@ -129,5 +129,5 @@ object MonitorCrosshairGeometry {
     const val ARM_LENGTH_DP = 40f
     const val STROKE_WIDTH_DP = 1.4f
     const val OPACITY = 0.65f
-    const val HELP = "Tap the toolbar button to show or hide the centre crosshair."
+    const val HELP = "轻点工具栏按钮可显示或隐藏中心十字线。"
 }

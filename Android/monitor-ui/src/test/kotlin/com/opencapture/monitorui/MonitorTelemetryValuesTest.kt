@@ -30,12 +30,12 @@ class MonitorTelemetryValuesTest {
     }
 
     @Test fun theSpokenBatteryNamesExhaustionAndPower() {
-        assertEquals("1 of 5 bars, exhausted", MonitorTelemetryValues.batterySpokenValue(null, 1, 5, null, null, true))
-        assertEquals("3 of 5 bars, external power", MonitorTelemetryValues.batterySpokenValue(null, 3, 5, true, true, false))
-        assertEquals("60 percent, charging", MonitorTelemetryValues.batterySpokenValue(60, null, 5, true, null, false))
-        assertEquals("60 percent", MonitorTelemetryValues.batterySpokenValue(60, null, 5, false, false, false))
-        assertEquals("external power", MonitorTelemetryValues.batterySpokenValue(null, null, 5, true, true, false))
-        assertEquals("exhausted, external power", MonitorTelemetryValues.batterySpokenValue(null, null, 5, true, true, true))
+        assertEquals("1/5 格，电量耗尽", MonitorTelemetryValues.batterySpokenValue(null, 1, 5, null, null, true))
+        assertEquals("3/5 格，外接电源", MonitorTelemetryValues.batterySpokenValue(null, 3, 5, true, true, false))
+        assertEquals("60%，正在充电", MonitorTelemetryValues.batterySpokenValue(60, null, 5, true, null, false))
+        assertEquals("60%", MonitorTelemetryValues.batterySpokenValue(60, null, 5, false, false, false))
+        assertEquals("外接电源", MonitorTelemetryValues.batterySpokenValue(null, null, 5, true, true, false))
+        assertEquals("电量耗尽，外接电源", MonitorTelemetryValues.batterySpokenValue(null, null, 5, true, true, true))
         assertNull(MonitorTelemetryValues.batterySpokenValue(null, null, 5, null, null, false))
     }
 
@@ -50,9 +50,10 @@ class MonitorTelemetryValuesTest {
 
     /** The link pill stays bars-first, but a state word (no rate) always shows without a tap. */
     @Test fun linkStateWordsShowWithoutATap() {
-        for (word in listOf("NO LINK", "RECOV", "FAIL", "LINK", "BUSY", "READY")) {
-            assertEquals(word, MonitorTelemetryValues.linkValue(word, 2, showsRate = false))
-            assertEquals(word, MonitorTelemetryValues.linkValue(word, 2, showsRate = true))
+        for ((word, label) in mapOf("NO LINK" to "图传中断", "RECOV" to "恢复中", "FAIL" to "失败",
+            "LINK" to "图传", "BUSY" to "忙碌", "READY" to "就绪", "恢复中" to "恢复中")) {
+            assertEquals(label, MonitorTelemetryValues.linkValue(word, 2, showsRate = false))
+            assertEquals(label, MonitorTelemetryValues.linkValue(word, 2, showsRate = true))
         }
         assertNull(MonitorTelemetryValues.linkValue("25.00", 3, showsRate = false))
         assertEquals("25 fps", MonitorTelemetryValues.linkValue("25.00", 3, showsRate = true))
@@ -67,12 +68,12 @@ class MonitorTelemetryValuesTest {
 
     /** Hardware pass 7.2a: a held frame was read as "3 of 4 delivery bars, feed NO LINK". */
     @Test fun aHeldOrFailedFeedNamesNoDeliveryBars() {
-        assertEquals("Live link down, feed NO LINK", MonitorTelemetryValues.linkSpokenLabel("NO LINK", 3))
-        assertEquals("Live link down, feed FAIL", MonitorTelemetryValues.linkSpokenLabel("FAIL", 3))
-        assertEquals("Live link 3 of 4 delivery bars, feed RECOV", MonitorTelemetryValues.linkSpokenLabel("RECOV", 3))
-        assertEquals("Live link 3 of 4 delivery bars, feed 25.00 frames per second",
+        assertEquals("监看链路：已断开，图传：图传中断", MonitorTelemetryValues.linkSpokenLabel("NO LINK", 3))
+        assertEquals("监看链路：已断开，图传：失败", MonitorTelemetryValues.linkSpokenLabel("FAIL", 3))
+        assertEquals("监看链路：链路质量 3/4 格，图传：恢复中", MonitorTelemetryValues.linkSpokenLabel("RECOV", 3))
+        assertEquals("监看链路：链路质量 3/4 格，图传：每秒 25.00 帧",
             MonitorTelemetryValues.linkSpokenLabel("25.00", 3))
-        assertEquals("Live link 0 of 4 delivery bars, feed unavailable", MonitorTelemetryValues.linkSpokenLabel("\u2014", 0))
-        assertEquals("Live link unavailable, feed unavailable", MonitorTelemetryValues.linkSpokenLabel(null, null))
+        assertEquals("监看链路：链路质量 0/4 格，图传：不可用", MonitorTelemetryValues.linkSpokenLabel("\u2014", 0))
+        assertEquals("监看链路：不可用，图传：不可用", MonitorTelemetryValues.linkSpokenLabel(null, null))
     }
 }

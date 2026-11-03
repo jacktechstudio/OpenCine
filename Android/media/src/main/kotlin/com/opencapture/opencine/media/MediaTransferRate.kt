@@ -19,7 +19,7 @@ public sealed interface MediaTransferRate {
     /** "42 MB/s", "Stalled", or null while measuring. */
     public val label: String? get() = when (this) {
         Measuring -> null
-        Stalled -> "Stalled"
+        Stalled -> "已停滞"
         is BytesPerSecond -> label(rate)
     }
 
