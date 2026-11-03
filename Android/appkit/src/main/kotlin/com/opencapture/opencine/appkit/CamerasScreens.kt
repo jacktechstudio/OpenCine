@@ -67,7 +67,7 @@ public fun CamerasScreen(
     onMedia: () -> Unit,
     onSettings: () -> Unit,
     modifier: Modifier = Modifier,
-    nearbyNote: String = "announcing over Bluetooth",
+    nearbyNote: String = "正在通过蓝牙广播",
     onMultiview: (() -> Unit)? = null,
     /** Camera id, integration action id ([RecoveryAction.Integration]). */
     onIntegrationAction: ((String, String) -> Unit)? = null,
@@ -110,17 +110,17 @@ public fun CamerasScreen(
     MonitorCameraPage(
         brand = brandName,
         sections = listOf(
-            MonitorCameraSection("PAIRED", paired, "tap to reconnect"),
-            MonitorCameraSection("NEARBY", CamerasMapping.nearby(model) + extraNearby, nearbyNote),
+            MonitorCameraSection("已配对", paired, "轻点重新连接"),
+            MonitorCameraSection("附近的相机", CamerasMapping.nearby(model) + extraNearby, nearbyNote),
         ),
         key = { it.id },
-        emptyMessage = "Pair a new camera to start monitoring.",
+        emptyMessage = "配对新相机，开始监看。",
         modifier = modifier,
         scanning = state.scanning,
         actions = {
-            onMultiview?.let { HeaderAction(MonitorIcon.LAYOUT_GRID, "Open Multiview", !busy, it) }
-            HeaderAction(MonitorIcon.FILM, "Media library", true, onMedia)
-            HeaderAction(MonitorIcon.SETTINGS, "Settings", true, onSettings)
+            onMultiview?.let { HeaderAction(MonitorIcon.LAYOUT_GRID, "打开多机监看", !busy, it) }
+            HeaderAction(MonitorIcon.FILM, "素材库", true, onMedia)
+            HeaderAction(MonitorIcon.SETTINGS, "设置", true, onSettings)
         },
         camera = { item ->
             val camera = saved(item.id)
@@ -177,10 +177,10 @@ public fun CamerasScreen(
         footer = {
             MonitorCameraFooter(onPrivacy, onTerms) {
                 MonitorCameraAction(
-                    text = "Pair a new camera",
+                    text = "配对新相机",
                     primary = false,
                     enabled = !busy,
-                    contentDescription = "Pair a new camera",
+                    contentDescription = "配对新相机",
                     onClick = {
                         model.select(null)
                         onPair()
@@ -223,54 +223,54 @@ public fun CamerasScreen(
         var text by remember(camera.id) { mutableStateOf(camera.name.orEmpty()) }
         AlertDialog(
             onDismissRequest = { renaming = null },
-            title = { Text("Rename camera") },
+            title = { Text("重命名相机") },
             text = {
                 Column {
-                    Text("Give this camera a name you'll recognize.")
-                    OutlinedTextField(value = text, onValueChange = { text = it }, label = { Text("Name") })
+                    Text("为这台相机取一个容易辨认的名称。")
+                    OutlinedTextField(value = text, onValueChange = { text = it }, label = { Text("名称") })
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
                     model.rename(camera.id, text)
                     renaming = null
-                }) { Text("Save") }
+                }) { Text("保存") }
             },
-            dismissButton = { TextButton(onClick = { renaming = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { renaming = null }) { Text("取消") } },
         )
     }
     renamingSetup?.let { (cameraID, route) ->
         var text by remember(cameraID, route.id) { mutableStateOf(CamerasMapping.title(route)) }
         AlertDialog(
             onDismissRequest = { renamingSetup = null },
-            title = { Text("Rename setup") },
+            title = { Text("重命名连接方案") },
             text = {
                 Column {
-                    Text("Name this connection setup. Leave it blank to use the default name.")
-                    OutlinedTextField(value = text, onValueChange = { text = it }, label = { Text("Name") })
+                    Text("为此连接方案命名。留空则使用默认名称。")
+                    OutlinedTextField(value = text, onValueChange = { text = it }, label = { Text("名称") })
                 }
             },
             confirmButton = {
                 TextButton(enabled = !busy, onClick = {
                     if (!busy) model.renameRoute(route.id, cameraID, text)
                     renamingSetup = null
-                }) { Text("Save") }
+                }) { Text("保存") }
             },
-            dismissButton = { TextButton(onClick = { renamingSetup = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { renamingSetup = null }) { Text("取消") } },
         )
     }
     removing?.let { camera ->
         AlertDialog(
             onDismissRequest = { removing = null },
-            title = { Text("Remove camera?") },
-            text = { Text("This removes ${camera.displayName} from this phone. You can pair it again later.") },
+            title = { Text("移除相机？") },
+            text = { Text("将从本机移除 ${camera.displayName}。之后可以重新配对。") },
             confirmButton = {
                 TextButton(onClick = {
                     removing = null
                     scope.launch { model.forget(camera.id) }
-                }) { Text("Remove") }
+                }) { Text("移除") }
             },
-            dismissButton = { TextButton(onClick = { removing = null }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { removing = null }) { Text("取消") } },
         )
     }
 }
@@ -344,17 +344,17 @@ private fun CardOptions(camera: SavedCamera, enabled: Boolean, onRename: () -> U
         Box(
             Modifier.size(36.dp, 44.dp)
                 .clickable(enabled = enabled) { menu = true }
-                .semantics { contentDescription = "Options for ${camera.displayName}" },
+                .semantics { contentDescription = "${camera.displayName} 的选项" },
             contentAlignment = Alignment.Center,
         ) {
             MonitorIcon(MonitorIcon.ELLIPSIS, null, Modifier.size(15.dp), tint = MonitorPalette.muted)
         }
         DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-            DropdownMenuItem(text = { Text("Rename") }, onClick = {
+            DropdownMenuItem(text = { Text("重命名") }, onClick = {
                 menu = false
                 onRename()
             })
-            DropdownMenuItem(text = { Text("Remove") }, onClick = {
+            DropdownMenuItem(text = { Text("移除") }, onClick = {
                 menu = false
                 onRemove()
             })

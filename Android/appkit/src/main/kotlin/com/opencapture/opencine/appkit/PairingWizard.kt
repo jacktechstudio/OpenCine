@@ -35,23 +35,23 @@ public data class PairingWizard(
     val blocker: String? = null,
 ) {
     public companion object {
-        internal val titles = listOf("Find your camera", "Approve on the camera", "Join camera Wi-Fi", "Open video link")
-        internal val rail = listOf("Bluetooth scan", "Camera prompt", "Camera network", "Video link")
+        internal val titles = listOf("查找相机", "在相机上确认", "加入相机 Wi-Fi", "建立图传连接")
+        internal val rail = listOf("搜索蓝牙设备", "相机提示", "相机网络", "图传连接")
 
         /**
          * The apps' live label for a connection phase (Swift `ConnectionPhase.label`). Reads each
          * integration's phase enum by its constant names, which match by design.
          */
         public fun phaseLabel(phase: Enum<*>): String = when (phase.name) {
-            "SCANNING" -> "Scanning for camera…"
-            "CONNECTING_GATT" -> "Connecting (Bluetooth)…"
-            "PAIRING" -> "Pairing…"
-            "AWAITING_APPROVAL" -> "Approve on the camera screen"
-            "READING_WIFI_CREDS" -> "Reading Wi-Fi credentials…"
-            "JOINING_WIFI" -> "Joining camera Wi-Fi…"
-            "OPENING_DATALINK" -> "Opening datalink…"
-            "LIVE" -> "Connected"
-            else -> "Idle"
+            "SCANNING" -> "正在搜索相机…"
+            "CONNECTING_GATT" -> "正在连接蓝牙…"
+            "PAIRING" -> "正在配对…"
+            "AWAITING_APPROVAL" -> "请在相机屏幕上确认"
+            "READING_WIFI_CREDS" -> "正在读取 Wi-Fi 连接信息…"
+            "JOINING_WIFI" -> "正在加入相机 Wi-Fi…"
+            "OPENING_DATALINK" -> "正在建立数据连接…"
+            "LIVE" -> "已连接"
+            else -> "空闲"
         }
 
         /** A connect's scan (a first step with a live note, as both integrations report it) is still page 0. */
@@ -111,21 +111,21 @@ public fun CamerasMapping.wizard(model: CamerasModel, wizard: PairingWizard): Mo
     val instructions = when (page) {
         0 -> listOfNotNull(wizard.choosing.takeIf { failure == null })
         1 -> listOf(
-            MonitorPairingInstruction("On the camera", MonitorPairingInstructionIcon.CAMERA, wizard.approveLines),
+            MonitorPairingInstruction("在相机上操作", MonitorPairingInstructionIcon.CAMERA, wizard.approveLines),
             MonitorPairingInstruction(
-                "On this phone", MonitorPairingInstructionIcon.PHONE,
-                listOf("Wait here, we keep the Bluetooth link alive", "Don't force-quit the app"),
+                "在本机操作", MonitorPairingInstructionIcon.PHONE,
+                listOf("请停留在此页面，以保持蓝牙连接", "请勿强行关闭应用"),
             ),
         )
         2 -> listOf(
-            MonitorPairingInstruction("On the camera", MonitorPairingInstructionIcon.CAMERA, wizard.joinLines),
+            MonitorPairingInstruction("在相机上操作", MonitorPairingInstructionIcon.CAMERA, wizard.joinLines),
             MonitorPairingInstruction(
-                "On this phone", MonitorPairingInstructionIcon.PHONE,
-                listOf("Tap Join when Android asks to join the camera network", LocalVPNFilter.JOIN_WIFI_PHONE_STEP),
+                "在本机操作", MonitorPairingInstructionIcon.PHONE,
+                listOf("Android 提示加入相机网络时，请轻点“连接”", LocalVPNFilter.JOIN_WIFI_PHONE_STEP),
             ),
         )
         else -> if (wizard.vpnActive) {
-            listOf(MonitorPairingInstruction("Check the connection", MonitorPairingInstructionIcon.PHONE, listOf(LocalVPNFilter.WIZARD_BANNER)))
+            listOf(MonitorPairingInstruction("检查连接", MonitorPairingInstructionIcon.PHONE, listOf(LocalVPNFilter.WIZARD_BANNER)))
         } else {
             emptyList()
         }
@@ -139,30 +139,30 @@ public fun CamerasMapping.wizard(model: CamerasModel, wizard: PairingWizard): Mo
     val name = selected?.let { device(it, state, model).name } ?: failedName
     val checks = if (page >= 2) {
         listOf(
-            MonitorPairingCheck("Bluetooth link", name ?: "Camera connected", MonitorPairingCheckState.COMPLETE, "OK"),
+            MonitorPairingCheck("蓝牙连接", name ?: "相机已连接", MonitorPairingCheckState.COMPLETE, "确定"),
             MonitorPairingCheck(
-                "Camera Wi-Fi", wizard.joinedNetwork ?: "Waiting for the camera network",
+                "相机 Wi-Fi", wizard.joinedNetwork ?: "正在等待相机网络",
                 if (page > 2) MonitorPairingCheckState.COMPLETE else MonitorPairingCheckState.ACTIVE,
-                if (page > 2) "OK" else "JOINING",
+                if (page > 2) "确定" else "正在加入",
             ),
             MonitorPairingCheck(
-                "Live picture", if (page > 2) "Opening the video link…" else "Starts after Wi-Fi joins",
-                if (page > 2) MonitorPairingCheckState.ACTIVE else MonitorPairingCheckState.WAITING, "WAITING",
+                "取景画面", if (page > 2) "正在建立图传连接…" else "加入 Wi-Fi 后启动",
+                if (page > 2) MonitorPairingCheckState.ACTIVE else MonitorPairingCheckState.WAITING, "等待中",
             ),
         )
     } else {
         emptyList()
     }
     val hint = when (page) {
-        0 -> name?.let { "Selected $it" } ?: "Choose the camera that matches your screen"
-        1 -> "Nothing to type. Approve it on the camera"
-        2 -> "Android asks to join the camera network"
-        else -> "Monitoring opens when the picture is ready"
+        0 -> name?.let { "已选择 ${it}" } ?: "选择与相机屏幕显示一致的设备"
+        1 -> "无需输入，请在相机上确认"
+        2 -> "Android 将提示加入相机网络"
+        else -> "收到画面后将进入监看"
     }
     val (primary, enabled) = when {
-        failure != null -> "Try again" to true
+        failure != null -> "重试" to true
         wizard.blocker != null -> wizard.blocker to true
-        choosing -> "Continue" to (selected != null && !busy)
+        choosing -> "继续" to (selected != null && !busy)
         else -> null to false
     }
     return MonitorPairingPresentation(
@@ -170,7 +170,7 @@ public fun CamerasMapping.wizard(model: CamerasModel, wizard: PairingWizard): Mo
         currentStep = page,
         title = PairingWizard.titles[page],
         body = wizard.bodies[page],
-        target = name ?: "Nothing selected yet",
+        target = name ?: "尚未选择",
         hint = hint,
         // A blocker means discovery is not running (main's scan never started).
         progress = wizard.label.takeIf { failure == null && (busy || state.scanning && wizard.blocker == null) },
@@ -186,12 +186,12 @@ public fun CamerasMapping.wizard(model: CamerasModel, wizard: PairingWizard): Mo
         instructions = instructions,
         checks = checks,
         emptyTitle = if (choosing && state.nearby.isEmpty() && wizard.blocker == null) {
-            if (state.scanning) "Looking for cameras" else "No cameras yet"
+            if (state.scanning) "正在搜索相机" else "尚未发现相机"
         } else {
             null
         },
         primaryAction = primary,
         primaryActionEnabled = enabled,
-        backAction = if (busy) "Cancel" else null,
+        backAction = if (busy) "取消" else null,
     )
 }

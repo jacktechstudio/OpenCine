@@ -57,14 +57,14 @@ public fun MonitorOperatorCacheSettings(
     source: MonitorSettingsCacheSource,
     cacheOriginals: Boolean? = null,
     onCacheOriginals: ((Boolean) -> Unit)? = null,
-    cacheHelp: String = "Keep originals downloaded for playback.",
-    scopeHelp: String = "Originals and playback proxies downloaded from the camera.",
-    clearHelp: String = "Remove downloaded picture files while keeping the clip list.",
+    cacheHelp: String = "保留为回放下载的原片。",
+    scopeHelp: String = "从相机下载的原片与回放代理文件。",
+    clearHelp: String = "删除已下载的影像文件，保留素材列表。",
     formatBytes: ((Long) -> String)? = null,
     feedback: () -> Unit = {},
-    checkingLabel: String = "Checking…",
-    readFailureLabel: String = "Could not read the cache.",
-    clearFailureLabel: String = "Could not clear the cache. Try again.",
+    checkingLabel: String = "正在检查…",
+    readFailureLabel: String = "无法读取缓存。",
+    clearFailureLabel: String = "未能清除缓存，请重试。",
     summaryColor: Color = MonitorPalette.accent,
 ) {
     val scope = rememberCoroutineScope()
@@ -83,13 +83,13 @@ public fun MonitorOperatorCacheSettings(
         color = MonitorPalette.accent)
     if (value.confirmationPresented) AlertDialog(
         onDismissRequest = model::cancelConfirmation,
-        title = { Text("Clear cache?", color = LiveDesign.text) },
+        title = { Text("清除缓存？", color = LiveDesign.text) },
         text = { Text(clearHelp, color = LiveDesign.muted) },
-        confirmButton = { TextButton(onClick = model::clear) { Text("Clear", color = MonitorPalette.recording) } },
-        dismissButton = { TextButton(onClick = model::cancelConfirmation) { Text("Cancel", color = LiveDesign.muted) } },
+        confirmButton = { TextButton(onClick = model::clear) { Text("清除", color = MonitorPalette.recording) } },
+        dismissButton = { TextButton(onClick = model::cancelConfirmation) { Text("取消", color = LiveDesign.muted) } },
         containerColor = LiveDesign.surface,
     )
     if (value.clearFailed) AlertDialog(onDismissRequest = model::dismissError,
         title = { Text(value.failure ?: clearFailureLabel) },
-        confirmButton = { TextButton(onClick = model::dismissError) { Text("OK") } })
+        confirmButton = { TextButton(onClick = model::dismissError) { Text("确定") } })
 }

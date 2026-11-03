@@ -8,7 +8,15 @@ class MonitorAssistValueContractTest {
         assertEquals(MonitorParadeMode.YRGB, MonitorParadeMode.fromPersisted("YRGB"))
         assertEquals(MonitorGuideFamily.SOCIAL, MonitorGuideFamily.fromPersisted("Social"))
         assertEquals(MonitorGuideAspect.CINEMA, MonitorGuideAspect.fromPersisted("2.39:1"))
-        assertEquals("Horizontal", MonitorAudioOrientation.HORIZONTAL.label)
+        assertEquals(MonitorWaveformMode.LUMA, MonitorWaveformMode.fromPersisted("Luma"))
+        assertEquals(MonitorAssistTool.DESQ, MonitorAssistTool.fromPersisted("DE-SQ"))
+        assertEquals(MonitorFalseColorSelection.STOPS, MonitorFalseColorSelection.fromMenuLabel("Video"))
+        assertEquals(MonitorFalseColorSelection.LIMITS, MonitorFalseColorSelection.fromMenuLabel("Limits"))
+        for (selection in MonitorFalseColorSelection.entries) {
+            assertEquals(selection, MonitorFalseColorSelection.fromMenuLabel(selection.menuLabel))
+            assertEquals(selection, MonitorFalseColorSelection.fromPersisted(selection.persisted))
+        }
+        assertEquals("水平", MonitorAudioOrientation.HORIZONTAL.label)
         assertEquals(listOf("9:16", "4:5", "1:1", "2:3", "16:9", "1.91:1"),
             MonitorGuideAspect.ratios(MonitorGuideFamily.SOCIAL).map { it.label })
         assertEquals(2.39f, MonitorGuideAspect.CINEMA.ratio)

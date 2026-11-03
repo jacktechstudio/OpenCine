@@ -159,44 +159,43 @@ enum class SessionDropSuspect {
 
 /** Operator-facing recovery copy. Never names a sister app or another brand. */
 object SessionRecoveryCopy {
-    const val RETRY_CONNECTION = "Retry connection"
-    const val OPERATOR_MENU = "Operator menu"
+    const val RETRY_CONNECTION = "重新连接"
+    const val OPERATOR_MENU = "操作菜单"
     const val HELD_FRAME_BADGE = "NO LINK"
 
     fun title(state: SessionRecoveryUi): String =
         when (state) {
             SessionRecoveryUi.Idle -> ""
-            is SessionRecoveryUi.Retrying -> "Reconnecting…"
-            is SessionRecoveryUi.WaitingForOperator -> "Camera disconnected"
-            is SessionRecoveryUi.PausedAfterDrops -> "Connection keeps dropping"
-            is SessionRecoveryUi.TakenOver -> "Camera taken over"
+            is SessionRecoveryUi.Retrying -> "正在重新连接…"
+            is SessionRecoveryUi.WaitingForOperator -> "相机已断开"
+            is SessionRecoveryUi.PausedAfterDrops -> "连接频繁中断"
+            is SessionRecoveryUi.TakenOver -> "相机已连接到其他设备"
         }
 
     /** [dropSuspect] names a likely cause for repeated drops; only the paused case reads it. */
     fun detail(state: SessionRecoveryUi, deviceName: String, dropSuspect: SessionDropSuspect? = null): String {
         val name = deviceName.trim()
-        val camera = if (name.isEmpty()) "The camera" else name
+        val camera = if (name.isEmpty()) "相机" else name
         return when (state) {
             SessionRecoveryUi.Idle -> ""
             // The episode ends on its time budget, usually before maxAttempts: "attempt 1 of 8"
             // followed by "after 3 tries" read as two machines (hardware pass 5.1).
             is SessionRecoveryUi.Retrying ->
-                "$camera dropped off. Holding the last frame, attempt ${state.attempt}. " +
-                    "Reconnecting for up to ${SessionRecoveryPolicy.AUTOMATIC_RECOVERY_BUDGET_MS / 60_000} minutes."
+                "${camera}已断开，画面停留在最后一帧。正在第 ${state.attempt} 次重连。" +
+                    "最多尝试 ${SessionRecoveryPolicy.AUTOMATIC_RECOVERY_BUDGET_MS / 60_000} 分钟。"
             is SessionRecoveryUi.WaitingForOperator -> {
-                val tries = if (state.attemptsMade == 1) "1 try" else "${state.attemptsMade} tries"
-                "$camera didn't come back after $tries. Turn the camera off and on, then tap Retry. The frame below is held, not live."
+                "尝试 ${state.attemptsMade} 次后仍未能连接${camera}。请重启相机，再点按“重新连接”。下方画面已定格。"
             }
             is SessionRecoveryUi.PausedAfterDrops ->
                 when (dropSuspect) {
                     null ->
-                        "$camera reconnected but dropped ${state.drops} times in quick succession. Automatic retries are paused to protect the camera. The frame below is held, not live."
+                        "${camera}重连后短时间内又断开 ${state.drops} 次。为保护相机，已暂停自动重连。下方画面已定格。"
                     SessionDropSuspect.OTHER_DEVICE_SCANNING ->
-                        "$camera reconnected but dropped ${state.drops} times in quick succession. Automatic retries are paused to protect the camera, since another device may be scanning for cameras. The frame below is held, not live."
+                        "${camera}重连后短时间内又断开 ${state.drops} 次，可能有其他设备正在搜索相机。为保护相机，已暂停自动重连。下方画面已定格。"
                 }
             is SessionRecoveryUi.TakenOver -> {
-                val other = state.holder?.trim()?.takeIf(String::isNotEmpty) ?: "Another device"
-                "$other connected to ${name.ifEmpty { "the camera" }}, so this device stopped reconnecting. Retry takes the camera back. The frame below is held, not live."
+                val other = state.holder?.trim()?.takeIf(String::isNotEmpty) ?: "其他设备"
+                "${other}已连接到${camera}，本机已停止重连。点按“重新连接”可重新接管相机。下方画面已定格。"
             }
         }
     }

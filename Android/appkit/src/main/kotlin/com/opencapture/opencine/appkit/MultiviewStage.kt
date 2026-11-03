@@ -128,11 +128,11 @@ public data class MultiviewTile(
             val control = (summary.control as? RoleStatus.Reported)?.value
             // The link as reported: a closed session is not connecting, and no report is a wait.
             val (status, detail) = when (control) {
-                ConnectionState.Ready -> null to "Connected"
+                ConnectionState.Ready -> null to "已连接"
                 is ConnectionState.Disconnected ->
-                    MultiviewTileStatus("Disconnected", inProgress = false) to "Disconnected"
-                null -> MultiviewTileStatus("Waiting for the camera", inProgress = true) to "Waiting for the camera"
-                else -> MultiviewTileStatus("Connecting…", inProgress = true) to "Connecting…"
+                    MultiviewTileStatus("已断开", inProgress = false) to "已断开"
+                null -> MultiviewTileStatus("正在等待相机", inProgress = true) to "正在等待相机"
+                else -> MultiviewTileStatus("正在连接…", inProgress = true) to "正在连接…"
             }
             return MultiviewTile(
                 name = entry.name,
@@ -146,12 +146,12 @@ public data class MultiviewTile(
                 status = status,
                 detail = detail,
                 actions = listOf(
-                    MultiviewCameraAction(MultiviewCameraAction.LIVE_VIEW, "Live View"),
+                    MultiviewCameraAction(MultiviewCameraAction.LIVE_VIEW, "实时取景"),
                     MultiviewCameraAction(
-                        "record", if (state == RecordingState.RECORDING) "Stop recording" else "Start recording",
+                        "record", if (state == RecordingState.RECORDING) "停止录制" else "开始录制",
                         MultiviewCameraAction.Kind.RECORD,
                     ),
-                    MultiviewCameraAction("remove", "Remove camera", MultiviewCameraAction.Kind.DESTRUCTIVE),
+                    MultiviewCameraAction("remove", "移除相机", MultiviewCameraAction.Kind.DESTRUCTIVE),
                 ),
             ).withPower(snapshot?.power)
         }
@@ -175,9 +175,9 @@ public object MultiviewTally {
         holding: Boolean = false,
         failed: Boolean = false,
     ): String = when {
-        waiting -> "WAIT"
-        holding -> "HOLD"
-        failed -> "CHECK"
+        waiting -> "等待"
+        holding -> "保持"
+        failed -> "检查"
         recording == null -> UNAVAILABLE
         !recording -> "STBY"
         else -> seconds?.let(::running) ?: "REC"
@@ -258,24 +258,24 @@ public data class MultiviewRecordContext(
             if (!plan.isRefused) return null
             val reason = plan.exclusions.firstOrNull()?.reason ?: return null
             return when {
-                reason == ExclusionReason.Busy || reason == ExclusionReason.CameraTransitioning -> "A camera is busy."
+                reason == ExclusionReason.Busy || reason == ExclusionReason.CameraTransitioning -> "有相机正忙。"
                 reason == ExclusionReason.Rejected(CommandRejection.RecordingStateUnknown) ->
-                    "Waiting for a camera's record state."
+                    "正在等待相机报告录制状态。"
                 reason == ExclusionReason.Rejected(CommandRejection.Unavailable(UnavailableReason.Mode)) ->
-                    "A camera is not in a video mode."
-                else -> "A camera is not connected."
+                    "有相机尚未切换到录像模式。"
+                else -> "有相机尚未连接。"
             }
         }
 
     /** The confirmation question for every camera, or for one ([single]). */
     public fun question(single: Boolean): String = when {
-        single -> if (stopping) "Stop recording?" else "Start recording?"
-        else -> if (stopping) "Stop recording on all cameras?" else "Record on all cameras?"
+        single -> if (stopping) "停止录制？" else "开始录制？"
+        else -> if (stopping) "停止所有相机的录制？" else "开始用所有相机录制？"
     }
 
     public companion object {
         /** A group command is coordinated dispatch, not synchronized recording. */
-        public const val GROUP_NOTE: String = "Each camera confirms independently; recording is not synchronized."
+        public const val GROUP_NOTE: String = "各机位独立确认录制，起录时刻可能不同步。"
     }
 }
 

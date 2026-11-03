@@ -98,7 +98,7 @@ class GimbalLoopVerificationTest {
 
     @Test fun nativeEasingDoesNotBypassAnExactIntermediateBCheckpoint() {
         val result = run(program.copy(c = b.copy(yawDeg = 90.0), durationBC = 3.5))
-        assertEquals("Camera waypoint could not be verified", result.engine.failure)
+        assertEquals("无法确认相机关键点位置", result.engine.failure)
         assertFalse(result.engine.running)
         assertEquals(2, result.commands.size)
         assertTrue(result.stoppedAt <= boundary + 0.411)
@@ -134,7 +134,7 @@ class GimbalLoopVerificationTest {
         )
         for ((name, transform) in cases) {
             val result = run(transform = transform)
-            assertEquals("Camera waypoint could not be verified", result.engine.failure, name)
+            assertEquals("无法确认相机关键点位置", result.engine.failure, name)
             assertFalse(result.engine.running, name)
             assertEquals(2, result.commands.size, name)
             assertTrue(result.stoppedAt <= boundary + 0.411, name)
@@ -169,7 +169,7 @@ class GimbalLoopVerificationTest {
                 }
                 b.copy(yawDeg = b.yawDeg + distance)
             }
-            assertEquals("Camera waypoint could not be verified", result.engine.failure, "approach=$approachDrift")
+            assertEquals("无法确认相机关键点位置", result.engine.failure, "approach=$approachDrift")
             assertFalse(result.engine.running)
             assertTrue(result.stoppedAt <= boundary + 0.411)
         }
@@ -177,11 +177,11 @@ class GimbalLoopVerificationTest {
 
     @Test fun lateEndpointOrRepeatedStaleReceiptCannotQualifyTurnaround() {
         val late = run(feedbackDelay = 0.26)
-        assertEquals("Camera waypoint could not be verified", late.engine.failure)
+        assertEquals("无法确认相机关键点位置", late.engine.failure)
         assertFalse(late.engine.running)
         assertTrue(late.stoppedAt <= boundary + 0.411)
         val stale = run(lastReceipt = boundary + 0.06)
-        assertEquals("Move interrupted: timing or camera feedback lost", stale.engine.failure)
+        assertEquals("运动已中断：时序或相机反馈丢失", stale.engine.failure)
         assertFalse(stale.engine.running)
         assertTrue(stale.stoppedAt <= boundary + 0.411)
         assertEquals(2, stale.commands.size)

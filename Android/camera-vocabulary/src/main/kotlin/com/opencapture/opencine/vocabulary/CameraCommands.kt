@@ -61,17 +61,17 @@ object CameraCommands {
 
     fun audioChannelLabel(value: Int): String? =
         when (value) {
-            AUDIO_MONO -> "Mono"
-            AUDIO_STEREO -> "Stereo"
-            AUDIO_SPATIAL -> "Spatial"
+            AUDIO_MONO -> "单声道"
+            AUDIO_STEREO -> "立体声"
+            AUDIO_SPATIAL -> "空间音频"
             else -> null
         }
 
     fun audioDirLabel(mode: Int): String? =
         when (mode) {
-            0 -> "All"
-            1 -> "Front"
-            2 -> "Front+back"
+            0 -> "全向"
+            1 -> "前方"
+            2 -> "前后双向"
             else -> null
         }
 
@@ -110,13 +110,13 @@ object CameraCommands {
         profile: CameraLabelProfile = CameraLabelProfile.standard,
     ): String? =
         profile.shootingModeLabels[raw] ?: when (raw) {
-            SHOOT_SLOWMO -> "SlowMo"
-            SHOOT_VIDEO -> "Video"
-            SHOOT_TIMELAPSE -> "TimeLapse"
-            SHOOT_PHOTO, SHOOT_PHOTO_POCKET4 -> "Photo"
-            SHOOT_LIVE_PHOTO -> "Live Photo"
-            SHOOT_HYPERLAPSE -> "HyperLapse"
-            SHOOT_SUPER_NIGHT -> "SuperNight"
+            SHOOT_SLOWMO -> "慢动作"
+            SHOOT_VIDEO -> "视频"
+            SHOOT_TIMELAPSE -> "静止延时"
+            SHOOT_PHOTO, SHOOT_PHOTO_POCKET4 -> "拍照"
+            SHOOT_LIVE_PHOTO -> "动态照片"
+            SHOOT_HYPERLAPSE -> "运动延时"
+            SHOOT_SUPER_NIGHT -> "超级夜景"
             else -> null
         }
 
@@ -135,9 +135,9 @@ object CameraCommands {
     const val GIMBAL_STICK_DEFAULT_SENSITIVITY = 4
 
     enum class VirtualJoystickCurve(val raw: String, val expo: Double, val label: String) {
-        LINEAR("linear", 1.0, "Linear"),
-        STANDARD("standard", GIMBAL_STICK_ANALOG_EXPO, "Standard"),
-        FINE("fine", 3.0, "Fine"),
+        LINEAR("linear", 1.0, "线性"),
+        STANDARD("standard", GIMBAL_STICK_ANALOG_EXPO, "标准"),
+        FINE("fine", 3.0, "精细"),
         ;
 
         companion object {
@@ -409,14 +409,14 @@ object CameraCommands {
     /** [profile] carries the session's own names (for example Standard for Normal). */
     fun colorLabel(mode: Int, family: String = "pocket", profile: CameraLabelProfile = CameraLabelProfile.standard): String =
         profile.colorModeLabels[mode] ?: when (mode) {
-            COLOR_NORMAL -> "Normal"
+            COLOR_NORMAL -> "普通"
             COLOR_HDR -> "HDR"
             COLOR_DLOG -> "D-Log"
             COLOR_DLOG2 -> "D-Log2"
-            COLOR_NORMAL10 -> "Normal 10-bit"
+            COLOR_NORMAL10 -> "普通 10-bit"
             COLOR_DLOG_M -> "D-Log M"
             COLOR_ILOG -> "I-Log"
-            COLOR_DOLBY_VISION -> "Dolby Vision"
+            COLOR_DOLBY_VISION -> "杜比视界"
             else -> "—"
         }
 
@@ -429,7 +429,7 @@ object CameraCommands {
 
     fun isoLabel(index: Int): String =
         when (index) {
-            0x00 -> "Auto"
+            0x00 -> "自动"
             0x03 -> "100"
             0x04 -> "200"
             0x05 -> "400"
@@ -522,7 +522,7 @@ object CameraCommands {
     fun isoChoices(colorMode: Int): List<Pair<Int, String>> {
         val all =
             listOf(
-                0x00 to "Auto",
+                0x00 to "自动",
                 0x03 to "100",
                 0x04 to "200",
                 0x05 to "400",
@@ -587,10 +587,10 @@ object CameraCommands {
 
 /** AF-C submenu. `0x02/0x8E` pid `0x003B`. SET/GET value is `01 <mode>`. */
 enum class FocusTrackMode(val raw: Int, val label: String) {
-    DEFAULT(0x00, "Default"),
-    PRODUCT_SHOWCASE(0x01, "Product Showcase"),
-    SUBJECT_LOCK(0x02, "Subject Lock Tracking"),
-    REGISTERED_PRIORITY(0x03, "Registered Subject Priority"),
+    DEFAULT(0x00, "默认"),
+    PRODUCT_SHOWCASE(0x01, "展示模式"),
+    SUBJECT_LOCK(0x02, "锁定主角追焦"),
+    REGISTERED_PRIORITY(0x03, "登记主角优先"),
     ;
 
     companion object {
@@ -611,9 +611,9 @@ enum class FocusTrackMode(val raw: Int, val label: String) {
 enum class FocusOption(val chip: String) {
     SINGLE("AF-S"),
     CONTINUOUS_DEFAULT("AF-C"),
-    PRODUCT_SHOWCASE("Showcase"),
-    SUBJECT_LOCK("Lock"),
-    REGISTERED_PRIORITY("Priority"),
+    PRODUCT_SHOWCASE("展示模式"),
+    SUBJECT_LOCK("主角追焦"),
+    REGISTERED_PRIORITY("登记优先"),
     ;
 
     companion object {

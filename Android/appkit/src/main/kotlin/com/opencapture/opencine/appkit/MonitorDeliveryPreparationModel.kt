@@ -220,7 +220,7 @@ public class MonitorDeliveryPreparationModel<C, F, P, X, H>(
             if (failure is CancellationException) throw failure
             return refuse(failure.message ?: failure.toString())
         } ?: // Another hop holds the route; this popup never steals it.
-            return refuse("Couldn't leave the camera's Wi-Fi while another network switch is running.")
+            return refuse("正在切换网络，暂时无法断开相机 Wi-Fi。")
         if (!current(captured) || hopRequest != request || !service.internet.owns(acquired) || !current(captured)) {
             service.internet.restore(acquired); return null
         }
@@ -235,7 +235,7 @@ public class MonitorDeliveryPreparationModel<C, F, P, X, H>(
         hopTask = null; refresh(captured)
         if (!current(captured) || hopRequest != request) return
         if (online) loadProjects() else publish(captured) { it.copy(projectsError =
-            "Couldn't reach the internet after leaving the camera's Wi-Fi. Check cellular or home Wi-Fi.") }
+            "断开相机 Wi-Fi 后未能联网。请检查移动数据或其他 Wi-Fi。") }
     }
     /** Accept an already transferred lease without a leave/wait. Refusal retains caller cleanup. */
     public fun adoptInternetLease(acquired: H): Boolean {

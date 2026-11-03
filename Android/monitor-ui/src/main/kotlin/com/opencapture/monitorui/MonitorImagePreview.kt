@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 /** The renderer supplies an already bounded image; presentation never samples a feed. */
 @Composable
 fun MonitorImagePreview(image: ImageBitmap?, description: String, modifier: Modifier = Modifier,
-    waitingLabel: String = "Waiting for picture", aspectRatio: Float? = null) {
+    waitingLabel: String = "正在等待画面", aspectRatio: Float? = null) {
     BoxWithConstraints(modifier.fillMaxWidth().height(132.dp).clip(RoundedCornerShape(10.dp))
         .background(MonitorPalette.background).semantics { contentDescription = description },
         contentAlignment = Alignment.Center) {

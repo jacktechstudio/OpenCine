@@ -73,7 +73,7 @@ class MonitorCapturePresentationTest {
         val unreported = MonitorCaptureField(SettingKey.ISO, "ISO", null, emptyList(), null)
         assertTrue(p.readoutIsInert(null, unreported, null, quickEnabled = true, hasAction = false))
         val reported = MonitorCaptureField(SettingKey.ISO, "ISO", SettingValue.Iso(ISOValue.Auto), emptyList(), null)
-        assertFalse(p.readoutIsInert("Auto", reported, null, quickEnabled = true, hasAction = false))
+        assertFalse(p.readoutIsInert("自动", reported, null, quickEnabled = true, hasAction = false))
         assertTrue(p.readoutIsInert("--", null, nativeEnabled = false, quickEnabled = true, hasAction = false))
         assertFalse(p.readoutIsInert("1600", null, nativeEnabled = false, quickEnabled = true, hasAction = false))
     }
@@ -105,11 +105,11 @@ class MonitorCapturePresentationTest {
         assertEquals(values.takeLast(2), focus.map { it.value })
         assertEquals(listOf("AF-S", "AF-C"), focus.map { it.label })
         assertEquals("EV", MonitorCapturePresentation.title(SettingKey.EXPOSURE_COMPENSATION))
-        assertEquals("FOCUS", MonitorCapturePresentation.title(SettingKey.FOCUS_MODE))
+        assertEquals("对焦", MonitorCapturePresentation.title(SettingKey.FOCUS_MODE))
     }
 
     @Test fun apertureUsesTheCommonCapturePresentation() {
-        assertEquals("IRIS", MonitorCapturePresentation.title(SettingKey.APERTURE))
+        assertEquals("光圈", MonitorCapturePresentation.title(SettingKey.APERTURE))
         assertEquals("f/2.8", MonitorCapturePresentation.label(SettingValue.Aperture(2.8)))
     }
 
@@ -128,7 +128,7 @@ class MonitorCapturePresentationTest {
         assertNull(hud.recording)
         assertNull(hud.elapsedSeconds)
         assertNull(hud.timecode)
-        assertEquals("Recording state unknown", hud.recordingAccessibilityLabel)
+        assertEquals("录制状态未知", hud.recordingAccessibilityLabel)
     }
 
     @Test fun reportedAndPendingReadoutsKeepTheirOwnValuesAndTheSameEditor() = runTest {
@@ -227,7 +227,7 @@ class MonitorCapturePresentationTest {
         control.bind(camera)
         runCurrent()
         val first = assertNotNull(control.captureField(SettingKey.WHITE_BALANCE)).choices
-        assertEquals(40, first.size, "Auto plus 39 detents")
+        assertEquals(40, first.size, "自动 plus 39 detents")
         assertSame(first, assertNotNull(control.captureField(SettingKey.WHITE_BALANCE)).choices)
     }
 
@@ -276,13 +276,13 @@ class MonitorCapturePresentationTest {
         camera.cameraSwitchesMode(0x02); runCurrent()
         val readvertised = assertNotNull(control.captureField(SettingKey.WHITE_BALANCE)).choices
         assertEquals(41, readvertised.size)
-        assertEquals(listOf("Auto", "Sunny"), readvertised.take(2).map { it.label })
+        assertEquals(listOf("自动", "Sunny"), readvertised.take(2).map { it.label })
     }
 
     @Test fun kelvinDetentsHonorAnExplicitCameraStepAndBoundAllocation() {
         val values = MonitorCapturePresentation.choices(SettingKey.WHITE_BALANCE,
             SettingDomain(listOf(SettingValue.WhiteBalance(WhiteBalanceValue.Auto)), 2000.0..2200.0, 50.0))
-        assertEquals(listOf("Auto", "2000K", "2050K", "2100K", "2150K", "2200K"), values.map { it.label })
+        assertEquals(listOf("自动", "2000K", "2050K", "2100K", "2150K", "2200K"), values.map { it.label })
         assertTrue(MonitorCapturePresentation.choices(SettingKey.WHITE_BALANCE,
             SettingDomain(range = 0.0..1_000_000.0, step = 1.0)).isEmpty())
     }

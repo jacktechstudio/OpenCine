@@ -17,9 +17,9 @@ class NativeIsoCapabilitiesTest {
     }
     @Test fun anUndeclaredCeilingKeepsAutoWithoutOfferingLimitWrites() {
         val status = CameraStatus(isoIndex = 0, colorMode = CameraCommands.COLOR_NORMAL)
-        assertEquals(listOf("Auto"), IsoSheetLogic.autoLabels(status, ceilingSupported = false))
-        assertEquals("Auto", IsoSheetLogic.reseat(status, ceilingSupported = false).drumSelection)
-        assertNull(IsoSheetLogic.applyDrum("Auto", status, 0, ceilingSupported = false))
+        assertEquals(listOf("自动"), IsoSheetLogic.autoLabels(status, ceilingSupported = false))
+        assertEquals("自动", IsoSheetLogic.reseat(status, ceilingSupported = false).drumSelection)
+        assertNull(IsoSheetLogic.applyDrum("自动", status, 0, ceilingSupported = false))
         assertEquals(IsoSheetLogic.Command.SetIndex(0),
             IsoSheetLogic.handleModeChange(0, status, ceilingSupported = false).second)
     }

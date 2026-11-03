@@ -94,9 +94,9 @@ fun MonitorBatteryOutlineRow(percent: Int, charging: Boolean, camera: Boolean, b
     val readout = if (percent < 0) "\u2014" else "$percent"
     // Phone and camera are told apart only by the glyph, so both rows speak a
     // bare number without this. The dash for "unknown" reads as nothing.
-    val source = if (camera) "Camera battery" else "Phone battery"
-    val spoken = bars?.let { "$it of $barCount bars" } ?: if (percent < 0) "level unknown" else "$percent percent"
-    val power = if (charging) ", charging" else ""
+    val source = if (camera) "相机电量" else "手机电量"
+    val spoken = bars?.let { "$it/$barCount 格" } ?: if (percent < 0) "电量未知" else "$percent%"
+    val power = if (charging) "，正在充电" else ""
     Row(
         Modifier.clearAndSetSemantics { contentDescription = "$source $spoken$power" },
         horizontalArrangement = Arrangement.spacedBy(5.dp),

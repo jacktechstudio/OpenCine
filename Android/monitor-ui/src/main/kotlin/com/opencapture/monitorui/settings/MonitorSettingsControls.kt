@@ -88,7 +88,7 @@ fun MonitorSettingsRowCard(
 
 @Composable
 fun MonitorSettingsResetButton(onClick: () -> Unit) {
-    val description = "Reset to defaults"
+    val description = "恢复默认设置"
     Box(
         Modifier.size(28.dp)
             .background(MonitorPalette.background.copy(alpha = 0.42f), CircleShape)
@@ -203,7 +203,7 @@ fun MonitorSettingsSwitchInlineRow(
 @Composable
 fun MonitorSettingsHelpBadge(text: String) {
     var open by remember { mutableStateOf(false) }
-    val description = "Help"
+    val description = "帮助"
     Box {
         // A 16dp mark inside a 24dp target. The full 44dp floor would reserve 44dp of ROW
         // width on every helped row and squeeze the trailing control off a landscape-phone

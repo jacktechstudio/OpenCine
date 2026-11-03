@@ -38,28 +38,28 @@ val LiveSheet.headerLabel: String
     get() =
         when (this) {
             LiveSheet.ISO -> "ISO"
-            LiveSheet.SHUTTER -> "SHUTTER"
-            LiveSheet.WB -> "WHITE BALANCE"
-            LiveSheet.FOCUS -> "FOCUS"
-            LiveSheet.APERTURE -> "APERTURE"
-            LiveSheet.EXPO -> "MODE"
-            LiveSheet.AUDIO -> "AUDIO"
-            LiveSheet.COLOR -> "COLOR"
-            LiveSheet.FORMAT -> "RESOLUTION"
-            LiveSheet.MODE -> "SHOOTING MODE"
+            LiveSheet.SHUTTER -> "快门"
+            LiveSheet.WB -> "白平衡"
+            LiveSheet.FOCUS -> "对焦"
+            LiveSheet.APERTURE -> "光圈"
+            LiveSheet.EXPO -> "模式"
+            LiveSheet.AUDIO -> "音频"
+            LiveSheet.COLOR -> "色彩"
+            LiveSheet.FORMAT -> "分辨率"
+            LiveSheet.MODE -> "拍摄模式"
         }
 
 val LiveSheet.subtitle: String
     get() =
         when (this) {
-            LiveSheet.ISO -> "Sensitivity"
-            LiveSheet.SHUTTER -> "Angle · speed"
-            LiveSheet.WB -> "Kelvin · auto · tint"
+            LiveSheet.ISO -> "感光度"
+            LiveSheet.SHUTTER -> "快门角度 · 快门速度"
+            LiveSheet.WB -> "色温 · 自动 · 色调"
             LiveSheet.FOCUS -> "AF-S / AF-C"
-            LiveSheet.APERTURE -> "Aperture strategy"
-            LiveSheet.EXPO -> "Exposure"
-            LiveSheet.AUDIO -> "Channel · wind · direction · vocal"
-            LiveSheet.COLOR -> "Color mode"
-            LiveSheet.FORMAT -> "Frame rate"
-            LiveSheet.MODE -> "Shooting mode"
+            LiveSheet.APERTURE -> "光圈控制方式"
+            LiveSheet.EXPO -> "曝光"
+            LiveSheet.AUDIO -> "声道 · 风噪抑制 · 收音指向 · 人声"
+            LiveSheet.COLOR -> "色彩模式"
+            LiveSheet.FORMAT -> "帧率"
+            LiveSheet.MODE -> "拍摄模式"
         }

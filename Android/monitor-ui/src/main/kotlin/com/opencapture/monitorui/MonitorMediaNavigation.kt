@@ -33,7 +33,7 @@ fun MonitorMediaNavigation(
             MonitorTab(
                 selected = selected,
                 vertical = vertical,
-                accessibilityLabel = "Show ${category.title} media",
+                accessibilityLabel = "显示“${category.title}”素材",
                 onClick = { onSelect(category.id) },
                 modifier = Modifier
                     .then(if (vertical) Modifier.fillMaxWidth() else Modifier)

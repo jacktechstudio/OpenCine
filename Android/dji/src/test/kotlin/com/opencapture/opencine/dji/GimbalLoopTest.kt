@@ -166,7 +166,7 @@ class GimbalLoopTest {
         repeat(20) { camera.step() }
         repeat(15) { camera.step { it.copy(yawDeg = it.yawDeg - 0.4) } }
         assertFalse(camera.engine.running)
-        assertEquals("Camera missed its final position", camera.engine.failure)
+        assertEquals("相机未到达终点", camera.engine.failure)
         assertEquals(1, camera.commands.size)
     }
 

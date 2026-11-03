@@ -18,8 +18,8 @@ class MonitorOperatorMeteringTileTest {
         var toggles = 0
         var current = true
         val tile = MonitorOperatorMeteringTile(false, isCurrent = { current }) { toggles += 1 }
-        assertEquals("Matrix", tile.label)
-        assertEquals("Face", MonitorOperatorMeteringTile(true) {}.label)
+        assertEquals("矩阵", tile.label)
+        assertEquals("人脸", MonitorOperatorMeteringTile(true) {}.label)
         tile.perform()
         assertEquals(1, toggles)
         current = false

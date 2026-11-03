@@ -16,17 +16,17 @@ public fun MonitorCacheSettings(
     MonitorSettingsRowCard {
         if (cacheOriginals != null && onCacheOriginals != null) {
             MonitorSettingsSwitchInlineRow(
-                title = "Full Resolution Caching", help = cacheHelp,
+                title = "缓存原始分辨率素材", help = cacheHelp,
                 showTopDivider = false, isOn = cacheOriginals,
             ) { feedback(); onCacheOriginals(!cacheOriginals) }
         }
-        MonitorSettingsInlineRow("Local Media Cache", scopeHelp,
+        MonitorSettingsInlineRow("本地素材缓存", scopeHelp,
             showTopDivider = cacheOriginals != null && onCacheOriginals != null) {
             MonitorSettingsValueText(sizeLabel)
         }
-        MonitorSettingsInlineRow("Clear Cache", clearHelp) {
-            if (clearing) MonitorSettingsValueText("Clearing…")
-            else MonitorSettingsTextAction("Clear", color = MonitorPalette.recording, onClick = clear)
+        MonitorSettingsInlineRow("清除缓存", clearHelp) {
+            if (clearing) MonitorSettingsValueText("正在清除…")
+            else MonitorSettingsTextAction("清除", color = MonitorPalette.recording, onClick = clear)
         }
     }
 }
@@ -37,10 +37,10 @@ public fun MonitorAppInformationSettings(
     theme: String, protocolName: String, version: String,
     themeHelp: String, protocolHelp: String, versionHelp: String,
 ) {
-    MonitorSettingsRowCard(title = "App Information") {
-        MonitorSettingsInlineRow("Theme", themeHelp, showTopDivider = false) { MonitorSettingsValueText(theme) }
-        MonitorSettingsInlineRow("Protocol Implementation", protocolHelp) { MonitorSettingsValueText(protocolName) }
-        MonitorSettingsInlineRow("App Version", versionHelp) { MonitorSettingsValueText(version) }
+    MonitorSettingsRowCard(title = "应用信息") {
+        MonitorSettingsInlineRow("主题", themeHelp, showTopDivider = false) { MonitorSettingsValueText(theme) }
+        MonitorSettingsInlineRow("通信协议实现", protocolHelp) { MonitorSettingsValueText(protocolName) }
+        MonitorSettingsInlineRow("应用版本", versionHelp) { MonitorSettingsValueText(version) }
     }
 }
 
@@ -51,29 +51,29 @@ public fun MonitorProjectLegalSettings(
     source: () -> Unit, privacy: () -> Unit, terms: () -> Unit,
     licenses: (() -> Unit)? = null, notice: (() -> Unit)? = null,
 ) {
-    MonitorSettingsRowCard(title = "Project & Legal") {
-        MonitorSettingsInlineRow("Source Code", sourceHelp, showTopDivider = false) {
-            MonitorSettingsActionPill("Open", onClick = source,
-                modifier = Modifier.semantics { contentDescription = "Open Source Code" })
+    MonitorSettingsRowCard(title = "项目与法律信息") {
+        MonitorSettingsInlineRow("源代码", sourceHelp, showTopDivider = false) {
+            MonitorSettingsActionPill("打开", onClick = source,
+                modifier = Modifier.semantics { contentDescription = "查看源代码" })
         }
-        MonitorSettingsInlineRow("Privacy", "What this app stores on this phone.") {
-            MonitorSettingsActionPill("Open", onClick = privacy,
-                modifier = Modifier.semantics { contentDescription = "Open Privacy Policy" })
+        MonitorSettingsInlineRow("隐私", "查看应用在本机保存的数据。") {
+            MonitorSettingsActionPill("打开", onClick = privacy,
+                modifier = Modifier.semantics { contentDescription = "查看隐私政策" })
         }
-        MonitorSettingsInlineRow("Terms", termsHelp) {
-            MonitorSettingsActionPill("Open", onClick = terms,
-                modifier = Modifier.semantics { contentDescription = "Open Terms of Use" })
+        MonitorSettingsInlineRow("使用条款", termsHelp) {
+            MonitorSettingsActionPill("打开", onClick = terms,
+                modifier = Modifier.semantics { contentDescription = "查看使用条款" })
         }
         licenses?.let { action ->
-            MonitorSettingsInlineRow("Licenses", "Apache 2.0 and third-party notices.") {
-                MonitorSettingsActionPill("Open", onClick = action,
-                    modifier = Modifier.semantics { contentDescription = "Open Licenses" })
+            MonitorSettingsInlineRow("许可证", "Apache 2.0 许可证及第三方声明。") {
+                MonitorSettingsActionPill("打开", onClick = action,
+                    modifier = Modifier.semantics { contentDescription = "查看许可证" })
             }
         }
         notice?.let { action ->
-            MonitorSettingsInlineRow("NOTICE", "Attribution shipped with the app.") {
-                MonitorSettingsActionPill("Open", onClick = action,
-                    modifier = Modifier.semantics { contentDescription = "Open NOTICE" })
+            MonitorSettingsInlineRow("NOTICE", "随应用分发的署名声明。") {
+                MonitorSettingsActionPill("打开", onClick = action,
+                    modifier = Modifier.semantics { contentDescription = "查看署名声明" })
             }
         }
     }

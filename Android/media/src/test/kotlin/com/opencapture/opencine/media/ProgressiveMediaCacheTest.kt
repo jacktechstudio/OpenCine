@@ -81,7 +81,7 @@ class ProgressiveMediaCacheTest {
             repeat(10) { entry.append(it * 100_000L, ByteArray(100_000)); now += 100 }
             assertEquals("1.0 MB/s", entry.transferRate()?.label)
             now += 3000
-            assertEquals("Stalled", entry.transferRate()?.label)
+            assertEquals("已停滞", entry.transferRate()?.label)
             entry.cancel()
             assertNull(entry.transferRate())
             // A resumed transfer counts only the bytes it brings, not the offset it resumed at.

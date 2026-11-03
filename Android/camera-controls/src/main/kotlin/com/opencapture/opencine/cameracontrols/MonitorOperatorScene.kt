@@ -160,7 +160,7 @@ public fun MonitorOperatorScreen(
                 captured.title, captured.label, MonitorDisplaySection.CAMERA_VALUES, field = captured,
                 itemModifier = Modifier.testTag("monitor.capture.${captured.key.name.lowercase()}")) },
             panel = field?.let { MonitorOperatorCameraPanel(MonitorOperatorSceneCaptureKey.Setting(it.key), false,
-                title = it.title, subtitle = it.label ?: "Not set", field = it) },
+                title = it.title, subtitle = it.label ?: "未设置", field = it) },
             open = { key -> if (!locked && !covered && session.interactive && !session.isEditing &&
                 key is MonitorOperatorSceneCaptureKey.Setting) field = shell.control.captureField(key.key) },
             dismiss = { field = null }, commitAdmission = { !locked && !covered && session.interactive && !session.isEditing })
@@ -169,7 +169,7 @@ public fun MonitorOperatorScreen(
         if (control.snapshot?.capabilities?.support(SettingKey.RECORDING) != com.opencapture.opencine.core.SupportStatus.SUPPORTED)
             mounts.remove(MonitorDisplaySection.RAIL_RECORD)
         val format = control.snapshot?.mode?.value?.id?.let { MonitorOperatorLiveReadout<MonitorOperatorSceneCaptureKey, MonitorDisplaySection>(
-            MonitorOperatorSceneCaptureKey.Mode, "Shooting mode", it, action = {}) }
+            MonitorOperatorSceneCaptureKey.Mode, "拍摄模式", it, action = {}) }
         val tools = availableAssistTools.map { tool -> MonitorOperatorPaletteItem(tool.name, tool.title, tool.chipLabel,
             tool, assist.isOn(tool), { assist.toggle(tool) },
             tool !in setOf(MonitorAssistTool.EV, MonitorAssistTool.LEVEL) && (tool != MonitorAssistTool.LUT || lookOptions != null),
@@ -235,8 +235,8 @@ private fun <P, L> MonitorOperatorPage(shell: ShellModel, cover: ShellModel.Cove
                 thumbnail = thumbnail, playbackPicture = playbackPicture)
         } else {
             Column(Modifier.fillMaxSize().background(MonitorPalette.backgroundDeep).padding(24.dp)) {
-                Text("No media service is available for this camera.", color = MonitorPalette.muted)
-                MonitorSettingsActionPill("Back", modifier = Modifier.testTag("monitor.page.back"), onClick = shell::dismissCover)
+                Text("此相机未提供素材服务。", color = MonitorPalette.muted)
+                MonitorSettingsActionPill("返回", modifier = Modifier.testTag("monitor.page.back"), onClick = shell::dismissCover)
             }
         }
     }
@@ -254,7 +254,7 @@ public fun <P> MonitorOperatorSettingsScreen(shell: ShellModel, brand: String, a
     val session = operatorSession ?: remember(shell, assist, display) { MonitorOperatorSessionModel(shell, assist, display, scope) }
     val live = state.monitor != null
     val cameraName = state.monitor?.camera?.saved?.displayName
-    val phase = cameraName ?: "No camera connected"
+    val phase = cameraName ?: "未连接相机"
     val revision = remember { mutableIntStateOf(0) }
     @Suppress("UNUSED_VARIABLE") val observedRevision = revision.intValue
     fun write(apply: () -> Unit) { apply(); revision.intValue++ }
@@ -265,10 +265,10 @@ public fun <P> MonitorOperatorSettingsScreen(shell: ShellModel, brand: String, a
     val configuration = MonitorOperatorSettingsConfiguration(
         brand = brand, isLive = live, phase = phase, close = shell::dismissCover,
         disconnect = if (live) shell::close else null, feedback = {},
-        link = MonitorSettingsLinkSource(transport = if (live) "Connected" else "Not connected",
-            transportHelp = "How this phone reaches the camera.", phase = phase,
-            phaseHelp = "The camera this monitor shows.", healthTitle = "Link Health",
-            healthCaption = if (live) "Live" else "No live path.", score = null),
+        link = MonitorSettingsLinkSource(transport = if (live) "已连接" else "未连接",
+            transportHelp = "本机连接相机的方式。", phase = phase,
+            phaseHelp = "此监视器显示的相机。", healthTitle = "图传质量",
+            healthCaption = if (live) "监看" else "未建立图传连接。", score = null),
         sharing = null, sharingSubtitle = null, sharingRail = null,
         controls = MonitorSettingsControlsSource(preferences.recordConfirmation, { write { preferences.recordConfirmation = it } },
             preferences.haptics, { write { preferences.haptics = it } },
@@ -276,8 +276,8 @@ public fun <P> MonitorOperatorSettingsScreen(shell: ShellModel, brand: String, a
             keepAwakeHelp = MonitorSettingsCopy.keepScreenAwake),
         cache = cache,
         support = MonitorSettingsSupportSource(report = actions.reportProblem, actions = listOf(
-            MonitorSupportAction("support.diagnostics", "Diagnostics", actionTitle = "Share",
-                accessibilityLabel = "Share Diagnostics", action = actions.diagnostics))),
+            MonitorSupportAction("support.diagnostics", "诊断", actionTitle = "分享",
+                accessibilityLabel = "分享诊断信息", action = actions.diagnostics))),
         legal = legal,
     )
     MonitorOperatorSettingsBody(MonitorOperatorSettingsInputs(configuration, session.settingsTab,

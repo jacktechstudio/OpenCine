@@ -514,7 +514,7 @@ public class MonitorControlModel(
                 return@async null
             }
             val receipt = finished(session, CameraCommand(intent, CommandPreconditions(fresh), operation), admission)
-            val label = if (intent == CameraCommandIntent.StartRecording) "Record" else "Stop"
+            val label = if (intent == CameraCommandIntent.StartRecording) "录像" else "停止"
             if (binding != current || recordOperation != operation) return@async null
             finishRecord(operation, current, noteFor(receipt.stage, label), receipt)
             receipt
@@ -530,8 +530,8 @@ public class MonitorControlModel(
     }
 
     public companion object {
-        public const val CONNECT_FIRST: String = "Connect the camera to use its controls."
-        public const val RECORDING_UNKNOWN: String = "Recording state is not known yet. Try again in a moment."
+        public const val CONNECT_FIRST: String = "请先连接相机，再进行操控。"
+        public const val RECORDING_UNKNOWN: String = "尚未获取录制状态，请稍后重试。"
 
         /** How long [frameRateSettling] holds after a reported frame-rate change (Swift `rateChangeHold`). */
         public val RATE_CHANGE_HOLD: kotlin.time.Duration = 3.seconds
@@ -551,22 +551,22 @@ public class MonitorControlModel(
         public fun note(stage: CommandStage, label: String): String? = when (stage) {
             CommandStage.Confirmed -> null
             is CommandStage.Rejected -> when (val rejection = stage.rejection) {
-                CommandRejection.CameraRefused -> "$label: the camera refused it."
+                CommandRejection.CameraRefused -> "相机拒绝了“${label}”。"
                 CommandRejection.OutOfDomain, CommandRejection.Unsupported, CommandRejection.SupportUnknown ->
-                    "$label is not offered by this camera."
+                    "此相机不支持“${label}”。"
                 CommandRejection.StaleCapabilities, CommandRejection.StaleEpoch ->
-                    "$label was not sent: the camera state changed. Try again."
+                    "相机状态已更改，未发送“${label}”。请重试。"
                 is CommandRejection.Unavailable ->
-                    if (rejection.reason == UnavailableReason.Mode) "$label is not available in this mode." else "$label is not available right now."
+                    if (rejection.reason == UnavailableReason.Mode) "当前模式不支持“${label}”。" else "当前无法使用“${label}”。"
                 else -> CONNECT_FIRST
             }
             is CommandStage.Failed -> when (stage.failure) {
-                CommandFailure.NOT_APPLIED -> "$label was not applied by the camera."
-                CommandFailure.NOT_SENT -> "$label was not sent."
+                CommandFailure.NOT_APPLIED -> "相机未应用“${label}”。"
+                CommandFailure.NOT_SENT -> "未发送“${label}”。"
                 CommandFailure.SUPERSEDED -> null
             }
-            CommandStage.OutcomeUnknown -> "$label: the camera link dropped before it confirmed."
-            else -> "The camera did not confirm $label."
+            CommandStage.OutcomeUnknown -> "连接中断，相机未确认“${label}”。"
+            else -> "相机未确认“${label}”。"
         }
     }
 }

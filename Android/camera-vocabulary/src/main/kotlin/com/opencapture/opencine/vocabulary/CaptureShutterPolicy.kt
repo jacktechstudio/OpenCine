@@ -49,9 +49,9 @@ object CaptureShutterPolicy {
 
     /** iOS `recSetupFormat`: the current format ("4K25p"), "REC SETUP" until one is known. Stills keep "MODE". */
     fun portraitSetupLabel(status: CameraStatus): String =
-        if (portraitSetupOpensMode(status.shootingMode)) "MODE"
+        if (portraitSetupOpensMode(status.shootingMode)) "模式"
         else VideoFormat.parse(status.resolutionCode, status.fpsIndex)
-            ?.let { "${it.resolution.tabTitle}${it.frameRate.drumLabel}" } ?: "REC SETUP"
+            ?.let { "${it.resolution.tabTitle}${it.frameRate.drumLabel}" } ?: "录制设置"
 
     /** iOS `recSetupColor`: color mode hanging under the format; none for stills or before `@2` arrives. */
     fun portraitSetupCaption(
@@ -69,7 +69,7 @@ object CaptureShutterPolicy {
     fun showsAudioControls(shootingMode: Int): Boolean = !isStillCapture(shootingMode)
 
     fun recordingCategoryTabs(shootingMode: Int): List<String> =
-        if (isStillCapture(shootingMode)) listOf("Mode") else listOf("Format", "Color", "Mode")
+        if (isStillCapture(shootingMode)) listOf("模式") else listOf("格式", "色彩", "模式")
 
     /** A FORMAT SET failure from a previous mode must not rewrite the new mode HUD. */
     fun canRevertFormatFailure(liveShootingMode: Int, modeAtSet: Int): Boolean =

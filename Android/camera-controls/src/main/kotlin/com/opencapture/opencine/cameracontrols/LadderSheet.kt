@@ -446,16 +446,16 @@ private fun TintPad(
     val shown = labelOf(CaptureTint(gm, if (horizontal) ab else null, range)).ifBlank { " " }
     Row(
         Modifier.fillMaxWidth().wrapContentHeight().alpha(if (enabled) 1f else 0.45f)
-            .semantics { contentDescription = "Tint $shown" },
+            .semantics { contentDescription = "色调 ${shown}" },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             if (horizontal) {
-                TintArrow(MonitorIcon.CHEVRON_LEFT, enabled, "Shift toward blue") { emit(ab - 1, gm) }
+                TintArrow(MonitorIcon.CHEVRON_LEFT, enabled, "偏蓝") { emit(ab - 1, gm) }
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                TintArrow(MonitorIcon.CHEVRON_UP, enabled, "Shift toward green") { emit(ab, gm + 1) }
+                TintArrow(MonitorIcon.CHEVRON_UP, enabled, "偏绿") { emit(ab, gm + 1) }
                 Box(
                     Modifier.size(108.dp)
                         .background(LiveDesign.surface, RoundedCornerShape(12.dp))
@@ -490,17 +490,17 @@ private fun TintPad(
                             .background(LiveDesign.accent, CircleShape),
                     )
                 }
-                TintArrow(MonitorIcon.CHEVRON_DOWN, enabled, "Shift toward magenta") { emit(ab, gm - 1) }
+                TintArrow(MonitorIcon.CHEVRON_DOWN, enabled, "偏洋红") { emit(ab, gm - 1) }
             }
             if (horizontal) {
-                TintArrow(MonitorIcon.CHEVRON_RIGHT, enabled, "Shift toward amber") { emit(ab + 1, gm) }
+                TintArrow(MonitorIcon.CHEVRON_RIGHT, enabled, "偏琥珀") { emit(ab + 1, gm) }
             }
         }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(
                 shown,
                 style = LiveType.ui(17f, FontWeight.SemiBold),
-                color = if (shown == "Neutral") LiveDesign.muted else LiveDesign.accent,
+                color = if (shown == "中性") LiveDesign.muted else LiveDesign.accent,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )

@@ -10,7 +10,7 @@ import com.opencapture.monitorui.settings.MonitorSettingsSwitchInlineRow
 fun MonitorHistogramMenu(trafficLights: Boolean, onTrafficLights: () -> Unit,
     compensation: MonitorCrushClipCompensation, onCompensation: (MonitorCrushClipCompensation) -> Unit,
     trafficHelp: String, compensationHelp: String) {
-    MonitorSettingsSwitchInlineRow("Traffic Lights", isOn = trafficLights, help = trafficHelp,
+    MonitorSettingsSwitchInlineRow("RGB 剪切指示灯", isOn = trafficLights, help = trafficHelp,
         showTopDivider = false, onToggle = onTrafficLights)
     MonitorCrushClipMenu(compensation, onCompensation, compensationHelp)
 }
@@ -18,7 +18,7 @@ fun MonitorHistogramMenu(trafficLights: Boolean, onTrafficLights: () -> Unit,
 @Composable
 fun MonitorCrushClipMenu(compensation: MonitorCrushClipCompensation,
     onCompensation: (MonitorCrushClipCompensation) -> Unit, help: String, showTopDivider: Boolean = true) {
-    MonitorSettingsInlineRow("Crush/Clip Compensation", help, showTopDivider = showTopDivider, stacked = true) {
+    MonitorSettingsInlineRow("暗部压黑／高光剪切补偿", help, showTopDivider = showTopDivider, stacked = true) {
         MonitorSettingsCrushClipSegmented(
             options = MonitorCrushClipCompensation.entries.map { it.label to it.compactLabel },
             selectedLabel = compensation.label, accentSelection = true,

@@ -120,7 +120,7 @@ class CamFovVectorTest {
                 }
                 "ceilingNote" ->
                     assertEquals(
-                        want,
+                        want.replace(" caps zoom at ", " 下最大可变焦至 "),
                         CamFov.ceilingNote(row[1], row[2].toDouble(), list(row[3])) ?: "-",
                         where,
                     )

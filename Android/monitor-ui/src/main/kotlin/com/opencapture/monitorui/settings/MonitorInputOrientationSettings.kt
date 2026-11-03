@@ -15,14 +15,14 @@ const val REMOTE_SHUTTER_TAG: String = "monitor.settings.controls.remoteShutter"
 @Composable
 fun MonitorInputOrientationSettings(
     remoteShutter: Boolean? = null, onRemoteShutter: ((Boolean) -> Unit)? = null,
-    remoteTitle: String = "Remote shutter", remoteHelp: String? = null, remoteCaption: String? = null,
+    remoteTitle: String = "遥控快门", remoteHelp: String? = null, remoteCaption: String? = null,
     autoRotateFeed: Boolean? = null, onAutoRotateFeed: ((Boolean) -> Unit)? = null,
-    rotationTitle: String = "Auto-Rotate Feed", rotationHelp: String, feedback: () -> Unit = {},
+    rotationTitle: String = "自动旋转监看画面", rotationHelp: String, feedback: () -> Unit = {},
 ): Unit {
     val offersRemote = remoteShutter != null && onRemoteShutter != null
     val offersRotation = autoRotateFeed != null && onAutoRotateFeed != null
     if (!offersRemote && !offersRotation) return
-    MonitorSettingsRowCard(title = "Input & orientation") {
+    MonitorSettingsRowCard(title = "输入与方向") {
         if (remoteShutter != null && onRemoteShutter != null) {
             MonitorSettingsSwitchInlineRow(title = remoteTitle, help = remoteHelp,
                 isOn = remoteShutter, showTopDivider = false, testTag = REMOTE_SHUTTER_TAG) {

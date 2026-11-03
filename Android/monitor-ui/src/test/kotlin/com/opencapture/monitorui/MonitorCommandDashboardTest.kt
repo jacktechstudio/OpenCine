@@ -72,20 +72,20 @@ class MonitorCommandDashboardTest {
 
     @Test fun theSideColumnIsSpokenFromItsSectionTitles() {
         assertEquals(
-            "Image, Focus, Audio, and Monitor controls. Swipe up to reveal more command controls.",
-            commandSideDescription(listOf("Image", "Focus", "Audio", "Monitor")),
+            "影像、对焦、音频和监看。向上滑动查看更多拍摄控制项。",
+            commandSideDescription(listOf("影像", "对焦", "音频", "监看")),
         )
         assertEquals(
-            "Image and Focus controls. Swipe up to reveal more command controls.",
-            commandSideDescription(listOf("Image", "Focus")),
+            "影像和对焦。向上滑动查看更多拍摄控制项。",
+            commandSideDescription(listOf("影像", "对焦")),
         )
-        assertEquals("Audio controls. Swipe up to reveal more command controls.", commandSideDescription(listOf("Audio")))
+        assertEquals("音频。向上滑动查看更多拍摄控制项。", commandSideDescription(listOf("音频")))
     }
 
     @Test fun heroReadsTheHeaderStatusAndSplitsTheFrameField() {
         val recording = MonitorStatusPresentation(recording = true, timecode = "01:02:03:04")
         assertEquals("01:02:03" to ":04", recording.commandHeroTimecode)
-        assertEquals("Recording, 01:02:03:04", recording.commandHeroAccessibilityValue)
+        assertEquals("正在录制，01:02:03:04", recording.commandHeroAccessibilityValue)
         // Drop-frame timecode keeps its semicolon in the accent field.
         assertEquals(";04", MonitorStatusPresentation(false, timecode = "01:02:03;04").commandHeroTimecode?.second)
         assertEquals("12" to "", MonitorStatusPresentation(false, timecode = "12").commandHeroTimecode)
@@ -93,9 +93,9 @@ class MonitorCommandDashboardTest {
         val unknown = MonitorStatusPresentation(recording = null, timecode = null)
         assertEquals("--", unknown.recordingLabel)
         assertNull(unknown.commandHeroTimecode)
-        assertEquals("Recording state unknown", unknown.commandHeroAccessibilityValue)
+        assertEquals("录制状态未知", unknown.commandHeroAccessibilityValue)
         assertNull(MonitorStatusPresentation(false, timecode = "").commandHeroTimecode)
-        assertEquals("Standby", MonitorStatusPresentation(false, timecode = "").commandHeroAccessibilityValue)
+        assertEquals("待机", MonitorStatusPresentation(false, timecode = "").commandHeroAccessibilityValue)
     }
 
     @Test fun heroAndSideColumnGeometryMatchTheSwiftTwin() {

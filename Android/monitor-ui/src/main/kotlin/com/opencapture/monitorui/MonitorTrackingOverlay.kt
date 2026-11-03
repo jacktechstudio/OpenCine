@@ -111,7 +111,7 @@ fun MonitorTrackingCancelButton(rect: MonitorRect, color: Color, ink: Color,
     onClick: () -> Unit, feedback: () -> Unit = {}) {
     Box(Modifier.offset(rect.x.dp, rect.y.dp).size(rect.width.dp, rect.height.dp)
         .clip(CircleShape).monitorChromeClickable(onClickFeedback = feedback, onClick = onClick)
-        .semantics { contentDescription = "Stop subject tracking" }, contentAlignment = Alignment.Center) {
+        .semantics { contentDescription = "停止主体跟踪" }, contentAlignment = Alignment.Center) {
         Box(Modifier.size(MonitorTrackingGeometry.CANCEL_SIZE.dp).clip(CircleShape).background(color),
             contentAlignment = Alignment.Center) {
             MonitorIcon(MonitorIcon.X, null, Modifier.size(11.dp), ink)

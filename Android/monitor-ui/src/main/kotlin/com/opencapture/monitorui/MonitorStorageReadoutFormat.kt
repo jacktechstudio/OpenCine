@@ -19,5 +19,5 @@ object MonitorStorageReadoutFormat {
      */
     fun nextForm(current: Int, count: Int): Int = if (count > 1) (current + 1) % count else 0
 
-    fun remainingMinutes(minutes: Int?): String = minutes?.takeIf { it >= 0 }?.let { "$it Min" } ?: "\u2014 Min"
+    fun remainingMinutes(minutes: Int?): String = minutes?.takeIf { it >= 0 }?.let { "$it 分钟" } ?: "\u2014 分钟"
 }

@@ -19,13 +19,13 @@ class MonitorDeliveryFileValuesTest {
         val formatted = mutableListOf<Long>()
         val text = MonitorDeliveryMetadataSummary.text(listOf(unknown)) { formatted += it; "unexpected" }
         assertNull(unknown.captureDate); assertNull(unknown.sizeBytes); assertTrue(formatted.isEmpty())
-        assertEquals("SIMULATED · unknown date · unknown size", text)
+        assertEquals("SIMULATED · 日期未知 · 大小未知", text)
     }
     @Test fun metadataOrderAndKnownValuesRemainExact() {
         val text = MonitorDeliveryMetadataSummary.text(listOf(
             MonitorDeliveryMetadataFacts("SIMULATED-A", "2026-10-07", 123), MonitorDeliveryMetadataFacts("SIMULATED-B", null, null)
         )) { "$it bytes" }
-        assertEquals("SIMULATED-A · 2026-10-07 · 123 bytes\nSIMULATED-B · unknown date · unknown size", text)
+        assertEquals("SIMULATED-A · 2026-10-07 · 123 bytes\nSIMULATED-B · 日期未知 · 大小未知", text)
     }
     @Test fun conversionWinsOverLutMetadataAndDisabledMetadataIncludesNothing() {
         val configuration = MonitorDeliveryExportConfiguration(1, 1)

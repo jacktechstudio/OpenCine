@@ -28,9 +28,9 @@ class CamerasMappingTest {
     @Test fun editSetupReopensOnlyAnAdvertisedCurrentRoute() = runTest {
         val fake = FakeIntegration(id = IntegrationID("test.cameras"))
         val model = Values.model(listOf(fake), backgroundScope)
-        val chooser = AddSetupChooser("Add setup", "", listOf(
+        val chooser = AddSetupChooser("添加连接方案", "", listOf(
             AddSetupOption("wifi", RouteKind.INFRASTRUCTURE_NETWORK, "Wi-Fi", "", "Choose"),
-            AddSetupOption("hotspot", RouteKind.PHONE_HOTSPOT, "Hotspot", "", "Choose"),
+            AddSetupOption("hotspot", RouteKind.PHONE_HOTSPOT, "热点", "", "Choose"),
         ))
         model.connect(Values.camera, Values.wifi.id)
         fake.attempts[0].fail(Values.failure)
@@ -58,10 +58,10 @@ class CamerasMappingTest {
         val items = CamerasMapping.paired(model)
         assertEquals(
             CameraItem(
-                id = "camera-1", name = "CAM-1", subtitle = "Test Body · CAM-1", badge = "CONNECTING",
-                status = "Joining CAM-1", actionTitle = "Connect", isPrimary = true, isBusy = true, isAvailable = true,
+                id = "camera-1", name = "CAM-1", subtitle = "Test Body · CAM-1", badge = "正在连接",
+                status = "Joining CAM-1", actionTitle = "连接", isPrimary = true, isBusy = true, isAvailable = true,
                 setups = listOf(
-                    MonitorSetupChip(Values.ap.id.text, "Camera Wi-Fi", active = true, kind = "cameraWiFi"),
+                    MonitorSetupChip(Values.ap.id.text, "相机 Wi-Fi", active = true, kind = "cameraWiFi"),
                     MonitorSetupChip(Values.wifi.id.text, "Wi-Fi · studio", active = false, canForget = true, kind = "wifi"),
                 ),
                 canAddSetup = false,
@@ -76,19 +76,19 @@ class CamerasMappingTest {
         )
         assertEquals(
             CameraItem(
-                id = "camera-0", name = "B cam", subtitle = "Test Body · studio", badge = "NOT CONNECTED",
-                status = "Not found. Power it on to reconnect", actionTitle = "Reconnect", isAvailable = false,
+                id = "camera-0", name = "B cam", subtitle = "Test Body · studio", badge = "未连接",
+                status = "未找到相机。请开机后重新连接", actionTitle = "重新连接", isAvailable = false,
                 setups = listOf(
-                    MonitorSetupChip(Values.ap.id.text, "Camera Wi-Fi", active = false, kind = "cameraWiFi"),
+                    MonitorSetupChip(Values.ap.id.text, "相机 Wi-Fi", active = false, kind = "cameraWiFi"),
                     MonitorSetupChip(Values.wifi.id.text, "Wi-Fi · studio", active = true, canForget = true, kind = "wifi"),
                 ),
                 canAddSetup = false,
                 failure = MonitorConnectFailure(
                     "Bluetooth is off", "Turn on Bluetooth for this app.",
                     listOf(
-                        MonitorConnectFailure.Action("settings", "Open Settings"),
-                        MonitorConnectFailure.Action("edit:${Values.wifi.id.text}", "Edit setup"),
-                        MonitorConnectFailure.Action("retry", "Try again", primary = true),
+                        MonitorConnectFailure.Action("settings", "打开设置"),
+                        MonitorConnectFailure.Action("edit:${Values.wifi.id.text}", "编辑连接方案"),
+                        MonitorConnectFailure.Action("retry", "重试", primary = true),
                     ),
                 ),
             ),
@@ -106,7 +106,7 @@ class CamerasMappingTest {
         assertTrue(item.subtitle == "studio" && item.setups.map { it.canForget } == listOf(false))
         fake.publish(listOf(NearbyCamera("n9", name = "CAM-9", model = "", routes = setOf(RouteKind.INFRASTRUCTURE_NETWORK))))
         runCurrent()
-        assertEquals(listOf("nearby"), CamerasMapping.nearby(model).map { it.subtitle })
+        assertEquals(listOf("附近"), CamerasMapping.nearby(model).map { it.subtitle })
     }
 
     @Test
@@ -136,12 +136,12 @@ class CamerasMappingTest {
         assertEquals(
             listOf(
                 CameraItem(
-                    id = "n2", name = "CAM-2", subtitle = "Test Body · nearby", badge = "NEW", status = "Ready to pair",
-                    actionTitle = "Pair", signalBars = 3,
+                    id = "n2", name = "CAM-2", subtitle = "Test Body · 附近", badge = "新设备", status = "可以配对",
+                    actionTitle = "配对", signalBars = 3,
                 ),
                 CameraItem(
-                    id = "n3", name = "CAM-3", subtitle = "Test Body · nearby", badge = "IN USE",
-                    status = "In use by another device", actionTitle = "Pair", isAvailable = false,
+                    id = "n3", name = "CAM-3", subtitle = "Test Body · 附近", badge = "使用中",
+                    status = "其他设备正在使用", actionTitle = "配对", isAvailable = false,
                 ),
             ),
             CamerasMapping.nearby(model),
@@ -156,10 +156,10 @@ class CamerasMappingTest {
         runCurrent()
         assertEquals(
             MonitorPairingPresentation(
-                steps = listOf(MonitorPairingStep("Find your camera", "Nearby cameras")), currentStep = 0,
-                title = "Find your camera", body = "Turn the camera on and keep this phone nearby.",
-                target = "Nothing selected yet", hint = "Choose the camera that matches your screen",
-                emptyTitle = "Looking for cameras", primaryAction = "Continue",
+                steps = listOf(MonitorPairingStep("查找相机", "附近的相机")), currentStep = 0,
+                title = "查找相机", body = "请打开相机，并将手机靠近相机。",
+                target = "尚未选择", hint = "选择与相机屏幕显示一致的设备",
+                emptyTitle = "正在搜索相机", primaryAction = "继续",
             ),
             CamerasMapping.pairing(model),
         )
@@ -168,28 +168,28 @@ class CamerasMappingTest {
         runCurrent()
         model.select("n2")
         val chosen = CamerasMapping.pairing(model)
-        assertTrue(chosen.target == "CAM-2" && chosen.hint == "Selected CAM-2" && chosen.primaryActionEnabled)
+        assertTrue(chosen.target == "CAM-2" && chosen.hint == "已选择 CAM-2" && chosen.primaryActionEnabled)
         assertTrue(chosen.devices.map { it.id } == listOf("n2") && chosen.devices[0].selected && chosen.emptyTitle == null)
 
         model.connect(model.state.value.nearby.first())
         fake.attempts[0].progress(ConnectionPhase.LINK, 0)
         runCurrent()
         val linking = CamerasMapping.pairing(model)
-        assertEquals(listOf("Find your camera", "Link", "Approve", "Join network", "Video"), linking.steps.map { it.title })
+        assertEquals(listOf("查找相机", "Link", "Approve", "Join network", "Video"), linking.steps.map { it.title })
         assertTrue(linking.currentStep == 1 && linking.devices.isEmpty() && linking.progress == "Link")
-        assertTrue(linking.primaryAction == null && linking.backAction == "Cancel")
+        assertTrue(linking.primaryAction == null && linking.backAction == "取消")
 
         fake.attempts[0].fail(Values.failure)
         runCurrent()
         val failed = CamerasMapping.pairing(model)
         assertTrue(failed.title == "Bluetooth is off" && failed.body == "Turn on Bluetooth for this app." && failed.error == null)
-        assertTrue(failed.primaryAction == "Open Settings" && failed.primaryActionEnabled && failed.currentStep == 0)
+        assertTrue(failed.primaryAction == "打开设置" && failed.primaryActionEnabled && failed.currentStep == 0)
     }
 
     @Test
     fun routeTitlesFollowTheKind() {
         assertEquals(
-            listOf("Camera Wi-Fi", "Wi-Fi", "Hotspot", "USB-C", "HDMI"),
+            listOf("相机 Wi-Fi", "Wi-Fi", "热点", "USB-C", "HDMI"),
             RouteKind.entries.map { CamerasMapping.title(SavedRoute(key = "k", kind = it)) },
         )
         assertEquals("Desk", CamerasMapping.title(SavedRoute(key = "k", kind = RouteKind.USB, title = "Desk")))

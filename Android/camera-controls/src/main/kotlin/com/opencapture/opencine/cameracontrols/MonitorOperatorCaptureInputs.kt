@@ -50,20 +50,20 @@ public data class MonitorOperatorLegacyCaptureIdentity(public val sheet: LiveShe
                     else MonitorCaptureReadoutGroup.RIDDEN))
         }
         append(LiveSheet.ISO, "ISO", source.readout(LiveSheet.ISO, status, CaptureLists.isoChipValue(status)))
-        append(LiveSheet.SHUTTER, if (auto) MonitorExposureReadout.autoEvCaption(status.shutterDenom) else "SHUTTER",
+        append(LiveSheet.SHUTTER, if (auto) MonitorExposureReadout.autoEvCaption(status.shutterDenom) else "快门",
             source.readout(LiveSheet.SHUTTER, status, if (auto) EvComp.fromRaw(status.evComp)?.label ?: "--" else shutter),
             if (auto && preferences.facePriorityExposure) CaptureLists.FACE_PRIORITY_TITLE else null,
             badge = if (auto && preferences.facePriorityExposure) MonitorIcon.SCAN else null)
-        append(LiveSheet.EXPO, "EXPOSURE", if (native.aeLocked) CaptureLists.AE_LOCK
+        append(LiveSheet.EXPO, "曝光", if (native.aeLocked) CaptureLists.AE_LOCK
             else controlState.snapshot?.exposureProgram?.value?.let(com.opencapture.opencine.appkit.MonitorCapturePresentation::exposureProgram) ?: "--")
-        metering?.let { tile -> add(MonitorOperatorLiveReadout("METER", "METER", tile.label,
+        metering?.let { tile -> add(MonitorOperatorLiveReadout("METER", "测光", tile.label,
             section, action = { if (quickEnabled && lifetime.active) tile.perform() }, quickEnabled = false,
             actionIsCommand = true, group = MonitorCaptureReadoutGroup.SETUP)) }
         append(LiveSheet.WB, "WB", source.readout(LiveSheet.WB, status, CaptureLists.wbChipValue(status, native.awbLockKelvin != null)),
             icon = if (CaptureLists.wbIsAuto(status) && native.awbLockKelvin == null) MonitorIcon.APERTURE else null)
-        if (controls.focus.isOffered) append(LiveSheet.FOCUS, "FOCUS", source.readout(LiveSheet.FOCUS, status, status.focusLabel))
-        if (controls.iris.isOffered) append(LiveSheet.APERTURE, "APERTURE", source.readout(LiveSheet.APERTURE, status, ApertureStrategy.tileValue(status)))
-        if (controls.audio.isOffered && CaptureShutterPolicy.showsAudioControls(status.shootingMode)) append(LiveSheet.AUDIO, "AUDIO", status.audioLabel)
+        if (controls.focus.isOffered) append(LiveSheet.FOCUS, "对焦", source.readout(LiveSheet.FOCUS, status, status.focusLabel))
+        if (controls.iris.isOffered) append(LiveSheet.APERTURE, "光圈", source.readout(LiveSheet.APERTURE, status, ApertureStrategy.tileValue(status)))
+        if (controls.audio.isOffered && CaptureShutterPolicy.showsAudioControls(status.shootingMode)) append(LiveSheet.AUDIO, "音频", status.audioLabel)
     }
     val panel = active?.let { sheet ->
         MonitorOperatorCameraPanel(sheet.name, sheet.isTopAnchored, chrome = MonitorOperatorCameraPanelChrome.CONTENT,

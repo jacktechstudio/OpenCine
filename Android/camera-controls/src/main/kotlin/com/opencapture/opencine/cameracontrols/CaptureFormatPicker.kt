@@ -134,15 +134,15 @@ fun <T> CaptureFormatPicker(
                 )
             }
             val areas = CaptureFormatPickerState.groups(choices.map { it.imageArea })
-            if (areas.any { it != null }) ModeBar(areas.map { it?.title ?: "Other" }, areas.indexOf(position.imageArea), enabled) { index ->
+            if (areas.any { it != null }) ModeBar(areas.map { it?.title ?: "其他" }, areas.indexOf(position.imageArea), enabled) { index ->
                 submit(position.select(areas[index], position.aspect, position.resolution, choices, latestEnabled && latestCurrent()))
             }
             val aspects = position.aspects(choices)
-            if (aspects.size > 1) ModeBar(aspects.map { it?.title ?: "Other" }, aspects.indexOf(position.aspect), enabled, uppercase = false) { index ->
+            if (aspects.size > 1) ModeBar(aspects.map { it?.title ?: "其他" }, aspects.indexOf(position.aspect), enabled, uppercase = false) { index ->
                 submit(position.select(position.imageArea, aspects[index], position.resolution, choices, latestEnabled && latestCurrent()))
             }
             val sizes = position.resolutions(choices)
-            if (sizes.isNotEmpty()) ModeBar(sizes.map { it?.title ?: "Other" }, sizes.indexOf(position.resolution), enabled) { index ->
+            if (sizes.isNotEmpty()) ModeBar(sizes.map { it?.title ?: "其他" }, sizes.indexOf(position.resolution), enabled) { index ->
                 submit(position.select(position.imageArea, position.aspect, sizes[index], choices, latestEnabled && latestCurrent()))
             }
         }

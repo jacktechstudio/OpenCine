@@ -8,19 +8,19 @@ public fun MonitorOperatorSafetySettings(
     recordConfirmation: Boolean, haptics: Boolean, keepScreenAwake: Boolean,
     onRecordConfirmation: (Boolean) -> Unit, onHaptics: (Boolean) -> Unit,
     onKeepScreenAwake: (Boolean) -> Unit,
-    hapticsHelp: String = "Short confirmation pulses for switches, settings and controls.",
-    keepScreenAwakeHelp: String = "Prevents auto-lock while this app is open. A monitor should stay lit.",
+    hapticsHelp: String = "操作开关、设置或控件时提供短振反馈。",
+    keepScreenAwakeHelp: String = "使用应用时保持屏幕常亮，防止监看过程中自动锁屏。",
     feedback: () -> Unit = {},
 ) {
-    MonitorSettingsRowCard(title = "Touch & safety") {
+    MonitorSettingsRowCard(title = "触控与防误触") {
         MonitorSettingsSwitchInlineRow(
-            title = "Record confirmation", help = "Ask before starting or stopping recording to prevent mistaps.",
+            title = "录制前确认", help = "开始或停止录制前要求确认，防止误触。",
             showTopDivider = false, isOn = recordConfirmation,
         ) { feedback(); onRecordConfirmation(!recordConfirmation) }
-        MonitorSettingsSwitchInlineRow(title = "Haptics", help = hapticsHelp, isOn = haptics) {
+        MonitorSettingsSwitchInlineRow(title = "触感反馈", help = hapticsHelp, isOn = haptics) {
             feedback(); onHaptics(!haptics)
         }
-        MonitorSettingsSwitchInlineRow(title = "Keep screen awake", help = keepScreenAwakeHelp, isOn = keepScreenAwake) {
+        MonitorSettingsSwitchInlineRow(title = "保持屏幕常亮", help = keepScreenAwakeHelp, isOn = keepScreenAwake) {
             feedback(); onKeepScreenAwake(!keepScreenAwake)
         }
     }
@@ -30,8 +30,8 @@ public fun MonitorOperatorSafetySettings(
 @Composable
 public fun MonitorPanelSettings(hdrDisplay: Boolean, help: String,
     onChange: (Boolean) -> Unit, feedback: () -> Unit = {}) {
-    MonitorSettingsRowCard(title = "Panel") {
-        MonitorSettingsSwitchInlineRow(title = "HDR display", help = help, showTopDivider = false, isOn = hdrDisplay) {
+    MonitorSettingsRowCard(title = "显示面板") {
+        MonitorSettingsSwitchInlineRow(title = "HDR 显示", help = help, showTopDivider = false, isOn = hdrDisplay) {
             feedback(); onChange(!hdrDisplay)
         }
     }

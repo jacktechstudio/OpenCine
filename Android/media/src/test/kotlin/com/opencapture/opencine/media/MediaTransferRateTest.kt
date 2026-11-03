@@ -61,7 +61,7 @@ class MediaTransferRateTest {
         assertEquals("10 MB/s", estimator.rate(at(3000)).label)
         assertNotEquals<MediaTransferRate>(MediaTransferRate.Stalled, estimator.rate(at(4999)))
         assertEquals(MediaTransferRate.Stalled, estimator.rate(at(5000)))
-        assertEquals("Stalled", estimator.rate(at(5000)).label)
+        assertEquals("已停滞", estimator.rate(at(5000)).label)
         estimator.stream(9000, 11_000, 20_000_000, total)
         assertEquals("20 MB/s", estimator.rate(at(11_000)).label)
     }
@@ -85,15 +85,15 @@ class MediaTransferRateTest {
     @Test fun transferProgressCaptionJoinsPercentAndRate() {
         assertEquals("18% · 42 MB/s", MediaTransferRate.caption(0.186, "42 MB/s"))
         assertEquals("18%", MediaTransferRate.caption(0.186, null))
-        assertEquals("100% · Stalled", MediaTransferRate.caption(1.4, "Stalled"))
+        assertEquals("100% · 已停滞", MediaTransferRate.caption(1.4, "已停滞"))
         assertNull(MediaTransferRate.caption(null, "42 MB/s"))
     }
 
     @Test fun playerCacheTagReadsTheDownloadSpeed() {
         val values = MonitorPlaybackSourceValues(availability = MonitorPlaybackAvailability.CAMERA, progress = 0.42)
-        assertEquals("ON CAMERA · CACHING ORIGINAL 42%", values.sourceLabel)
-        assertEquals("ON CAMERA · CACHING ORIGINAL 42% · 8.4 MB/s", values.copy(transferRate = "8.4 MB/s").sourceLabel)
-        assertEquals("ORIGINAL · ON PHONE",
+        assertEquals("相机内 · 正在缓存原片 42%", values.sourceLabel)
+        assertEquals("相机内 · 正在缓存原片 42% · 8.4 MB/s", values.copy(transferRate = "8.4 MB/s").sourceLabel)
+        assertEquals("原片 · 本机",
             values.copy(transferRate = "8.4 MB/s", availability = MonitorPlaybackAvailability.ORIGINAL).sourceLabel)
     }
 }

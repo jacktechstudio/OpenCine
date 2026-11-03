@@ -2,7 +2,7 @@ package com.opencapture.monitorui
 
 import kotlin.math.roundToInt
 
-enum class MonitorAudioOrientation(val label: String) { VERTICAL("Vertical"), HORIZONTAL("Horizontal") }
+enum class MonitorAudioOrientation(val label: String) { VERTICAL("垂直"), HORIZONTAL("水平") }
 
 /** Mockup `SCOPE_SIZE.AUDIO` 28×168. dB overlays the bars; the plate does not grow. */
 object MonitorAudioMetrics {

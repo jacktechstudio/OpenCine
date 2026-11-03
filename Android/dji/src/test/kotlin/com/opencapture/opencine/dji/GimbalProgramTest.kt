@@ -155,7 +155,7 @@ class GimbalProgramTest {
         var last: GimbalMoveEngine.Output? = null
         repeat(100) { engine.tick(0.04, live)?.let { last = it } }
         assertTrue(last?.stop == true && last?.finished == true)
-        assertEquals("Camera did not reach A", engine.failure)
+        assertEquals("相机未到达 A 点", engine.failure)
         assertEquals("A", engine.readout(live)?.label)
     }
 
@@ -202,7 +202,7 @@ class GimbalProgramTest {
             if (now >= 2.96 && now < 3.5) yaw -= 1
             engine.tick(0.04, GimbalWaypoint(yaw, 0.0, 1.0))
         }
-        assertEquals("Camera waypoint could not be verified", engine.failure)
+        assertEquals("无法确认相机关键点位置", engine.failure)
     }
 
     @Test
@@ -214,7 +214,7 @@ class GimbalProgramTest {
         val out = engine.tick(0.08, b)!!
         assertTrue(out.stop)
         assertEquals(null, out.target)
-        assertEquals("Move interrupted: waypoint dispatch was late", engine.failure)
+        assertEquals("运动已中断：关键点指令发送延迟", engine.failure)
     }
 
     @Test
@@ -240,13 +240,13 @@ class GimbalProgramTest {
         val nativeB = b.copy(nativePitchDeg = -150.0)
         val engine = GimbalMoveEngine()
         assertFalse(engine.start(GimbalProgram(a = nativeA, b = b), nativeA))
-        assertEquals("Set gimbal points from fresh camera feedback", engine.failure)
+        assertEquals("请在收到最新云台位置后设置关键点", engine.failure)
         assertFalse(engine.start(GimbalProgram(a = nativeA, b = nativeB), a))
         for (invalid in listOf(null, Double.NaN, Double.POSITIVE_INFINITY, 181.0)) {
             assertTrue(engine.start(GimbalProgram(a = nativeA, b = nativeB), nativeA))
             val out = engine.tick(0.04, nativeA.copy(nativePitchDeg = invalid))!!
             assertTrue(out.stop && out.finished)
-            assertEquals("Move interrupted: timing or camera feedback lost", engine.failure)
+            assertEquals("运动已中断：时序或相机反馈丢失", engine.failure)
         }
     }
 
@@ -264,7 +264,7 @@ class GimbalProgramTest {
             }
             engine.tick(0.04, origin.copy(nativePitchDeg = native), if (step == 75) 0.04 else 0.0)
         }
-        assertEquals("Camera waypoint could not be verified", engine.failure)
+        assertEquals("无法确认相机关键点位置", engine.failure)
     }
 
     @Test

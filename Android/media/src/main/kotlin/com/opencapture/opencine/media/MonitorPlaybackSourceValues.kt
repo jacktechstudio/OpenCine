@@ -48,9 +48,9 @@ public data class MonitorPlaybackSourceValues(
         transfer ?: if (allowsSignalFallback) fallback() else null
     public val sourceLabel: String? get() {
         val source = availability ?: return null
-        if (source == MonitorPlaybackAvailability.ORIGINAL) return "ORIGINAL · ON PHONE"
-        val label = if (source == MonitorPlaybackAvailability.PROXY) "PROXY" else "ON CAMERA"
+        if (source == MonitorPlaybackAvailability.ORIGINAL) return "原片 · 本机"
+        val label = if (source == MonitorPlaybackAvailability.PROXY) "代理" else "相机内"
         val fraction = progress?.takeIf { it.isFinite() } ?: return label
-        return "$label · CACHING ORIGINAL ${MediaTransferRate.caption(fraction, transferRate)}"
+        return "${label} · 正在缓存原片 ${MediaTransferRate.caption(fraction, transferRate)}"
     }
 }

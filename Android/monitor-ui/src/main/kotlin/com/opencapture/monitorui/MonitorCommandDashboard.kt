@@ -115,7 +115,7 @@ val MonitorStatusPresentation.commandHeroTimecode: Pair<String, String>?
 
 /** The hero's spoken value: the header's record words, then the timecode when there is one. */
 val MonitorStatusPresentation.commandHeroAccessibilityValue: String
-    get() = listOfNotNull(recordingAccessibilityLabel, timecode?.takeIf { it.isNotEmpty() }).joinToString(", ")
+    get() = listOfNotNull(recordingAccessibilityLabel, timecode?.takeIf { it.isNotEmpty() }).joinToString("，")
 
 /** Drops duplicates and kinds outside [all], then appends the kinds the order lacks in [all]'s order. */
 fun <K> monitorCommandTileOrder(order: List<K>, all: List<K>): List<K> {
@@ -218,10 +218,10 @@ internal fun commandTileValueSize(value: String): Float =
 internal fun commandSideDescription(titles: List<String>): String {
     val list = when (titles.size) {
         0, 1 -> titles.joinToString()
-        2 -> titles.joinToString(" and ")
-        else -> titles.dropLast(1).joinToString() + ", and " + titles.last()
+        2 -> titles.joinToString("和")
+        else -> titles.dropLast(1).joinToString("、") + "和" + titles.last()
     }
-    return "$list controls. Swipe up to reveal more command controls."
+    return "$list。向上滑动查看更多拍摄控制项。"
 }
 
 /** The live surface's Sora face (tabular figures for values) without font padding. */
@@ -307,7 +307,7 @@ private fun CommandHeroBand(hero: MonitorStatusPresentation, portrait: Boolean) 
         Modifier
             .fillMaxWidth()
             .height(commandHeroHeightDp(portrait).dp)
-            .semantics(mergeDescendants = true) { contentDescription = "Timecode $description" }
+            .semantics(mergeDescendants = true) { contentDescription = "时间码 $description" }
             .testTag("monitor.command.hero"),
         horizontalArrangement = Arrangement.spacedBy(11.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -376,14 +376,14 @@ private fun CommandHealthStrip(health: MonitorCommandHealth, trailing: @Composab
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CommandStatusBlock(
-            "Temp",
+            "温度",
             health.temperature,
             Modifier.weight(0.7f, fill = false).widthIn(min = 52.dp, max = 148.dp),
             good = health.temperatureOk,
         )
-        CommandStatusBlock("Storage", health.storage, Modifier.weight(1.1f).widthIn(min = 52.dp, max = 148.dp))
-        CommandStatusBlock("Camera", health.camera, Modifier.weight(1f).widthIn(min = 52.dp, max = 148.dp))
-        CommandStatusBlock("Lens", health.lens, Modifier.weight(1.25f).widthIn(min = 52.dp, max = 148.dp))
+        CommandStatusBlock("存储", health.storage, Modifier.weight(1.1f).widthIn(min = 52.dp, max = 148.dp))
+        CommandStatusBlock("相机", health.camera, Modifier.weight(1f).widthIn(min = 52.dp, max = 148.dp))
+        CommandStatusBlock("镜头", health.lens, Modifier.weight(1.25f).widthIn(min = 52.dp, max = 148.dp))
         // The trailing chip keeps its natural size (iOS fixedSize + layoutPriority).
         trailing()
     }
@@ -569,25 +569,25 @@ private fun <K : Any, R : Any> CommandTile(
     val reorderActions =
         buildList {
             if (canMove && index > 0) {
-                add(CustomAccessibilityAction("Move ${tile.title} earlier") { onMoveTo(index - 1); true })
+                add(CustomAccessibilityAction("前移“${tile.title}”") { onMoveTo(index - 1); true })
             }
             if (canMove && index < tileCount - 1) {
-                add(CustomAccessibilityAction("Move ${tile.title} later") { onMoveTo(index + 1); true })
+                add(CustomAccessibilityAction("后移“${tile.title}”") { onMoveTo(index + 1); true })
             }
         }
-    val reorderHint = if (canMove) " Long press and drag to reorder." else ""
+    val reorderHint = if (canMove) " 长按并拖动可调整顺序。" else ""
     val description =
         buildString {
             append("${tile.title}: ${tile.value}")
             when {
-                applyingThisControl -> append(". Applying change.")
-                pending -> append(". Another control is being applied.")
+                applyingThisControl -> append("。正在应用更改。")
+                pending -> append("。正在应用另一项设置。")
                 request == null ->
-                    append(". ${tile.unavailableReason ?: "Read-only."}$reorderHint")
-                !controlsEnabled -> append(". Controls are locked.$reorderHint")
+                    append(". ${tile.unavailableReason ?: "只读。"}$reorderHint")
+                !controlsEnabled -> append("。控制已锁定。$reorderHint")
                 else -> append(
-                    if (canMove) ". Double tap to change; long press and drag to reorder."
-                    else ". Double tap to change.",
+                    if (canMove) "。轻点两下可更改，长按并拖动可调整顺序。"
+                    else "。轻点两下可更改。",
                 )
             }
         }
@@ -604,7 +604,7 @@ private fun <K : Any, R : Any> CommandTile(
             }
             .combinedClickable(
                 enabled = interactive,
-                onClickLabel = if (controlEnabled) "Change ${tile.title}" else null,
+                onClickLabel = if (controlEnabled) "更改“${tile.title}”" else null,
                 onClick = { request?.takeIf { controlEnabled }?.let(onOpenControl) },
             )
             .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -693,14 +693,14 @@ private fun <K : Any, R : Any> CommandSideColumn(
                     .background(Brush.verticalGradient(listOf(Color.Transparent, MonitorPalette.backgroundDeep))),
             )
             Text(
-                "MORE ⌄",
+                "更多 ⌄",
                 style = commandLabelStyle,
                 color = MonitorPalette.muted,
                 modifier =
                     Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 3.dp)
-                        .semantics { contentDescription = "More command controls below. Swipe up to reveal them." },
+                        .semantics { contentDescription = "向上滑动可查看下方的更多拍摄控制项。" },
             )
         }
     }
@@ -765,11 +765,11 @@ private fun <K : Any, R : Any> CommandSmallTile(
         buildString {
             append("${cell.title}: ${cell.value}")
             when {
-                applyingThisControl -> append(". Applying change.")
-                pending -> append(". Another control is being applied.")
-                request == null -> append(". ${cell.unavailableReason ?: "Read-only."}")
-                !controlsEnabled -> append(". Controls are locked.")
-                else -> append(". Double tap to change.")
+                applyingThisControl -> append("。正在应用更改。")
+                pending -> append("。正在应用另一项设置。")
+                request == null -> append(". ${cell.unavailableReason ?: "只读。"}")
+                !controlsEnabled -> append("。控制已锁定。")
+                else -> append("。轻点两下可更改。")
             }
         }
     // iOS CommandSmallTile: minHeight 42, pad h10/v6, caption title muted, value 15 medium Sora tabular.
@@ -792,7 +792,7 @@ private fun <K : Any, R : Any> CommandSmallTile(
             }
             .combinedClickable(
                 enabled = enabled,
-                onClickLabel = "Change ${cell.title}",
+                onClickLabel = "更改“${cell.title}”",
                 onClick = { request?.let(onOpenControl) },
             )
             .padding(horizontal = 10.dp, vertical = 6.dp),

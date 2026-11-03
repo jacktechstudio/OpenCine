@@ -37,10 +37,10 @@ object LiveZebra {
 
 object MirrorAssist {
     const val EXPLANATION =
-        "Flips the monitor for a camera pointed back at you or mounted upside down. " +
-            "The recording and the scopes are never mirrored."
-    const val HORIZONTAL_HELP = "Left-to-right, for a camera pointed back at you."
-    const val VERTICAL_HELP = "Top-to-bottom, for an underslung mount. Both on turns it 180°."
+        "翻转监看画面，适用于自拍或倒挂拍摄。" +
+            "不影响录制画面和示波器。"
+    const val HORIZONTAL_HELP = "水平镜像，适用于自拍。"
+    const val VERTICAL_HELP = "垂直翻转，适用于倒挂拍摄。两项均开启时旋转 180°。"
 
     fun feedScaleX(mirrored: Boolean, squeeze: Float = 1f): Float = if (mirrored) -squeeze else squeeze
 }
@@ -48,7 +48,7 @@ object MirrorAssist {
 object AudioAssist {
     const val PANEL_WIDTH_DP = 28f
     const val PANEL_HEIGHT_DP = 168f
-    const val HELP = "Meters the camera's audio. Available while live view is up."
+    const val HELP = "显示相机音频电平，实时取景时可用。"
     const val FLOOR_DB = -60.0
     const val YELLOW_FROM_DB = -18.0
     const val RED_FROM_DB = -6.0
@@ -106,18 +106,18 @@ object WaveformAxis {
 }
 
 object HistogramAssist {
-    const val PANEL_TITLE = "Histo"
+    const val PANEL_TITLE = "直方图"
     const val CHIP = "RGBL"
     const val CLIP_ZONE_IRE = 95.0
     const val TRAFFIC_LAMP_WIDTH = 7.5f
     const val TRAFFIC_LAMP_HEIGHT = 15f
     const val TRAFFIC_OUTER_PAD = 6f
     const val TRAFFIC_LINE_GAP = 4f
-    const val TRAFFIC_LIGHTS_TITLE = "Traffic Lights"
-    const val TRAFFIC_LIGHTS_HELP = "Show small RGB edge blocks for crushed and clipped channels. Clip lights from about a third of a stop under the camera's clip, the same point zebra 100% and CineStop use."
-    const val COMPENSATION_TITLE = "Crush/Clip Compensation"
+    const val TRAFFIC_LIGHTS_TITLE = "通道警示灯"
+    const val TRAFFIC_LIGHTS_HELP = "通过边缘的 RGB 色块提示通道死黑和溢出。高光警示从低于相机截断点约 1/3 档开始，与 100% 斑马纹及 CineStop 的阈值一致。"
+    const val COMPENSATION_TITLE = "暗部/高光警示补偿"
     const val COMPENSATION_HELP =
-        "Stops of crush/clip tolerance before a traffic light glows. Shared with the goal-post meter."
+        "设置通道欠曝或溢出警示灯的容差（档），与两侧指示条共用。"
 
     val trafficGutter: Float
         get() = TRAFFIC_OUTER_PAD + TRAFFIC_LAMP_WIDTH + TRAFFIC_LINE_GAP
@@ -267,8 +267,8 @@ object FalseColorReference {
     fun axisLabels(scale: MonitorFalseColorSelection): List<String> =
         when (scale) {
             MonitorFalseColorSelection.SCENE_STOPS -> emptyList()
-            MonitorFalseColorSelection.STOPS, MonitorFalseColorSelection.IRE -> listOf("crush", "18%", "skin", "clip")
-            MonitorFalseColorSelection.LIMITS -> listOf("crushed", "midtones untouched", "clipped")
+            MonitorFalseColorSelection.STOPS, MonitorFalseColorSelection.IRE -> listOf("压黑", "18%", "肤色", "剪切")
+            MonitorFalseColorSelection.LIMITS -> listOf("压黑", "保留中间调", "剪切")
         }
 
     fun segments(
@@ -299,7 +299,7 @@ object FalseColorReference {
                 .map { stop ->
                     val label = if (stop == 0) "18%" else if (stop < 0) "−${-stop}" else "+$stop"
                     label to stop.toDouble()
-                }.toList() + ("clip" to clip)
+                }.toList() + ("剪切" to clip)
         return marks.map { (label, stop) ->
             AxisMarker(label, fraction(stop, MonitorFalseColorSelection.SCENE_STOPS, transfer, rec709, ceiling, lookCurve, infiniteFallback = 1.0))
         }

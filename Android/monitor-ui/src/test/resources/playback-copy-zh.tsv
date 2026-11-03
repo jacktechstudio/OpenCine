@@ -1,0 +1,57 @@
+# Simplified Chinese playback labels and accessibility announcements.
+text	backToMedia	返回素材库
+text	favorite	收藏素材
+text	clipInformation	素材信息
+text	share	分享素材
+text	shareTitle	分享
+text	delete	从相机删除素材
+text	clipInformationTitle	素材信息
+text	closeClipInformation	关闭素材信息
+text	deleteConfirmationTitle	要从相机存储卡删除这段素材吗？
+text	deleteConfirm	删除
+text	deleteCancel	取消
+text	deleteCancelDescription	取消删除
+text	deleteConfirmDescription	从相机存储卡删除
+text	backFifteen	快退 15 秒
+text	forwardFifteen	快进 15 秒
+text	play	播放
+text	pause	暂停
+text	restart	从头播放
+text	previousClip	上一段
+text	nextClip	下一段
+text	conformPreview	变帧率回放预览
+text	closeConformPreview	关闭变帧率回放预览
+text	mute	静音
+text	unmute	取消静音
+text	loop	循环播放
+text	on	开
+text	off	关
+text	hideControls	隐藏回放控件
+text	hideControlsHint	可轻点角落的按钮恢复显示
+text	showControls	显示回放控件
+text	position	回放位置
+text	conformTitle	变帧率回放预览
+text	realTime	原速
+text	showRating	显示星级评分
+text	hideRating	隐藏星级评分
+transport	1	0	从头播放
+transport	1	1	从头播放
+transport	0	1	暂停
+transport	0	0	播放
+mute	1	取消静音
+mute	0	静音
+toggle	1	开
+toggle	0	关
+position	0	0 秒
+position	7.9	7 秒
+position	61.5	61 秒
+position	-3	0 秒
+position	nan	0 秒
+position	inf	0 秒
+rating	1	隐藏星级评分
+rating	0	显示星级评分
+rate	1	评为 1 星
+rate	2	评为 2 星
+rate	5	评为 5 星
+conform	120	将 120 fps 素材按以下帧率回放
+conform	50	将 50 fps 素材按以下帧率回放

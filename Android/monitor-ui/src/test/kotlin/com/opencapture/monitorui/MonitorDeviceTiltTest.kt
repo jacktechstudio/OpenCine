@@ -36,8 +36,8 @@ class MonitorDeviceTiltTest {
 
     @Test
     fun theHorizonSpeaksItsRoll() {
-        assertEquals("Level, horizon roll +1.5°", MonitorLevelGeometry.accessibilityLabel(MonitorLevelDisplay.Horizon(1.5)))
-        assertEquals("DEVICE TILT", MonitorTiltSource.ACCELEROMETER_LOW_PASS.visibleLabel)
+        assertEquals("水平仪，横滚 +1.5°", MonitorLevelGeometry.accessibilityLabel(MonitorLevelDisplay.Horizon(1.5)))
+        assertEquals("设备倾角", MonitorTiltSource.ACCELEROMETER_LOW_PASS.visibleLabel)
     }
 
     private fun magnitude(v: MonitorTiltVector): Float = sqrt(v.x * v.x + v.y * v.y + v.z * v.z)

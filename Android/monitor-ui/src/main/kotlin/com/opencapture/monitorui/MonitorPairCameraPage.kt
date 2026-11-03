@@ -215,13 +215,13 @@ private fun PairingRail(
             }
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
                 Text(
-                    "STEP ${current + 1} OF ${presentation.steps.size}",
+                    "第 ${current + 1}/${presentation.steps.size} 步",
                     color = MonitorPalette.accent,
                     style = MonitorTypography.text(8f, FontWeight.Bold).copy(letterSpacing = 1.4.sp),
                     maxLines = 1,
                 )
                 Text(
-                    "Pair a camera",
+                    "配对相机",
                     color = MonitorPalette.text,
                     style = MonitorTypography.text(13f, FontWeight.SemiBold),
                     maxLines = 1,
@@ -254,7 +254,7 @@ private fun PairingRail(
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             Text(
-                "TARGET",
+                "目标设备",
                 color = MonitorPalette.faint,
                 style = MonitorTypography.text(8f, FontWeight.Bold).copy(letterSpacing = 1.3.sp),
                 maxLines = 1,
@@ -274,7 +274,7 @@ private fun PairingRail(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                "Report a problem",
+                "反馈问题",
                 color = MonitorPalette.accent,
                 style = MonitorTypography.text(12f, FontWeight.SemiBold),
             )
@@ -290,7 +290,7 @@ private fun PairingOverflowMenu(onDiagnostics: () -> Unit, onWatchFeed: (() -> U
         Box(
             Modifier.size(width = 32.dp, height = 44.dp)
                 .clickable(role = Role.Button, onClick = { open = true })
-                .semantics { contentDescription = "Pairing help and diagnostics" },
+                .semantics { contentDescription = "配对帮助与诊断" },
             contentAlignment = Alignment.Center,
         ) {
             MonitorIcon(MonitorIcon.ELLIPSIS, null, Modifier.size(15.dp), MonitorPalette.text)
@@ -298,7 +298,7 @@ private fun PairingOverflowMenu(onDiagnostics: () -> Unit, onWatchFeed: (() -> U
         DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
             DropdownMenuItem(
                 text = {
-                    Text("Share Diagnostics", style = MonitorTypography.text(13f, FontWeight.SemiBold))
+                    Text("分享诊断报告", style = MonitorTypography.text(13f, FontWeight.SemiBold))
                 },
                 onClick = {
                     open = false
@@ -308,7 +308,7 @@ private fun PairingOverflowMenu(onDiagnostics: () -> Unit, onWatchFeed: (() -> U
             if (onWatchFeed != null) {
                 DropdownMenuItem(
                     text = {
-                        Text("Watch a feed", style = MonitorTypography.text(13f, FontWeight.SemiBold))
+                        Text("观看共享画面", style = MonitorTypography.text(13f, FontWeight.SemiBold))
                     },
                     onClick = {
                         open = false
@@ -331,9 +331,9 @@ private fun PairingStepRow(
     val active = index == current
     val complete = index < current
     val status = when {
-        complete -> "complete"
-        active -> "current"
-        else -> "waiting"
+        complete -> "已完成"
+        active -> "进行中"
+        else -> "等待中"
     }
     Row(
         modifier
@@ -344,7 +344,7 @@ private fun PairingStepRow(
             )
             .padding(horizontal = 9.dp)
             .semantics(mergeDescendants = true) {
-                contentDescription = "Step ${index + 1}: ${step.title}, $status"
+                contentDescription = "第 ${index + 1} 步：${step.title}，$status"
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(
@@ -507,7 +507,7 @@ private fun PairingDeviceRow(device: MonitorPairingDevice, onSelect: (String) ->
             )
             .clickable(enabled = !device.busy, role = Role.Button, onClick = { onSelect(device.id) })
             .testTag("pair.device.${device.id}")
-            .semantics { contentDescription = "Connect ${device.name}" }
+            .semantics { contentDescription = "连接 ${device.name}" }
             .padding(horizontal = 13.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(11.dp),
@@ -709,7 +709,7 @@ private fun PairingSignalBars(count: Int) {
     Row(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(2.dp),
-        modifier = Modifier.semantics { contentDescription = "Signal $bars of 4" },
+        modifier = Modifier.semantics { contentDescription = "信号强度 $bars/4 格" },
     ) {
         repeat(4) { index ->
             Box(

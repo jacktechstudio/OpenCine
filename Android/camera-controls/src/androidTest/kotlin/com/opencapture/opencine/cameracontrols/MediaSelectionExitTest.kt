@@ -110,8 +110,8 @@ class MediaSelectionExitTest {
     @Test fun theBarFitsUntruncatedInPortraitAndLandscape() {
         for (landscape in listOf(false, true)) withCatalog(landscape) { fixture, scenario ->
             scenario.onActivity { fixture.library.select(setOf(MediaAssetID("SIMULATED-02"))) }
-            val back = awaitNode("Back") { tag(it) == "monitor.page.back" }
-            assertEquals("The page's own control is Back, not a second close", "Back",
+            val back = awaitNode("返回") { tag(it) == "monitor.page.back" }
+            assertEquals("The page's own control is Back, not a second close", "返回",
                 (back.contentDescription ?: (0 until back.childCount).firstNotNullOfOrNull { back.getChild(it)?.contentDescription })?.toString())
             val exit = awaitNode("Close") { tag(it) == MonitorMediaSelectionCopy.EXIT_TAG }
             val count = awaitNode("count") { it.text?.toString() == "1 selected" }

@@ -126,7 +126,7 @@ class MonitorMediaGalleryModelTest {
             }))
             f.gallery.confirmDelete(f.gallery.state.value.deleteRequestID); runCurrent()
             assertEquals(setOf("A", "B"), requested.toSet()); assertEquals(2, requested.size)
-            assertEquals("Could not delete that clip.", f.gallery.state.value.failure)
+            assertEquals("无法删除此片段。", f.gallery.state.value.failure)
         } finally { f.close() }
     }
     @Test fun selectionStartsOnceAndAnOldWindowCannotSelectAfterReentry() = runTest {

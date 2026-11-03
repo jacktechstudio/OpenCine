@@ -24,7 +24,10 @@ class LutCatalogTest {
             listOf("creativeMono", "creativeContrast", "creativeWarm", "creativeCool"),
             LutCatalog.creative.map { it.id },
         )
-        assertEquals(listOf("Mono", "Contrast", "Warm", "Cool"), LutCatalog.creative.map { it.title })
+        assertEquals(listOf("黑白", "高反差", "暖调", "冷调"), LutCatalog.creative.map { it.title })
+        assertEquals(listOf("Mono", "Contrast", "Warm", "Cool"), LutCatalog.creative.map {
+            (LutLookResolver.resolve(it.id, true, CameraCommands.COLOR_NORMAL) as LutLookSource.Creative).name
+        })
         assertEquals(LutCategory.CREATIVE, LutCatalog.categoryOf("creativeWarm"))
         assertEquals("djiAuto", LutCatalog.migratedToOfficialCatalog("auto"))
         assertEquals("djiDLog2", LutCatalog.migratedToOfficialCatalog("officialDLog2"))
@@ -37,7 +40,7 @@ class LutCatalogTest {
             listOf("djiAuto", "djiDLog", "djiDLog2", "djiDLogM", "djiAction6DLogM"),
             dji.map { it.id },
         )
-        assertEquals("Auto", dji.first().title)
+        assertEquals("自动", dji.first().title)
         assertFalse(dji.any { it.id == "officialDLog" || it.id == "officialDLog2" })
         val photo = LutCatalog.officialEntries(shipped, isPhotoLive = true)
         assertEquals(listOf("djiAuto"), photo.map { it.id })
@@ -70,12 +73,12 @@ class LutCatalogTest {
 
     @Test
     fun titleAndCategoryCoverPickerIds() {
-        assertEquals("Auto", LutCatalog.titleFor("auto"))
-        assertEquals("Auto", LutCatalog.titleFor("djiAuto"))
+        assertEquals("自动", LutCatalog.titleFor("auto"))
+        assertEquals("自动", LutCatalog.titleFor("djiAuto"))
         assertEquals("D-Log2 → Rec.709", LutCatalog.titleFor("officialDLog2"))
         assertEquals("Action 6 D-Log M → Rec.709", LutCatalog.titleFor("djiAction6DLogM"))
         assertEquals("Look", LutCatalog.titleFor("custom:Look.cube"))
-        assertEquals("Custom", LutCatalog.titleFor("customFile"))
+        assertEquals("自定义", LutCatalog.titleFor("customFile"))
         assertEquals(LutCategory.CAMERA, LutCatalog.categoryOf("off"))
         assertEquals(LutCategory.CAMERA, LutCatalog.categoryOf("djiDLog"))
         assertEquals(LutCategory.CUSTOM, LutCatalog.categoryOf("custom:Look.cube"))

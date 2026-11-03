@@ -6,7 +6,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PairingCalloutRulesTest {
-    private val copy = PairingCalloutCopy(cameraNoun = "camera", precheck = "close the app", stillLooking = "move closer")
+    private val copy = PairingCalloutCopy(cameraNoun = "相机", precheck = "close the app", stillLooking = "move closer")
 
     @Test
     fun stillLookingClockRunsOnlyWhileEverythingIsReadyAndNothingIsNearby() {
@@ -21,22 +21,22 @@ class PairingCalloutRulesTest {
 
     @Test
     fun bodiesUseTheAppsCameraNoun() {
-        assertEquals("Turn Bluetooth on so we can find your camera.", PairingCalloutRules.bluetoothBody(copy))
+        assertEquals("请打开蓝牙，以便查找相机。", PairingCalloutRules.bluetoothBody(copy))
         assertEquals(
-            "Turn Bluetooth on so we can find your body.",
-            PairingCalloutRules.bluetoothBody(copy.copy(cameraNoun = "body")),
+            "请打开蓝牙，以便查找机身。",
+            PairingCalloutRules.bluetoothBody(copy.copy(cameraNoun = "机身")),
         )
         assertEquals(
-            "Allow Nearby devices so we can find your camera over Bluetooth. Location isn’t needed.",
-            PairingCalloutRules.permissionBody(copy, "Nearby devices", needsSettings = false, needsLocation = false),
+            "请允许访问附近设备，以便通过蓝牙查找相机。无需位置权限。",
+            PairingCalloutRules.permissionBody(copy, "附近的设备", needsSettings = false, needsLocation = false),
         )
         assertEquals(
-            "Android 10 and 11 need Location to scan for Bluetooth cameras. It is only used to find your camera.",
-            PairingCalloutRules.permissionBody(copy, "Location", needsSettings = false, needsLocation = true),
+            "在 Android 10 和 11 上，通过蓝牙扫描相机需要位置权限，仅用于查找相机。",
+            PairingCalloutRules.permissionBody(copy, "位置信息", needsSettings = false, needsLocation = true),
         )
         assertEquals(
-            "Android won’t ask again. Open Settings › Permissions › Location and choose Allow.",
-            PairingCalloutRules.permissionBody(copy, "Location", needsSettings = true, needsLocation = true),
+            "Android 不会再次询问。请前往“设置 › 权限 › 位置信息”并选择“允许”。",
+            PairingCalloutRules.permissionBody(copy, "位置信息", needsSettings = true, needsLocation = true),
         )
     }
 }

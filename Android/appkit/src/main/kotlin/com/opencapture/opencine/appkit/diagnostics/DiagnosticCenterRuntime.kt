@@ -137,7 +137,7 @@ public abstract class DiagnosticCenterRuntime<S>(
 
     public fun shareReport(context: Context, session: S, emailSupport: Boolean = false, copyForFeedback: Boolean = true) {
         if (!sharing.compareAndSet(false, true)) {
-            android.widget.Toast.makeText(context, "Preparing the report…", android.widget.Toast.LENGTH_SHORT).show()
+            android.widget.Toast.makeText(context, "正在准备报告…", android.widget.Toast.LENGTH_SHORT).show()
             return
         }
         if (!emailSupport && copyForFeedback) copyCompact(context, session)
@@ -154,7 +154,7 @@ public abstract class DiagnosticCenterRuntime<S>(
                 } catch (_: Exception) {
                     Handler(Looper.getMainLooper()).post {
                         android.widget.Toast.makeText(app,
-                            "Couldn't prepare the report. Please try again or email ${host.supportEmail}.",
+                            "无法准备报告。请重试或发送邮件至 ${host.supportEmail}。",
                             android.widget.Toast.LENGTH_LONG).show()
                     }
                 } finally {
@@ -202,7 +202,7 @@ public abstract class DiagnosticCenterRuntime<S>(
 
     private fun launchShare(context: Context, files: List<File>, emailSupport: Boolean = false) {
         if (files.isEmpty()) {
-            android.widget.Toast.makeText(context, "Couldn't prepare a diagnostic report. Please try again.",
+            android.widget.Toast.makeText(context, "无法准备诊断报告，请重试。",
                 android.widget.Toast.LENGTH_LONG).show()
             return
         }
@@ -215,11 +215,11 @@ public abstract class DiagnosticCenterRuntime<S>(
             uris.add(uri)
         }
         if (uris.isEmpty()) {
-            android.widget.Toast.makeText(context, "Couldn't attach the diagnostic report. Please try again.",
+            android.widget.Toast.makeText(context, "无法附加诊断报告，请重试。",
                 android.widget.Toast.LENGTH_LONG).show()
             return
         }
-        val clip = ClipData.newRawUri("${host.product} diagnostics", uris[0])
+        val clip = ClipData.newRawUri("${host.product} 诊断信息", uris[0])
         for (i in 1 until uris.size) clip.addItem(ClipData.Item(uris[i]))
         val intent =
             if (uris.size == 1) {
@@ -244,15 +244,15 @@ public abstract class DiagnosticCenterRuntime<S>(
             intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(host.supportEmail))
             intent.putExtra(Intent.EXTRA_SUBJECT, supportSubject(host.product))
             intent.putExtra(Intent.EXTRA_TEXT,
-                "What happened?\n\n\nTechnical details are attached to help us investigate. Please do not include private footage or passwords.")
+                "发生了什么？\n\n\n已附上技术信息以便排查。请勿包含私人影像或密码。")
         }
-        val chooser = Intent.createChooser(intent, if (emailSupport) "Email support" else null)
+        val chooser = Intent.createChooser(intent, if (emailSupport) "邮件联系技术支持" else null)
         if (context !is android.app.Activity) chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
             context.startActivity(chooser)
         } catch (_: android.content.ActivityNotFoundException) {
             android.widget.Toast.makeText(context,
-                "Email ${host.supportEmail}. No compatible app is available.",
+                "请发送邮件至 ${host.supportEmail}。本机没有兼容的邮件应用。",
                 android.widget.Toast.LENGTH_LONG).show()
         }
     }
@@ -264,7 +264,7 @@ public abstract class DiagnosticCenterRuntime<S>(
         val text = compactSummary(environment(session), journalLines())
         lastCompact = text
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(ClipData.newPlainText("${host.product} diagnostics", text))
+        clipboard.setPrimaryClip(ClipData.newPlainText("${host.product} 诊断信息", text))
         log("notice", "diagnostics", "feedback-paste", "copied compact diagnostics")
         onCopiedForFeedback?.invoke()
     }
@@ -351,7 +351,7 @@ public abstract class DiagnosticCenterRuntime<S>(
         private const val SHARE_MAX_BYTES = 2_097_152L
 
         /** The support email subject: the product, a colon, "report a problem". */
-        internal fun supportSubject(product: String): String = "$product: report a problem"
+        internal fun supportSubject(product: String): String = "${product}：报告问题"
 
         internal fun compactSummary(host: DiagnosticsHost, env: Env, recent: List<String>): String {
             val lines =

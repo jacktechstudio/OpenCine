@@ -46,23 +46,23 @@ public object RecordAll {
 
     /** While a group press runs. */
     public fun progress(direction: RecordDirection): String =
-        if (direction == RecordDirection.START) "Starting cameras…" else "Stopping cameras…"
+        if (direction == RecordDirection.START) "正在开始录制…" else "正在停止录制…"
 
     /** On each commanded camera until its outcome arrives. */
-    public const val WAITING: String = "Waiting for camera confirmation"
+    public const val WAITING: String = "正在等待相机确认"
 
     /** A camera, link or mode changed after the operator approved: nothing was sent. */
-    public const val CHANGED: String = "Cameras changed · try again"
+    public const val CHANGED: String = "机位有变化 · 请重试"
 
     /** One camera's note for its record outcome; `null` leaves the tile as it is (superseded). */
     public fun note(outcome: TargetOutcome, direction: RecordDirection): String? = when (outcome) {
-        TargetOutcome.Confirmed -> if (direction == RecordDirection.START) "Recording" else "Recording stopped"
+        TargetOutcome.Confirmed -> if (direction == RecordDirection.START) "录制中" else "录制已停止"
         is TargetOutcome.Rejected ->
-            if (outcome.rejection == CommandRejection.CameraRefused) "Recording command rejected · check camera"
-            else "Not sent · check camera"
-        is TargetOutcome.Failed -> "Not sent · check camera"
+            if (outcome.rejection == CommandRejection.CameraRefused) "相机拒绝录制指令 · 请检查相机"
+            else "指令未发送 · 请检查相机"
+        is TargetOutcome.Failed -> "指令未发送 · 请检查相机"
         TargetOutcome.Superseded -> null
-        else -> "No confirmation · check camera"
+        else -> "相机未确认 · 请检查相机"
     }
 
     /** The group line: every target confirmed and every camera in the requested state, or how many did. */
@@ -70,9 +70,9 @@ public object RecordAll {
         val start = result.plan.direction == RecordDirection.START
         val targets = result.plan.targets.size
         return if (result.confirmed == targets && allMatch) {
-            if (start) "Recording on ${result.confirmed} cameras" else "Recording stopped"
+            if (start) "${result.confirmed} 个机位正在录制" else "录制已停止"
         } else {
-            "${result.confirmed} of $targets confirmed · check camera tiles"
+            "${result.confirmed}/${targets} 个机位已确认 · 请检查各机位画面"
         }
     }
 }

@@ -191,7 +191,7 @@ fun <R, C, F, P, X, H> MonitorOperatorDeliverySelection<R, C, F, P, X, H>.begin(
     fun release() { request.internetLease?.let { lease -> internet?.restore?.invoke(lease) } }
     val bound = if (request.destination != MonitorDeliveryDestination.REMOTE_UPLOAD) null else {
         remote?.run?.invoke(request) ?: run {
-            release(); coordinator.fail("Upload is unavailable."); return null
+            release(); coordinator.fail("无法上传。"); return null
         }
     }
     // Whatever the destination, the run owns the accepted route lease and restores it at its end.
@@ -209,7 +209,7 @@ fun <C, F, P, X, H> MonitorOperatorDeliveryPopupOverlay(
     remoteArtwork: @Composable () -> Unit = { MonitorIcon(MonitorIcon.UPLOAD, null, Modifier.size(18.dp), MonitorPalette.text) },
 ) {
     val state by model.state.collectAsState()
-    val serviceName = model.remotePresentation?.displayName ?: "Upload service"
+    val serviceName = model.remotePresentation?.displayName ?: "上传服务"
     var showCreate by remember(model) { mutableStateOf(false) }
     var name by remember(model) { mutableStateOf("") }
     var showHop by remember(model) { mutableStateOf(false) }
@@ -252,14 +252,14 @@ fun <C, F, P, X, H> MonitorOperatorDeliveryPopupOverlay(
                     else MonitorIcon(MonitorIcon.SHARE, null, Modifier.size(18.dp), MonitorPalette.text) })
         }
     }
-    if (showCreate) AlertDialog(onDismissRequest = { showCreate = false }, title = { Text("New $serviceName project") },
-        text = { Column { Text("Creates a blank project in your workspace."); TextField(name, { name = it }, label = { Text("Project name") }) } },
-        confirmButton = { TextButton(enabled = name.trim().isNotEmpty(), onClick = { val captured = name; name = ""; showCreate = false; model.createProject(captured) }) { Text("Create") } },
-        dismissButton = { TextButton(onClick = { name = ""; showCreate = false }) { Text("Cancel") } })
-    if (showHop) AlertDialog(onDismissRequest = { showHop = false }, title = { Text("Leave camera Wi-Fi?") },
-        text = { Text("We'll hop to home Wi-Fi or cellular so you can sign in and pick a project. The camera reconnects automatically when you're done.") },
-        confirmButton = { TextButton(onClick = { showHop = false; model.hopToInternet() }) { Text("Hop") } },
-        dismissButton = { TextButton(onClick = { showHop = false }) { Text("Cancel") } })
+    if (showCreate) AlertDialog(onDismissRequest = { showCreate = false }, title = { Text("新建 ${serviceName} 项目") },
+        text = { Column { Text("在工作区中新建空白项目。"); TextField(name, { name = it }, label = { Text("项目名称") }) } },
+        confirmButton = { TextButton(enabled = name.trim().isNotEmpty(), onClick = { val captured = name; name = ""; showCreate = false; model.createProject(captured) }) { Text("创建") } },
+        dismissButton = { TextButton(onClick = { name = ""; showCreate = false }) { Text("取消") } })
+    if (showHop) AlertDialog(onDismissRequest = { showHop = false }, title = { Text("断开相机 Wi-Fi？") },
+        text = { Text("手机将切换到其他 Wi-Fi 或移动数据，以便登录并选择项目。完成后会自动重新连接相机。") },
+        confirmButton = { TextButton(onClick = { showHop = false; model.hopToInternet() }) { Text("切换网络") } },
+        dismissButton = { TextButton(onClick = { showHop = false }) { Text("取消") } })
 }
 
 /**
@@ -268,47 +268,47 @@ fun <C, F, P, X, H> MonitorOperatorDeliveryPopupOverlay(
  */
 private fun <C, F, P, X, H> deliveryPanelValue(model: MonitorDeliveryPreparationModel<C, F, P, X, H>,
     state: MonitorDeliveryPreparationModel.State<C, F, P, X>, busy: Boolean): MonitorMediaDeliveryValue {
-    val serviceName = model.remotePresentation?.displayName ?: "Upload service"; val selection = state.selection; val remote = state.remoteFacts; val config = state.configuration; val options = model.clipExportOptions
+    val serviceName = model.remotePresentation?.displayName ?: "上传服务"; val selection = state.selection; val remote = state.remoteFacts; val config = state.configuration; val options = model.clipExportOptions
     val notices = buildList {
         selection.cachedCount?.let { cached -> if (cached < selection.files.size) {
-            if (selection.connected == true) add(MonitorMediaDeliveryValue.Notice("${selection.files.size - cached} on-camera clip(s) will be cached from the camera first."))
-            else if (selection.connected == false) add(MonitorMediaDeliveryValue.Notice("${selection.files.size - cached} on-camera clip(s) will be skipped; reconnect to cache them."))
+            if (selection.connected == true) add(MonitorMediaDeliveryValue.Notice("将先从相机缓存 ${selection.files.size - cached} 个片段。"))
+            else if (selection.connected == false) add(MonitorMediaDeliveryValue.Notice("将跳过相机中的 ${selection.files.size - cached} 个片段。请重新连接以缓存这些片段。"))
         } }
         if (state.destination == MonitorDeliveryDestination.REMOTE_UPLOAD && remote?.configured == false)
-            add(MonitorMediaDeliveryValue.Notice("$serviceName isn't configured; add credentials in Settings → Storage.", true))
+            add(MonitorMediaDeliveryValue.Notice("尚未配置 ${serviceName}。请在“设置 → 存储”中添加凭据。", true))
         else if (state.destination == MonitorDeliveryDestination.REMOTE_UPLOAD && state.step == MonitorDeliveryPreparationModel.Step.OPTIONS)
-            (model.selectedProject?.name ?: remote?.savedProjectName)?.let { add(MonitorMediaDeliveryValue.Notice("Project: $it")) }
+            (model.selectedProject?.name ?: remote?.savedProjectName)?.let { add(MonitorMediaDeliveryValue.Notice("项目：${it}")) }
     }
     val service = if (state.destination != MonitorDeliveryDestination.REMOTE_UPLOAD) null else if (model.internetGate) {
-        val message = remote?.savedProjectName?.let { "$serviceName needs the internet. Hop off the camera's Wi-Fi to pick a project (currently “$it”) and upload; the camera reconnects automatically when you're done." }
-            ?: "$serviceName needs the internet. Hop off the camera's Wi-Fi to sign in and pick a project; the camera reconnects automatically when you're done."
+        val message = remote?.savedProjectName?.let { "${serviceName} 需要联网。请断开相机 Wi-Fi，选择项目（当前为“${it}”）并上传。完成后将自动重新连接相机。" }
+            ?: "${serviceName} 需要联网。请断开相机 Wi-Fi，登录并选择项目。完成后将自动重新连接相机。"
         MonitorMediaDeliveryValue.Service.InternetGate(serviceName.uppercase(), message, state.hopping)
-    } else MonitorMediaDeliveryValue.Service.Projects("PROJECT", "Upload destination in your $serviceName workspace.",
-        if (remote?.connected == false) "Sign in to $serviceName from Settings → Storage to upload." else null,
+    } else MonitorMediaDeliveryValue.Service.Projects("项目", "在 ${serviceName} 工作区中选择上传目标。",
+        if (remote?.connected == false) "请在“设置 → 存储”中登录 ${serviceName} 后上传。" else null,
         state.projectsLoading, state.projectsError, if (state.listing == null) null else model.uploadableProjects.map { MonitorMediaDeliveryValue.Choice(it.id, it.name) },
         state.selectedProjectID, selectedLabel = remote?.savedProjectName)
     val export = if (!model.internetGate && config != null && options != null) {
         val lut = options.lutAvailable(); val convert = options.convertLogAvailable(); val exposure = options.bakeExposureAvailable()
         MonitorMediaDeliveryValue.Export(options.filename(config),
-            convertLog = convert?.let { MonitorMediaDeliveryValue.Toggle("Convert log", if (it) options.convertHelp else options.convertUnavailableHelp, config.convertLog, it) },
-            outputCurve = if (config.convertLog) MonitorMediaDeliveryValue.Choices("Output curve", options = options.curves.map { MonitorMediaDeliveryValue.Choice(it.id, it.label) }, selectedID = options.curves.firstOrNull { it.value == config.logTransform }?.id) else null,
-            bakeLUT = MonitorMediaDeliveryValue.Toggle("Bake LUT", if (lut == true) options.lutLabel()?.let { "Apply $it to exports." } ?: "Apply the selected LUT to exports." else "No LUT selected. Pick one in view assists.", config.bakeLUT, lut == true),
-            bakeExposure = if (config.bakeLUT && exposure != null) MonitorMediaDeliveryValue.Toggle("Bake exposure", "Write the LUT exposure pull into the file so it matches the monitor. Off bakes the cube at 0.0.", config.bakeLUTExposure, lut == true && exposure) else null,
+            convertLog = convert?.let { MonitorMediaDeliveryValue.Toggle("转换 Log", if (it) options.convertHelp else options.convertUnavailableHelp, config.convertLog, it) },
+            outputCurve = if (config.convertLog) MonitorMediaDeliveryValue.Choices("输出曲线", options = options.curves.map { MonitorMediaDeliveryValue.Choice(it.id, it.label) }, selectedID = options.curves.firstOrNull { it.value == config.logTransform }?.id) else null,
+            bakeLUT = MonitorMediaDeliveryValue.Toggle("烧录 LUT", if (lut == true) options.lutLabel()?.let { "将 ${it} 应用于导出文件。" } ?: "将所选 LUT 应用于导出文件。" else "尚未选择 LUT，请在监看辅助中选择。", config.bakeLUT, lut == true),
+            bakeExposure = if (config.bakeLUT && exposure != null) MonitorMediaDeliveryValue.Toggle("烧录曝光补偿", "将 LUT 曝光补偿写入文件，使导出画面与监看一致。关闭后以 0.0 档应用 LUT。", config.bakeLUTExposure, lut == true && exposure) else null,
             format = if ((config.bakeLUT || config.convertLog || state.destination == MonitorDeliveryDestination.NATIVE_SHARE) &&
-                (state.destination != MonitorDeliveryDestination.REMOTE_UPLOAD || options.formatsForRemoteUpload == true)) MonitorMediaDeliveryValue.Choices("Format", "MOV preserves quality; MP4 is more widely compatible.", options.formats.map { MonitorMediaDeliveryValue.Choice(it.id, it.label) }, options.formats.firstOrNull { it.value == config.exportFormat }?.id) else null,
-            includeMetadata = MonitorMediaDeliveryValue.Toggle("Include metadata", "Filename, capture date, and size (best-effort JSON sidecar).", config.includeMetadata),
-            reupload = if (model.offersReupload) MonitorMediaDeliveryValue.Toggle("Re-upload already uploaded", "Skip clips already on $serviceName unless enabled.", config.forceReupload) else null)
+                (state.destination != MonitorDeliveryDestination.REMOTE_UPLOAD || options.formatsForRemoteUpload == true)) MonitorMediaDeliveryValue.Choices("格式", "MOV 可保持画质，MP4 的兼容性更佳。", options.formats.map { MonitorMediaDeliveryValue.Choice(it.id, it.label) }, options.formats.firstOrNull { it.value == config.exportFormat }?.id) else null,
+            includeMetadata = MonitorMediaDeliveryValue.Toggle("包含元数据", "尽可能将文件名、拍摄日期及大小另存为随附 JSON 文件。", config.includeMetadata),
+            reupload = if (model.offersReupload) MonitorMediaDeliveryValue.Toggle("重新上传已上传的片段", "关闭时跳过已上传至 ${serviceName} 的片段。", config.forceReupload) else null)
     } else if (!model.internetGate && state.step == MonitorDeliveryPreparationModel.Step.OPTIONS && selection.files.size == 1) MonitorMediaDeliveryValue.Export(filename = selection.files.first().filename) else null
     return MonitorMediaDeliveryValue(if (state.step == MonitorDeliveryPreparationModel.Step.DESTINATION) MonitorMediaDeliveryValue.Step.DESTINATION else MonitorMediaDeliveryValue.Step.OPTIONS,
-        title = state.destination?.title(model.remotePresentation?.displayName) ?: "Share", selectionLabel = "${selection.files.size} clip${if (selection.files.size == 1) "" else "s"}", notices = notices,
-        destinations = listOfNotNull(MonitorMediaDeliveryValue.Destination(MonitorDeliveryDestination.NATIVE_SHARE.name, "Share", "Nearby Share, Files, and other apps", model.destinationEnabled(MonitorDeliveryDestination.NATIVE_SHARE)),
+        title = state.destination?.title(model.remotePresentation?.displayName) ?: "分享", selectionLabel = "${selection.files.size} 个片段", notices = notices,
+        destinations = listOfNotNull(MonitorMediaDeliveryValue.Destination(MonitorDeliveryDestination.NATIVE_SHARE.name, "分享", "快速分享、文件及其他应用", model.destinationEnabled(MonitorDeliveryDestination.NATIVE_SHARE)),
             if (remote != null) MonitorMediaDeliveryValue.Destination(MonitorDeliveryDestination.REMOTE_UPLOAD.name, MonitorDeliveryDestination.REMOTE_UPLOAD.title(model.remotePresentation?.displayName), MonitorDeliveryDestination.REMOTE_UPLOAD.subtitle(model.remotePresentation?.displayName), model.destinationEnabled(MonitorDeliveryDestination.REMOTE_UPLOAD)) else null),
         upcoming = MediaDeliveryUpcoming.titles, service = service, export = export,
         footer = if (state.step == MonitorDeliveryPreparationModel.Step.OPTIONS && !model.internetGate) MonitorMediaDeliveryValue.Footer(
             summary = config?.let { deliverySummary(selection, it, options) },
             postExport = if (state.destination == MonitorDeliveryDestination.NATIVE_SHARE) MonitorMediaDeliveryValue.Choices("", options = listOf(
-                MonitorMediaDeliveryValue.Choice(MonitorDeliveryPostExportAction.SYSTEM_SHARE.name, "Share"), MonitorMediaDeliveryValue.Choice(MonitorDeliveryPostExportAction.SAVE_TO_PHOTOS.name, "Save to Photos")), selectedID = state.action.name) else null,
-            actionTitle = if (state.destination == MonitorDeliveryDestination.REMOTE_UPLOAD) "Upload" else if (state.action == MonitorDeliveryPostExportAction.SAVE_TO_PHOTOS) "Save to Photos" else "Share", enabled = model.canContinue && !busy) else null)
+                MonitorMediaDeliveryValue.Choice(MonitorDeliveryPostExportAction.SYSTEM_SHARE.name, "分享"), MonitorMediaDeliveryValue.Choice(MonitorDeliveryPostExportAction.SAVE_TO_PHOTOS.name, "存入相册")), selectedID = state.action.name) else null,
+            actionTitle = if (state.destination == MonitorDeliveryDestination.REMOTE_UPLOAD) "上传" else if (state.action == MonitorDeliveryPostExportAction.SAVE_TO_PHOTOS) "存入相册" else "分享", enabled = model.canContinue && !busy) else null)
 }
 
 /**
@@ -321,10 +321,10 @@ internal fun <C, F> deliverySummary(selection: MonitorDeliverySelectionFacts, co
     val known = files.mapNotNull { it.sizeBytes }
     val bytes = known.fold(0L) { total, value -> if (value > Long.MAX_VALUE - total) Long.MAX_VALUE else total + value }
     val size = if (bytes == 0L) "0 B" else MediaClipFormatting.byteLabel(bytes)
-    val label = if (known.isEmpty()) "Size unavailable" else if (known.size == files.size) size else "At least $size"
-    val mode = if (config.convertLog) options?.curves?.firstOrNull { it.value == config.logTransform }?.label ?: "Converted log"
-        else if (config.bakeLUT) "LUT baked" else "Camera original"
-    return "${files.size} ${if (files.size == 1) "clip" else "clips"} · $label · $mode"
+    val label = if (known.isEmpty()) "大小未知" else if (known.size == files.size) size else "至少 ${size}"
+    val mode = if (config.convertLog) options?.curves?.firstOrNull { it.value == config.logTransform }?.label ?: "已转换 Log"
+        else if (config.bakeLUT) "已烧录 LUT" else "相机原片"
+    return "${files.size} 个片段 · $label · $mode"
 }
 
 /** What the delivery chrome shows for one progress value. */
@@ -335,7 +335,7 @@ data class MonitorOperatorDeliveryFacts(
 
 fun MonitorDeliveryBatchProgress.chromeFacts(remoteDisplayName: String?): MonitorOperatorDeliveryFacts =
     MonitorOperatorDeliveryFacts(
-        MonitorMediaDeliveryProgressValue(statusLine(), if (totalClips > 1) "Clip ${minOf(clipIndex, totalClips)} of $totalClips" else null,
+        MonitorMediaDeliveryProgressValue(statusLine(), if (totalClips > 1) "第 ${minOf(clipIndex, totalClips)}/${totalClips} 个片段" else null,
             overallFraction, preparing = showsBusySpinner, showsProgress = !isPreparingClip),
         destination, MonitorMediaDeliveryProgressDetailsValue(filename, destination.title(remoteDisplayName)))
 
@@ -367,7 +367,7 @@ fun MonitorOperatorDeliveryChrome(
         val launched = intent != null && runCatching { presenting = ready.id; chooser.launch(intent) }.isSuccess
         if (!launched) {
             presenting = null; delivery.clearSharePresentation(ready.id)
-            coordinator.fail(if (ready.payload.urls.size == 1) "Couldn't share this clip." else "Couldn't share these clips.")
+            coordinator.fail(if (ready.payload.urls.size == 1) "无法分享此片段。" else "无法分享这些片段。")
         }
     }
     Box(modifier.fillMaxSize()) {

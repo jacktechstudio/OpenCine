@@ -18,8 +18,8 @@ object ApertureStrategy {
             F2 -> "f/2.0"
             F26 -> "f/2.6"
             F28 -> "f/2.8"
-            STARBURST -> "Starburst f/4"
-            AUTO -> "Auto"
+            STARBURST -> "星芒 F4"
+            AUTO -> "自动"
             else -> null
         }
 

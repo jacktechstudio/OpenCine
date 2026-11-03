@@ -57,6 +57,6 @@ class MonitorNDFilterRecommendationTest {
         assertEquals("ND32", hot.chipLabel(MonitorNDFilterNotation.FACTOR))
         assertEquals("ND 1.5", hot.chipLabel(MonitorNDFilterNotation.DENSITY))
         assertEquals(listOf("stops", "factor", "density"), MonitorNDFilterNotation.entries.map { it.persisted })
-        assertEquals(listOf("Stops", "ND32", "ND 0.3"), MonitorNDFilterNotation.entries.map { it.editorLabel })
+        assertEquals(listOf("档数", "ND32", "ND 0.3"), MonitorNDFilterNotation.entries.map { it.editorLabel })
     }
 }

@@ -322,11 +322,11 @@ private fun operatorSetupConfiguration(
         brand = app.wordmark, isLive = isLive, phase = phaseLabel, close = onClose, disconnect = model::disconnect,
         feedback = feedback,
         link = MonitorSettingsLinkSource(
-            transport = if (isLive) "BLE + Wi-Fi active" else "Not connected", transportHelp = app.help.CURRENT_TRANSPORT,
-            phase = phaseLabel, phaseHelp = app.help.PHASE, healthTitle = "Link Health",
+            transport = if (isLive) "蓝牙与 Wi-Fi 已连接" else "未连接", transportHelp = app.help.CURRENT_TRANSPORT,
+            phase = phaseLabel, phaseHelp = app.help.PHASE, healthTitle = "图传质量",
             healthCaption = OperatorLinkHealth.caption(isLive, bars), score = OperatorLinkHealth.score(bars),
-            processingTitle = "Processing",
-            processingChoices = if (app.upscalers.size > 1) listOf(MonitorSettingsChoiceSource("Feed Upscaler",
+            processingTitle = "处理",
+            processingChoices = if (app.upscalers.size > 1) listOf(MonitorSettingsChoiceSource("图传画面放大",
                 app.help.FEED_UPSCALER, app.upscalers.map { MonitorDisplayChoice(it, it) }, upscaler,
                 select = { label -> upscaler = label; app.setUpscaler(context, label) }, segmented = true)) else emptyList(),
             network = state.network, networkHelp = app.help.CAMERA_WIFI,
@@ -369,7 +369,7 @@ private fun operatorSetupConfiguration(
                         model.gimbalGamepad.noteStickSelectionChanged(model)
                     }
                 },
-                controllerStatus = if (model.gamepadConnected) "Connected" else "Not connected",
+                controllerStatus = if (model.gamepadConnected) "已连接" else "未连接",
                 controllerHelp = app.help.GAMEPAD,
             ),
         ),
@@ -424,23 +424,23 @@ internal fun AssistRows(model: OperatorSetupModel, state: OperatorSetupState, ap
 
     MonitorExposureMeterSettings(
         isOn = assist.evMeter,
-        help = "Show the camera's exposure meter at the picture's left edge in DISP 1. Auto and Manual use the camera reading without changing exposure settings.",
+        help = "在 DISP 1 画面左侧显示相机的曝光指示。自动和手动模式均读取机身测量值，不改变曝光设置。",
         onToggle = { assist.toggle(MonitorAssistTool.EV) },
     )
 
-    MonitorSettingsRowCard(title = "Anamorphic Desqueeze", onReset = {
+    MonitorSettingsRowCard(title = "变形宽银幕反挤压", onReset = {
         assist.updateDesqueezeFactor(1.33)
         assist.selectDesqueezePreset(MonitorDesqueezePreset.X133)
         assist.updateDesqueezeDirection(MonitorDesqueezeDirection.HORIZONTAL)
     }) {
-        MonitorSettingsSwitchInlineRow("Enabled", isOn = assist.desqueeze, showTopDivider = false) {
+        MonitorSettingsSwitchInlineRow("已启用", isOn = assist.desqueeze, showTopDivider = false) {
             assist.toggle(MonitorAssistTool.DESQ)
         }
         DesqueezeOptions(assist)
     }
 
     MonitorSettingsRowCard(title = "LUT") {
-        MonitorSettingsInlineRow("Look", app.help.LUT_LOOK, showTopDivider = false) {
+        MonitorSettingsInlineRow("风格", app.help.LUT_LOOK, showTopDivider = false) {
             MonitorSettingsValueText(
                 lutLookLabel(
                     selection = model.lutSelection,
@@ -450,8 +450,8 @@ internal fun AssistRows(model: OperatorSetupModel, state: OperatorSetupState, ap
                 ),
             )
         }
-        MonitorSettingsInlineRow("Choose look") {
-            MonitorSettingsActionPill(title = "Open", minimumTouchTarget = false, onClick = onOpenLut)
+        MonitorSettingsInlineRow("选择风格") {
+            MonitorSettingsActionPill(title = "打开", minimumTouchTarget = false, onClick = onOpenLut)
         }
     }
 }
@@ -489,20 +489,20 @@ fun OperatorAssistCard(tool: MonitorAssistTool, assist: MonitorAssistState, help
 private fun FalseColorAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy, transfer: MonitorTransfer, ceiling: ScopeClipSource,
     reset: () -> Unit, changed: () -> Unit) {
     MonitorSettingsRowCard(
-        title = "False Color",
+        title = "假色",
         onReset = reset,
     ) {
-        MonitorSettingsInlineRow("Scale", help.FALSE_COLOR_SCALE, showTopDivider = false, stacked = true) {
+        MonitorSettingsInlineRow("刻度", help.FALSE_COLOR_SCALE, showTopDivider = false, stacked = true) {
             MonitorSettingsSegmented(
-                options = listOf("CineStop", "Video", "IRE", "Limits"),
+                options = MonitorFalseColorSelection.entries.map { it.menuLabel },
                 selected = assist.falseColorScale.menuLabel,
             ) { label -> assist.setFalseColor(scale = MonitorFalseColorSelection.fromMenuLabel(label)); changed() }
         }
-        MonitorSettingsInlineRow(title = "Reference key", stacked = true) {
+        MonitorSettingsInlineRow(title = "参考图例", stacked = true) {
             FalseColorKey(assist.falseColorScale, transfer, ceiling)
         }
         MonitorSettingsSwitchInlineRow(
-            title = "Reference Display",
+            title = "参考显示",
             isOn = assist.falseColorReference,
             help = help.FALSE_COLOR_REFERENCE,
             stacked = true,
@@ -549,16 +549,16 @@ private fun FalseColorKey(scale: MonitorFalseColorSelection, transfer: MonitorTr
 @Composable
 private fun PeakingAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy, host: AssistHost, reset: () -> Unit, changed: () -> Unit) {
     MonitorSettingsRowCard(
-        title = "Peaking",
+        title = "峰值对焦",
         onReset = reset,
     ) {
-        MonitorSettingsInlineRow("Sensitivity", help.PEAKING_SENSITIVITY, showTopDivider = false, stacked = true) {
+        MonitorSettingsInlineRow("感光度", help.PEAKING_SENSITIVITY, showTopDivider = false, stacked = true) {
             MonitorSettingsSegmented(
                 options = MonitorPeakingSense.entries.map { it.label },
                 selected = assist.peakingSensitivity.label,
             ) { label -> assist.setPeaking(sense = MonitorPeakingSense.fromPersisted(label)); changed() }
         }
-        MonitorSettingsInlineRow("Color", help.PEAKING_COLOR, stacked = true) {
+        MonitorSettingsInlineRow("色彩", help.PEAKING_COLOR, stacked = true) {
             MonitorSettingsColorDots(dots = host.peakingColors, selectedName = assist.peakingColor.label) { name ->
                 assist.setPeaking(color = MonitorPeakingColor.fromPersisted(name)); changed()
             }
@@ -570,17 +570,17 @@ private fun PeakingAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy
 private fun ZebraAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy, host: AssistHost, transfer: MonitorTransfer, ceiling: ScopeClipSource,
     reset: () -> Unit, changed: () -> Unit) {
     MonitorSettingsRowCard(
-        title = "Zebra",
+        title = "斑马纹",
         onReset = reset,
     ) {
-        MonitorSettingsInlineRow("Units", help.ZEBRA_UNITS, showTopDivider = false, stacked = true) {
+        MonitorSettingsInlineRow("单位", help.ZEBRA_UNITS, showTopDivider = false, stacked = true) {
             MonitorSettingsSegmented(options = listOf("0-255", "IRE"), selected = assist.zebraUnit.editorLabel) { label ->
                 assist.updateZebraUnit(MonitorZebraUnit.fromEditorLabel(label)); changed()
             }
         }
         val maximum = ZebraEditor.editorMaximum(assist.zebraUnit)
         ZebraZoneRow(
-            title = "Highlight",
+            title = "高光",
             help = help.ZEBRA_HIGHLIGHT,
             enabled = assist.zebraHighlight,
             value = ZebraEditor.displayValue(assist.zebraHighlightIRE, assist.zebraUnit, transfer, ceiling),
@@ -592,7 +592,7 @@ private fun ZebraAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy, 
             onColor = { assist.setZebraHighlight(color = MonitorZebraPaint.fromPersisted(it)); changed() },
         )
         ZebraZoneRow(
-            title = "Midtone",
+            title = "中间调",
             help = help.ZEBRA_MIDTONE,
             enabled = assist.zebraMidtone,
             value = ZebraEditor.displayValue(assist.zebraMidtoneIRE, assist.zebraUnit, transfer, ceiling),
@@ -621,17 +621,17 @@ private fun ZebraZoneRow(
 ) {
     MonitorSettingsSwitchInlineRow(title = title, help = help, isOn = enabled, onToggle = onEnabled)
     Column(Modifier.padding(start = 14.dp).alpha(if (enabled) 1f else 0.4f)) {
-        MonitorSettingsInlineRow(title = "Threshold") {
+        MonitorSettingsInlineRow(title = "阈值") {
             MonitorSettingsValueSlider(
                 value = value.coerceIn(0, maximum),
                 range = 0..maximum,
                 label = "$value",
                 labelWidth = 34,
                 onChange = onValue,
-                modifier = Modifier.semantics { contentDescription = "$title threshold" },
+                modifier = Modifier.semantics { contentDescription = "${title}阈值" },
             )
         }
-        MonitorSettingsInlineRow(title = "Colour") {
+        MonitorSettingsInlineRow(title = "颜色") {
             MonitorSettingsColorDots(dots = palette, selectedName = selectedColor, onSelect = onColor)
         }
     }
@@ -640,15 +640,15 @@ private fun ZebraZoneRow(
 @Composable
 private fun WaveformAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy, reset: () -> Unit, changed: () -> Unit) {
     MonitorSettingsRowCard(
-        title = "Waveform",
+        title = "波形图",
         onReset = reset,
     ) {
-        MonitorSettingsInlineRow("Mode", showTopDivider = false, stacked = true) {
+        MonitorSettingsInlineRow("模式", showTopDivider = false, stacked = true) {
             MonitorSettingsSegmented(options = MonitorWaveformMode.entries.map { it.label }, selected = assist.waveMode.label) { label ->
                 assist.setWaveform(mode = MonitorWaveformMode.fromPersisted(label)); changed()
             }
         }
-        MonitorSettingsInlineRow("Brightness", help.WAVEFORM_BRIGHTNESS, stacked = true) {
+        MonitorSettingsInlineRow("亮度", help.WAVEFORM_BRIGHTNESS, stacked = true) {
             MonitorSettingsPercentSlider(value = assist.waveBrightness, range = 0..200) { assist.setWaveform(brightness = it); changed() }
         }
         ScopeGuideRows(assist.waveGuides) { assist.setWaveform(guides = it); changed() }
@@ -658,15 +658,15 @@ private fun WaveformAssistCard(assist: MonitorAssistState, help: OperatorHelpCop
 @Composable
 private fun ParadeAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy, reset: () -> Unit, changed: () -> Unit) {
     MonitorSettingsRowCard(
-        title = "Parade",
+        title = "RGB 分量波形",
         onReset = reset,
     ) {
-        MonitorSettingsInlineRow("Mode", showTopDivider = false, stacked = true) {
+        MonitorSettingsInlineRow("模式", showTopDivider = false, stacked = true) {
             MonitorSettingsSegmented(options = MonitorParadeMode.entries.map { it.label }, selected = assist.paradeMode.label) { label ->
                 assist.setParade(mode = MonitorParadeMode.fromPersisted(label)); changed()
             }
         }
-        MonitorSettingsInlineRow("Brightness", help.PARADE_BRIGHTNESS, stacked = true) {
+        MonitorSettingsInlineRow("亮度", help.PARADE_BRIGHTNESS, stacked = true) {
             MonitorSettingsPercentSlider(value = assist.paradeBrightness, range = 0..200) { assist.setParade(brightness = it); changed() }
         }
         ScopeGuideRows(assist.paradeGuides) { assist.setParade(guides = it); changed() }
@@ -676,7 +676,7 @@ private fun ParadeAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy,
 @Composable
 private fun HistogramAssistCard(assist: MonitorAssistState, reset: () -> Unit, changed: () -> Unit) {
     MonitorSettingsRowCard(
-        title = "Histogram",
+        title = "直方图",
         onReset = reset,
     ) {
         MonitorSettingsSwitchInlineRow(
@@ -695,15 +695,15 @@ private fun HistogramAssistCard(assist: MonitorAssistState, reset: () -> Unit, c
 @Composable
 private fun VectorscopeAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy, reset: () -> Unit, changed: () -> Unit) {
     MonitorSettingsRowCard(
-        title = "Vectorscope",
+        title = "矢量示波器",
         onReset = reset,
     ) {
-        MonitorSettingsInlineRow("Trace Zoom", help.VECTORSCOPE_ZOOM, showTopDivider = false, stacked = true) {
+        MonitorSettingsInlineRow("轨迹放大", help.VECTORSCOPE_ZOOM, showTopDivider = false, stacked = true) {
             MonitorSettingsSegmented(options = MonitorVectorscopeZoom.entries.map { it.label }, selected = assist.vectorZoom.label) { label ->
                 assist.setVectorscope(zoom = MonitorVectorscopeZoom.fromPersisted(label)); changed()
             }
         }
-        MonitorSettingsInlineRow("Brightness", help.VECTORSCOPE_BRIGHTNESS, stacked = true) {
+        MonitorSettingsInlineRow("亮度", help.VECTORSCOPE_BRIGHTNESS, stacked = true) {
             MonitorSettingsPercentSlider(value = assist.vectorBrightness, range = 0..200) { assist.setVectorscope(brightness = it); changed() }
         }
     }
@@ -711,7 +711,7 @@ private fun VectorscopeAssistCard(assist: MonitorAssistState, help: OperatorHelp
 
 @Composable
 private fun TrafficLightsAssistCard(assist: MonitorAssistState, help: OperatorHelpCopy, reset: () -> Unit, changed: () -> Unit) {
-    MonitorSettingsRowCard(title = "Traffic Lights", onReset = reset) {
+    MonitorSettingsRowCard(title = "通道警示灯", onReset = reset) {
         MonitorSettingsInlineRow(
             title = HistogramAssist.COMPENSATION_TITLE,
             help = help.TRAFFIC_LIGHTS_COMPENSATION,
@@ -731,9 +731,9 @@ private fun CrushClipControl(selected: MonitorCrushClipCompensation, onSelect: (
 
 @Composable
 private fun ScopeGuideRows(guides: MonitorScopeGuides, onChange: (MonitorScopeGuides) -> Unit) {
-    MonitorSettingsSwitchInlineRow("Safe Border Clip", isOn = guides.clip, stacked = true) { onChange(guides.copy(clip = !guides.clip)) }
-    MonitorSettingsSwitchInlineRow("Safe Border Crush", isOn = guides.crush, stacked = true) { onChange(guides.copy(crush = !guides.crush)) }
-    MonitorSettingsSwitchInlineRow("Middle Gray", isOn = guides.middle, stacked = true) { onChange(guides.copy(middle = !guides.middle)) }
+    MonitorSettingsSwitchInlineRow("高光溢出安全边界", isOn = guides.clip, stacked = true) { onChange(guides.copy(clip = !guides.clip)) }
+    MonitorSettingsSwitchInlineRow("暗部死黑安全边界", isOn = guides.crush, stacked = true) { onChange(guides.copy(crush = !guides.crush)) }
+    MonitorSettingsSwitchInlineRow("中灰", isOn = guides.middle, stacked = true) { onChange(guides.copy(middle = !guides.middle)) }
 }
 
 // Display: main's rows.
@@ -742,9 +742,9 @@ private fun ScopeGuideRows(guides: MonitorScopeGuides, onChange: (MonitorScopeGu
 @Composable
 fun OperatorDisplayRows(model: OperatorSetupModel, state: OperatorSetupState, app: OperatorSetupApp) {
     val view = LocalView.current
-    MonitorSettingsRowCard(title = "Panel") {
+    MonitorSettingsRowCard(title = "面板") {
         MonitorSettingsSwitchInlineRow(
-            title = "HDR display",
+            title = "HDR 显示",
             help = app.help.HDR_DISPLAY,
             showTopDivider = false,
             isOn = model.hdrDisplay,

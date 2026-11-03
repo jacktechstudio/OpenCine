@@ -58,7 +58,7 @@ class MonitorConformPreviewTest {
         assertEquals("59.94 → 23.98 fps · 40%", MonitorConformPreview.label(59.94, 23.976))
         assertEquals("120 → 25 fps · 20.8%", MonitorConformPreview.label(120.0, 25.0))
         assertEquals("29.97 fps · 59.9%", MonitorConformPreview.targetLabel(50.0, 29.97))
-        assertEquals("Conform 50 fps to", MonitorConformPreview.menuHeader(50.0))
+        assertEquals("将 50 fps 素材按以下帧率回放", MonitorConformPreview.menuHeader(50.0))
         assertEquals(0.0, MonitorConformPreview.conformedDuration(6.0, 0.0))
         assertEquals(0.0, MonitorConformPreview.conformedDuration(Double.POSITIVE_INFINITY, 0.4))
     }

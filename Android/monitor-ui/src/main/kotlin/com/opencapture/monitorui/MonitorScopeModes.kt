@@ -1,13 +1,13 @@
 package com.opencapture.monitorui
 
 enum class MonitorWaveformMode(val label: String) {
-    LUMA("Luma"),
+    LUMA("亮度"),
     RGB("RGB"),
     ;
 
     companion object {
         fun fromPersisted(raw: String): MonitorWaveformMode =
-            entries.firstOrNull { it.label == raw || it.name == raw } ?: RGB
+            entries.firstOrNull { it.label == raw || it.name.equals(raw, ignoreCase = true) } ?: RGB
     }
 }
 

@@ -35,7 +35,7 @@ object MonitorInspectorImagePreviewPolicy {
 fun MonitorOperatorInspectorImagePreview(tool: MonitorAssistTool, state: MonitorAssistState?,
     client: MonitorInspectorPreviewClient<ImageBitmap>, plan: FeedEffectsRenderPlan,
     sourceIdentity: Any?, colorMode: Int?, playback: Boolean,
-    modifier: Modifier = Modifier, description: String = "${tool.title} image preview",
+    modifier: Modifier = Modifier, description: String = "${tool.title}画面预览",
     layout: MonitorInspectorPreviewLayout = MonitorInspectorPreviewLayout.VIEWPORT) {
     if (!MonitorInspectorImagePreviewPolicy.supports(tool)) return
     val lifecycle = LocalLifecycleOwner.current.lifecycle

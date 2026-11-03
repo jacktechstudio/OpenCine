@@ -28,7 +28,7 @@ internal object NativeProgramZoom {
     fun demand(from: Double, to: Double, duration: Double, elapsed: Double): NativeProgramZoomDemand {
         if (!from.isFinite() || !to.isFinite() || !duration.isFinite() || !elapsed.isFinite() ||
             from < 1.0 || to < 1.0 || duration <= 0 || elapsed < 0) {
-            return NativeProgramZoomDemand(NativeProgramZoomCommand.Stop, to, failureReason = "Invalid zoom movement")
+            return NativeProgramZoomDemand(NativeProgramZoomCommand.Stop, to, failureReason = "无效的变焦动作")
         }
         if (abs(from - to) <= 1e-6) return NativeProgramZoomDemand(NativeProgramZoomCommand.Stop, to)
         val fraction = minOf(1.0, elapsed / duration)

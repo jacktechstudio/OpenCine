@@ -86,12 +86,12 @@ public class MonitorLutPackCopy(
     public val httpFailure: (Int) -> String,
     public val webPageInsteadOfArchive: String,
     public val notAnArchive: String,
-    public val blockedTitle: String = "Internet required",
-    public val switching: String = "Switching networks…",
-    public val hopAction: String = "Download over internet",
-    public val importing: String = "Adding LUTs…",
-    public val failedTitle: String = "Download failed",
-    public val downloadFailed: String = "Download failed.",
+    public val blockedTitle: String = "需要互联网连接",
+    public val switching: String = "正在切换网络…",
+    public val hopAction: String = "通过互联网下载",
+    public val importing: String = "正在添加 LUT…",
+    public val failedTitle: String = "下载失败",
+    public val downloadFailed: String = "下载失败。",
 )
 
 /** Where the phone's internet stands for the pack download, decided by the host's network policy. */
@@ -211,11 +211,11 @@ public fun MonitorLutPackDownloadScreen(
                     }
                 },
                 onFailed = { phase = PackPhase.Failed(it) })
-            PackPhase.Downloading -> PackStatusPage(copy.downloading, null, progress, null, "Cancel" to onClose)
-            PackPhase.Importing -> PackStatusPage(copy.importing, null, null, null, "Cancel" to onClose)
-            is PackPhase.Success -> PackStatusPage(copy.success(current.count), copy.successDetail, null, "Done" to onClose)
+            PackPhase.Downloading -> PackStatusPage(copy.downloading, null, progress, null, "取消" to onClose)
+            PackPhase.Importing -> PackStatusPage(copy.importing, null, null, null, "取消" to onClose)
+            is PackPhase.Success -> PackStatusPage(copy.success(current.count), copy.successDetail, null, "完成" to onClose)
             is PackPhase.Failed -> PackStatusPage(copy.failedTitle, current.message, null,
-                "Retry" to { phase = PackPhase.Gateway; progress = 0f }, closeLabel to onClose)
+                "重试" to { phase = PackPhase.Gateway; progress = 0f }, closeLabel to onClose)
         }
         // Above the web view so the close button always receives taps.
         MonitorActionButton(closeLabel,
@@ -253,7 +253,7 @@ private fun PackGateway(copy: MonitorLutPackCopy, readiness: MonitorLutPackReadi
                 }
             }
             Spacer(Modifier.height(16.dp))
-            val dismiss = if (switching) "Cancel" else closeLabel
+            val dismiss = if (switching) "取消" else closeLabel
             MonitorCameraAction(dismiss, primary = false, enabled = true, contentDescription = dismiss,
                 onClick = onClose, modifier = Modifier.fillMaxWidth())
         } else {

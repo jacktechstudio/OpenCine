@@ -123,18 +123,18 @@ public data class MonitorWristPresentation internal constructor(
 
 /** Localized wording is content, independent of wrist rendering and command policy. */
 public class MonitorWristCopy(
-    public val monitorDescription: String = "Camera monitor",
-    public val openOnPhone: String = "Open the app on your phone",
-    public val waitingForPhone: String = "Waiting for phone",
-    public val phoneUnavailable: String = "Phone unavailable",
-    public val noCamera: String = "No camera connected",
-    public val feedPaused: String = "Feed paused",
-    public val waitingForPreview: String = "Waiting for preview",
+    public val monitorDescription: String = "相机监视器",
+    public val openOnPhone: String = "请在手机上打开应用",
+    public val waitingForPhone: String = "正在等待手机连接",
+    public val phoneUnavailable: String = "无法连接手机",
+    public val noCamera: String = "未连接相机",
+    public val feedPaused: String = "图传已暂停",
+    public val waitingForPreview: String = "正在等待预览画面",
     /** The empty clock at the source's declared precision ([MonitorTimecodeFormat.placeholder]). */
     public val timecodeUnavailable: String = com.opencapture.monitorui.MonitorTimecodeFormat.placeholder(frames = false),
     public val unavailable: String = "--",
-    public val startRecording: String = "Start recording",
-    public val stopRecording: String = "Stop recording",
+    public val startRecording: String = "开始录制",
+    public val stopRecording: String = "停止录制",
     public val batteryLabel: (Int) -> String = { "$it%" },
 )
 

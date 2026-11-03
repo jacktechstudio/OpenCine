@@ -87,7 +87,7 @@ object CamFov {
     fun ceilingNote(size: String, held: Double, stops: List<Double>): String? {
         val ceiling = stops.lastOrNull() ?: return null
         if (displayTenths(held) <= ceiling + 0.05) return null
-        return "$size caps zoom at ${displayLabel(ceiling)}"
+        return "$size 下最大可变焦至 ${displayLabel(ceiling)}"
     }
 
     fun lensPosition(factor: Double): Int {

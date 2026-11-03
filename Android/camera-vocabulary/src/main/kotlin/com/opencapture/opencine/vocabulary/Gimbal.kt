@@ -1,10 +1,10 @@
 package com.opencapture.opencine.vocabulary
 
 enum class GimbalMode(val label: String) {
-    FOLLOW("Follow"),
-    TILT_LOCKED("Tilt locked"),
+    FOLLOW("跟随"),
+    TILT_LOCKED("俯仰锁定"),
     FPV("FPV"),
-    DIRECTION_LOCK("Direction Lock"),
+    DIRECTION_LOCK("方向锁定"),
     ;
 
     /** The session's own name for this mode (for example Roll Lock or FPV-V). */
@@ -16,9 +16,9 @@ enum class GimbalMode(val label: String) {
 }
 
 enum class GimbalSpeed(val wire: Int, val label: String) {
-    FAST(0, "Fast"),
-    DEFAULT(1, "Default"),
-    SLOW(2, "Slow"),
+    FAST(0, "快速"),
+    DEFAULT(1, "默认"),
+    SLOW(2, "慢速"),
     ;
 
     companion object {
@@ -29,9 +29,9 @@ enum class GimbalSpeed(val wire: Int, val label: String) {
 }
 
 enum class GimbalRamp(val raw: Int, val label: String, val tau: Double) {
-    OFF(0, "Off", 0.0),
-    SOFT(1, "Soft", 0.35),
-    MEDIUM(2, "Medium", 0.18),
+    OFF(0, "关", 0.0),
+    SOFT(1, "柔和", 0.35),
+    MEDIUM(2, "中等", 0.18),
     ;
 
     companion object {
@@ -43,8 +43,8 @@ enum class GimbalRamp(val raw: Int, val label: String, val tau: Double) {
 
 /** Stick double-tap and gamepad Circle/B: body recenter or a world-level snap. */
 enum class GimbalDoubleTap(val raw: Int, val label: String) {
-    RECENTER(0, "Recenter"),
-    LEVEL(1, "Level"),
+    RECENTER(0, "云台回中"),
+    LEVEL(1, "水平校正"),
     ;
 
     companion object {
@@ -55,14 +55,14 @@ enum class GimbalDoubleTap(val raw: Int, val label: String) {
 }
 
 object GimbalHudCopy {
-    const val POSE_NOT_READY = "Gimbal pose not ready"
-    const val NEED_AB = "Set A and B to run"
-    const val HOLD_STILL = "Hold the gimbal still"
-    const val TITLE = "Gimbal"
-    const val MODE = "Mode"
-    const val SPEED = "Speed"
-    const val RAMP = "Ramp"
-    const val PROGRAMMED = "Motion Control"
-    const val RUN = "Start"
-    const val STOP = "Stop"
+    const val POSE_NOT_READY = "云台姿态尚未就绪"
+    const val NEED_AB = "请先设置 A、B 两个点位"
+    const val HOLD_STILL = "请保持云台静止"
+    const val TITLE = "云台"
+    const val MODE = "模式"
+    const val SPEED = "速度"
+    const val RAMP = "缓启缓停"
+    const val PROGRAMMED = "运动控制"
+    const val RUN = "开始"
+    const val STOP = "停止"
 }

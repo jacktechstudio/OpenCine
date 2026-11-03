@@ -224,13 +224,13 @@ class MonitorMediaShareStagerTest {
         assertEquals("android.intent.action.SEND", one.action)
         assertEquals("video/*", one.mimeType)
         assertEquals("video.mov", one.clipDataLabel)
-        assertEquals("Share video.mov", one.chooserTitle)
+        assertEquals("分享 video.mov", one.chooserTitle)
         assertTrue(one.streamExtraIncluded && one.grantsReadUriPermission)
         val many = MonitorMediaShareIntentSpec.forShares(listOf(video, photo), "Supplied media label")
         assertEquals("android.intent.action.SEND_MULTIPLE", many.action)
         assertEquals("*/*", many.mimeType)
         assertEquals("Supplied media label", many.clipDataLabel)
-        assertEquals("Share 2 items", many.chooserTitle)
+        assertEquals("分享 2 项", many.chooserTitle)
         assertTrue(many.streamExtraIncluded && many.grantsReadUriPermission)
     }
 

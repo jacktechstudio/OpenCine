@@ -37,12 +37,12 @@ object OperatorLinkHealth {
     fun score(bars: Int): Int = MonitorLinkHealth.score(bars)
 
     fun caption(isLive: Boolean, bars: Int): String {
-        if (!isLive) return "No live path."
-        if (bars <= 0) return "Waiting for the link."
+        if (!isLive) return "未建立图传连接。"
+        if (bars <= 0) return "正在等待图传连接。"
         return when (MonitorLinkHealth.band(score(bars))) {
-            MonitorLinkHealth.Band.STABLE -> "Link is clean. · Stable"
-            MonitorLinkHealth.Band.WATCH -> "Some loss on the link. · Watch"
-            MonitorLinkHealth.Band.POOR -> "Link is weak. · Poor"
+            MonitorLinkHealth.Band.STABLE -> "图传正常 · 稳定"
+            MonitorLinkHealth.Band.WATCH -> "图传有丢包 · 注意"
+            MonitorLinkHealth.Band.POOR -> "图传不稳定 · 较差"
         }
     }
 
@@ -70,41 +70,41 @@ object OperatorLinkHealth {
 
 fun connectionPhaseLabel(phase: ConnectionPhase, failure: String?): String =
     when (phase) {
-        ConnectionPhase.IDLE -> "Idle"
-        ConnectionPhase.SCANNING -> "Scanning for camera…"
-        ConnectionPhase.CONNECTING_GATT -> "Connecting (Bluetooth)…"
-        ConnectionPhase.PAIRING -> "Pairing…"
-        ConnectionPhase.AWAITING_APPROVAL -> "Approve on the camera screen"
-        ConnectionPhase.READING_WIFI_CREDS -> "Reading Wi-Fi credentials…"
-        ConnectionPhase.JOINING_WIFI -> "Joining camera Wi-Fi…"
-        ConnectionPhase.OPENING_DATALINK -> "Opening datalink…"
-        ConnectionPhase.LIVE -> "Connected"
+        ConnectionPhase.IDLE -> "空闲"
+        ConnectionPhase.SCANNING -> "正在搜索相机…"
+        ConnectionPhase.CONNECTING_GATT -> "正在连接蓝牙…"
+        ConnectionPhase.PAIRING -> "正在配对…"
+        ConnectionPhase.AWAITING_APPROVAL -> "请在相机屏幕上确认"
+        ConnectionPhase.READING_WIFI_CREDS -> "正在读取 Wi-Fi 连接信息…"
+        ConnectionPhase.JOINING_WIFI -> "正在加入相机 Wi-Fi…"
+        ConnectionPhase.OPENING_DATALINK -> "正在建立数据连接…"
+        ConnectionPhase.LIVE -> "已连接"
         ConnectionPhase.FAILED ->
-            if (failure.isNullOrBlank()) "Failed" else "Failed: $failure"
+            if (failure.isNullOrBlank()) "失败" else "失败：${failure}"
     }
 
 /** The assists a clean view can keep pinned, by stored key. */
 enum class CleanPinTool(val key: String, val title: String) {
     LUT("LUT", "LUT"),
-    PEAKING("PEAK", "Peaking"),
-    FALSE_COLOR("FALSE", "False Color"),
-    ZEBRA("ZEBRA", "Zebra"),
-    WAVEFORM("WAVE", "Waveform"),
-    PARADE("PARADE", "Parade"),
-    HISTOGRAM("HISTO", "Histogram"),
-    VECTORSCOPE("VECTOR", "Vectorscope"),
-    TRAFFIC_LIGHTS("LIGHTS", "Traffic Lights"),
-    ND("ND", "ND Suggestion"),
-    GUIDES("GUIDES", "Guides"),
-    GRID("GRID", "Grid"),
-    CROSSHAIR("CROSS", "Crosshair"),
-    DESQUEEZE("DESQ", "Anamorphic Desqueeze"),
-    MIRROR("MIRROR", "Mirror"),
-    AUDIO("AUDIO", "Audio Levels"),
+    PEAKING("PEAK", "峰值对焦"),
+    FALSE_COLOR("FALSE", "假色"),
+    ZEBRA("ZEBRA", "斑马纹"),
+    WAVEFORM("WAVE", "波形图"),
+    PARADE("PARADE", "RGB 分量波形"),
+    HISTOGRAM("HISTO", "直方图"),
+    VECTORSCOPE("VECTOR", "矢量示波器"),
+    TRAFFIC_LIGHTS("LIGHTS", "通道警示灯"),
+    ND("ND", "ND 滤镜建议"),
+    GUIDES("GUIDES", "构图辅助线"),
+    GRID("GRID", "网格线"),
+    CROSSHAIR("CROSS", "中心十字线"),
+    DESQUEEZE("DESQ", "变形宽银幕反挤压"),
+    MIRROR("MIRROR", "镜像"),
+    AUDIO("AUDIO", "音频电平"),
 }
 
 /** The cache size line: the shared decimal byte label, "Empty" for nothing cached. */
-fun formatCacheSize(bytes: Long): String = if (bytes <= 0L) "Empty" else MediaClipFormatting.byteLabel(bytes)
+fun formatCacheSize(bytes: Long): String = if (bytes <= 0L) "空" else MediaClipFormatting.byteLabel(bytes)
 
 fun formatAppVersion(versionName: String, versionCode: Long): String = "$versionName ($versionCode)"
 
@@ -112,92 +112,92 @@ fun formatAppVersion(versionName: String, versionCode: Long): String = "$version
 @Suppress("PropertyName")
 open class OperatorHelpCopy(appName: String) {
     val CURRENT_TRANSPORT =
-        "Pocket uses Bluetooth to pair, then the camera's own Wi-Fi for HEVC. USB-C, hotspot, and HDMI capture are not in this build."
-    val PHASE = "Where the BLE → Wi-Fi → datalink handshake is right now."
+        "Pocket 通过蓝牙配对，再经相机 Wi-Fi 传输 HEVC 图像。本版本不支持 USB-C、热点和 HDMI 采集。"
+    val PHASE = "当前蓝牙、Wi-Fi 和数据链路的连接阶段。"
     val CAMERA_WIFI =
-        "SSID joined for this session. The password stays in the Android Keystore on this phone."
+        "当前连接的网络名称（SSID）。密码仅存于本机的 Android 密钥库。"
     val SAVED_CAMERAS =
-        "Pair from the home list. Settings does not start a new pair. That stays on Your cameras."
-    val EDIT_VIEW = "Opens the monitor with an eye on each element you can show or hide."
+        "请在主页的“我的相机”列表中发起配对。"
+    val EDIT_VIEW = "打开监看界面，轻点眼睛图标选择显示或隐藏各项目。"
     val FRAME_IO =
-        "Sign in to upload clips from the share popup. Frame.io needs the internet, so the phone hops off the camera Wi‑Fi for the upload."
-    val RECORD_CONFIRMATION = "Ask before starting or stopping recording to prevent mistaps."
+        "登录后可从分享面板上传片段。Frame.io 需要互联网连接，上传时手机将暂时断开相机 Wi-Fi。"
+    val RECORD_CONFIRMATION = "开始或停止录制前先确认，以防误触。"
     val SHOOTING_MODE =
-        "Switch the camera between Video, Photo and the time-based modes. The camera reports " +
-            "the mode back, so this follows a change made on the body itself."
+        "切换录像、拍照或延时等模式。相机会回报当前模式，" +
+            "在机身上更改后也会同步更新。"
     val HAPTICS =
-        "Short confirmation pulses for switches, settings, and gimbal limits. A connected controller also rumbles at a stop."
+        "操作开关、修改设置或云台到达限位时短振提醒。连接的手柄在到达限位时也会振动。"
     val JOYSTICK_SENSITIVITY =
-        "How far a stick throw moves the gimbal, on-screen or with a connected game controller. Small throws crawl; full throw is fastest. 4 is the captured feel. 5 reaches full speed sooner; 1 is the slowest."
+        "调整屏幕或手柄摇杆的云台响应。轻推时慢速移动，推到底速度最快。4 为默认手感；5 更快达到全速，1 最慢。"
     val VIRTUAL_JOYSTICK_SIZE =
-        "How large the on-screen stick is. Medium is the default. Large is easier to grab; Small keeps more of the picture clear."
+        "调整屏幕摇杆尺寸。默认为中号，大号更易操控，小号遮挡画面更少。"
     val VIRTUAL_JOYSTICK_INVERT_PAN =
-        "Reverse left and right on the on-screen stick. Off is the default. A game controller is unchanged."
+        "反转屏幕摇杆左右方向。默认关闭，不影响外接手柄。"
     val VIRTUAL_JOYSTICK_INVERT_TILT =
-        "Reverse up and down on the on-screen stick. Off is the default. A game controller is unchanged."
+        "反转屏幕摇杆上下方向。默认关闭，不影响外接手柄。"
     val VIRTUAL_JOYSTICK_DEADZONE =
-        "Ignore small movements near the center. The default is 8%. Increase it to make the center less sensitive."
+        "忽略摇杆中心附近的微小动作。默认为 8%，调大可降低中心灵敏度。"
     val VIRTUAL_JOYSTICK_RESPONSE =
-        "Standard keeps the current feel. Linear responds evenly. Fine makes small movements gentler."
+        "标准保留默认手感；线性响应均匀；精细可让小幅度操作更柔和。"
     val GIMBAL_JOYSTICK =
-        "Which analog stick pans and tilts. Left is the default. The other stick does not move the gimbal."
+        "选择控制云台平移和俯仰的摇杆，默认为左摇杆。另一侧摇杆不控制云台。"
     val GAMEPAD =
-        "A connected game controller. The selected gimbal joystick pans and tilts. Cross/A records. Circle/B recenters. Square/X is rotate-180. Triangle/Y tracks a face. L1/R1 jump zoom out/in. L2/R2 hold-to-zoom (deeper is faster). D-pad up/down ISO, left/right shutter. Unplug rests the stick. On-screen stick wins while you hold it."
+        "外接手柄：所选摇杆控制平移和俯仰。×/A 录制，○/B 回中，□/X 旋转 180°，△/Y 跟踪人脸。L1/R1 分级拉远/推近，按住 L2/R2 连续变焦（按得越深越快）。十字键上下调整 ISO，左右调整快门。断开手柄时摇杆归中。操作屏幕摇杆时，以屏幕摇杆为准。"
     val KEEP_SCREEN_AWAKE =
         MonitorSettingsCopy.keepScreenAwake
     val HDR_DISPLAY =
-        "Outdoor panel brightness, not a grade. WAVE, HISTO, PARADE, VECTOR, zebras and false color still read the decoded camera signal, so judge exposure there, not from how bright the picture looks. Screen recording drops back to a normal SDR picture so the file is not HDR-boosted. This is not the camera's HDR/HLG color mode. Off by default."
-    val THEME = "Charcoal field-monitor chrome with Sky Blue accents, tuned for low reflection on set."
-    val SUPPORT = "Connection, live view, controls, and troubleshooting."
-    val REPORT = "Opens a public issue form on GitHub for this project."
+        "提升户外屏幕亮度。波形图、直方图、RGB 分量波形、矢量示波器、斑马纹及假色仍测量解码后的相机信号，请以其判断曝光。录屏时恢复标准 SDR 画面，文件不会因 HDR 增亮。此选项与相机 HDR/HLG 色彩模式独立。默认关闭。"
+    val THEME = "深灰色监看界面配以天蓝色标识，减少片场反光干扰。"
+    val SUPPORT = "连接、取景、相机控制与故障排查。"
+    val REPORT = "在 GitHub 打开项目的公开问题反馈表。"
     val REPORT_PROBLEM =
-        "Tell us what happened. Technical details stay off unless you include them. You can attach up to three photos. Sending does not turn on automatic reports."
+        "请描述遇到的问题。你可以选择是否附上技术信息，并添加最多三张照片。发送报告不会开启自动报告。"
     val RELIABILITY_REPORTS = MonitorSettingsCopy.automaticReports
     val RELIABILITY_UNAVAILABLE =
-        "This build cannot send automatic reports. You can still share or delete reports stored on this phone."
-    val FEATURE = "Start an idea in this project's feature-request discussion."
+        "本版本无法发送自动报告。仍可分享或删除本机保存的报告。"
+    val FEATURE = "在项目功能建议讨论区发表想法。"
     val SOURCE =
-        "View the $appName project on GitHub. Opening this may leave the camera Wi-Fi if that is the only network."
-    val LINK_HEALTH = "How healthy the camera link is right now: delivery, not radio RSSI."
+        "在 GitHub 查看 ${appName} 项目。如果当前只连接了相机 Wi-Fi，打开页面时可能会断开该连接。"
+    val LINK_HEALTH = "当前相机图传质量，根据数据传输情况判断。"
     val CLEAR_CACHE =
-        "Removes cached clips, thumbnails and camera indexes for every camera. Cameras reload their library when connected."
-    val LUT_LOOK = "Looks apply on this phone. The file on the camera is unchanged."
-    val APP_VERSION = "Current $appName build from the native project metadata."
-    val LOCAL_CACHE = "Cached clips, thumbnails and camera indexes for every camera on this phone."
+        "移除所有相机的缓存片段、缩略图和素材索引。相机连接后将重新载入素材库。"
+    val LUT_LOOK = "仅调整本机监看画面，不影响相机原片。"
+    val APP_VERSION = "由原生项目信息取得的 ${appName} 构建版本。"
+    val LOCAL_CACHE = "本机保存的各相机片段缓存、缩略图和素材索引。"
     val CACHE_FULL_RESOLUTION =
-        "Download the original camera file when you open a clip. Off keeps only the 720p proxy to save space. Share needs the original, so connect the camera if it is not cached."
+        "打开片段时下载相机原片。关闭则仅保留 720p 代理文件以节省空间。分享需要原片；如未缓存，请连接相机。"
     val FEED_UPSCALER = MonitorSettingsCopy.feedUpscaler
     val FALSE_COLOR_SCALE =
-        "The camera color mode selects D-Log, D-Log2, Rec.709, or HLG automatically. " +
-            "CineStop paints five stops around 18% gray, read through the " +
-            "camera's log curve: dark green −2, yellow-green −1, gray at 18%, light pink +1 " +
-            "(skin), soft yellow +2 (upper skin limit). Red is clipped and violet is crushed; " +
-            "other shadows are flat dark gray and other highlights flat light gray. " +
-            "Video paints video-level IRE stripes (green 41–48, pink 61–70, red clip) " +
-            "over luminance grayscale. IRE paints six video-level zones over " +
-            "luminance grayscale: purple crush, blue near-black, green 18% gray, pink one " +
-            "stop over, yellow near clip, red clip. On log, Video and IRE read the camera's " +
-            "Rec.709 look (709) or the raw signal (LOG), set under Read. Limits paints only shadow and highlight warnings, leaving other colors untouched."
+        "根据相机色彩模式自动选择 D-Log、D-Log2、Rec.709 或 HLG。" +
+            "CineStop 以 18% 灰为基准，经相机的" +
+            "Log 曲线换算曝光档位：深绿 −2、黄绿 −1、18% 中灰、淡粉 +1" +
+            "（肤色）、淡黄 +2（肤色上限）。红色表示高光溢出，紫色表示暗部死黑；" +
+            "其他阴影显示为深灰，其他高光显示为浅灰。" +
+            "视频模式在亮度灰阶画面叠加 IRE 色带（绿 41–48，粉 61–70，红色表示高光溢出）。" +
+            "IRE 模式将亮度分为六个电平区域：" +
+            "紫色表示暗部死黑、蓝色表示近黑、绿色表示 18% 灰、粉色表示高一档、" +
+            "黄色表示接近溢出、红色表示溢出。对于 Log 画面，视频和 IRE 模式可选择基于" +
+            "Rec.709 转换（709）或原始信号（LOG）测量。限幅模式仅标示阴影和高光警告，其余颜色保持不变。"
     val FALSE_COLOR_REFERENCE =
-        "Show a compact color key over live view while False Color is active."
+        "使用假色时，在取景画面叠加小型颜色图例。"
     val PEAKING_SENSITIVITY =
-        "Higher sensitivity catches finer edges but can get noisy on detailed scenes."
-    val PEAKING_COLOR = "Choose the edge color that stays readable over your typical scene."
+        "灵敏度越高，越容易显示细小边缘，但复杂场景中也可能出现杂点。"
+    val PEAKING_COLOR = "选择在常拍场景中清晰可见的轮廓颜色。"
     val ZEBRA_UNITS =
-        "Switch between native 0-255 encoded codes and a 0-100 monitoring IRE scale."
+        "在原始 0–255 编码值与 0–100 IRE 监看刻度之间切换。"
     val ZEBRA_HIGHLIGHT =
-        "High zebra warns when bright detail approaches clipping after the active log curve is compensated."
+        "根据当前 Log 曲线补偿后，高光接近溢出时显示高光斑马纹。"
     val ZEBRA_MIDTONE =
-        "Midtone zebra gives a curve-compensated reference band for faces or key subject exposure."
+        "中间调斑马纹根据曲线补偿，为肤色或主体曝光提供参考区间。"
     val WAVEFORM_BRIGHTNESS =
-        "Raise trace intensity when the waveform is hard to read in bright light."
-    val PARADE_BRIGHTNESS = "Raise trace intensity when channel separation is hard to see."
+        "强光下波形不易辨认时，可提高波形亮度。"
+    val PARADE_BRIGHTNESS = "各通道分量不易辨认时，可提高波形亮度。"
     val VECTORSCOPE_ZOOM =
-        "Magnifies only the chroma trace; the graticule stays at unity. The vectorscope reads the camera signal through the built-in display tone map, whatever LUT is on, so chroma stays meaningful."
+        "仅放大色度轨迹，刻度不变。矢量示波器以相机信号经内置显示变换后的结果为准，不受监看 LUT 影响。"
     val VECTORSCOPE_BRIGHTNESS =
-        "Raise trace intensity when the chroma plot is hard to read."
+        "色度轨迹不易辨认时，可提高轨迹亮度。"
     val TRAFFIC_LIGHTS_COMPENSATION =
-        "Stops of crush/clip tolerance before a channel indicator glows. Shared with the histogram traffic lights."}
+        "设置通道欠曝或溢出指示灯的容差（档），与直方图通道警示灯共用。"}
 
 /**
  * The clip cache directories: the app's [mediaRoots] (per-camera folders, each keeping its `index.json`)

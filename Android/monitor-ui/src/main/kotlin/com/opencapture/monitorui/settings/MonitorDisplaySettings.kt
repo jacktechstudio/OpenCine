@@ -81,7 +81,7 @@ public data class MonitorDisplayOrderItem(
     val supplement: String? = null,
     val highlighted: Boolean = false,
     val visibilityLabel: String = title,
-    val visibilityValue: String = if (isOn) "Shown" else "Hidden",
+    val visibilityValue: String = if (isOn) "已显示" else "已隐藏",
     val reorderLabel: String? = null,
     val moveEarlierLabel: String? = null,
     val moveLaterLabel: String? = null,
@@ -109,7 +109,7 @@ public data class MonitorDisplaySection(
     val title: String,
     val caption: String,
     val reset: (() -> Unit)? = null,
-    val editTitle: String = "Edit view",
+    val editTitle: String = "编辑视图",
     val editHint: String? = null,
     val edit: (() -> Unit)? = null,
     val unavailableEditHelp: String? = null,
@@ -127,7 +127,7 @@ private val DisplayShape = RoundedCornerShape(12.dp)
 /** Actual common Display section assembly over typed values and actions. */
 @Composable
 public fun MonitorDisplaySettings(
-    layoutTitle: String = "Layout For",
+    layoutTitle: String = "布局对象",
     layoutHelp: String,
     choices: List<MonitorDisplayChoice>,
     selection: String,
@@ -241,7 +241,7 @@ public fun MonitorDisplayToggleGrid(items: List<MonitorDisplayToggle>, compact: 
                             modifier = Modifier.weight(1f).testTag("monitor.settings.display.toggle.${item.id}")
                                 .semantics {
                                     contentDescription = item.accessibilityLabel
-                                    stateDescription = if (item.isOn) "On" else "Off"
+                                    stateDescription = if (item.isOn) "开" else "关"
                                 },
                             onToggle = item.action)
                     }
@@ -360,10 +360,10 @@ public fun MonitorDisplayOrderList(
                 val y = if (dragging) (dragPosition.y - rowHeightPx / 2f)
                     .coerceIn(0f, (listHeightPx - rowHeightPx).coerceAtLeast(0f)) else index * rowHeightPx
                 val actions = buildList {
-                    if (index > 0) add(CustomAccessibilityAction(item.moveEarlierLabel ?: "Move ${item.title} earlier") {
+                    if (index > 0) add(CustomAccessibilityAction(item.moveEarlierLabel ?: "前移“${item.title}”") {
                         latestMove(item.id, index - 1); latestInteraction(); true
                     })
-                    if (index < items.lastIndex) add(CustomAccessibilityAction(item.moveLaterLabel ?: "Move ${item.title} later") {
+                    if (index < items.lastIndex) add(CustomAccessibilityAction(item.moveLaterLabel ?: "后移“${item.title}”") {
                         latestMove(item.id, index + 1); latestInteraction(); true
                     })
                 }
@@ -377,7 +377,7 @@ public fun MonitorDisplayOrderList(
                     Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(9.dp),
                         verticalAlignment = Alignment.CenterVertically) {
                         Box(Modifier.size(22.dp).background(MonitorPalette.surface, CircleShape)
-                            .semantics { contentDescription = item.positionDescription ?: "Position ${index + 1}" },
+                            .semantics { contentDescription = item.positionDescription ?: "位置 ${index + 1}" },
                             contentAlignment = Alignment.Center) {
                             Text(item.positionLabel ?: "${index + 1}", style = MonitorTypography.readout(9f, FontWeight.Medium),
                                 color = MonitorPalette.muted)
@@ -398,7 +398,7 @@ public fun MonitorDisplayOrderList(
                         Box(Modifier.width(gripWidth).fillMaxHeight()
                             .testTag("monitor.settings.display.grip.${item.id}")
                             .semantics {
-                                contentDescription = item.reorderLabel ?: "Reorder ${item.title}, position ${index + 1}"
+                                contentDescription = item.reorderLabel ?: "调整“${item.title}”顺序，当前位置 ${index + 1}"
                                 customActions = actions
                             }, contentAlignment = Alignment.Center) {
                             Canvas(Modifier.size(18.dp, 14.dp)) {

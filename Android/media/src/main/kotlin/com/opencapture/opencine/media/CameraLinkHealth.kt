@@ -79,11 +79,11 @@ object CameraLinkHealthScorer {
     fun score(inputs: CameraLinkHealthInputs): CameraLinkHealthSnapshot {
         when (inputs.phase) {
             CameraLinkPhase.DISCONNECTED ->
-                return CameraLinkHealthSnapshot(0, "Not connected")
+                return CameraLinkHealthSnapshot(0, "未连接")
             CameraLinkPhase.DEMO ->
-                return CameraLinkHealthSnapshot(85, "Demo session")
+                return CameraLinkHealthSnapshot(85, "演示会话")
             CameraLinkPhase.CONNECTING ->
-                return CameraLinkHealthSnapshot(20, "Connecting…")
+                return CameraLinkHealthSnapshot(20, "正在连接…")
             else -> Unit
         }
         val latency = inputs.ptpRoundTripMilliseconds?.let(::latencyScore) ?: 0.0
@@ -112,7 +112,7 @@ object CameraLinkHealthScorer {
             }
         return CameraLinkHealthSnapshot(
             linkHealthScore = linkHealthRaw.roundToInt().coerceIn(0, 100),
-            detailCaption = "Command channel warm",
+            detailCaption = "控制通道就绪",
         )
     }
 }

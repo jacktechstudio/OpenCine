@@ -21,29 +21,29 @@ fun <Mode> MonitorScopeTraceMenu(
     onGuides: (MonitorScopeGuides) -> Unit, supportsCalibratedReferences: Boolean = true,
 ) {
     MonitorOptionGroup {
-        MonitorSettingsInlineRow("Mode", showTopDivider = false) {
+        MonitorSettingsInlineRow("模式", showTopDivider = false) {
             MonitorSettingsChoices(modes, mode, compact = false, accentSelection = true,
                 title = title, onSelect = onMode)
         }
-        MonitorSettingsInlineRow("Brightness", help = "Raise trace intensity in bright light.", stacked = true) {
+        MonitorSettingsInlineRow("亮度", help = "在强光下可提高波形亮度。", stacked = true) {
             MonitorSettingsPercentSlider(brightness, 0..200, onBrightness)
         }
     }
     Spacer(Modifier.height(11.dp))
     if (!supportsCalibratedReferences) {
-        Text("Encoded code percentage. Source calibration unavailable.", color = MonitorPalette.faint)
+        Text("按编码信号百分比显示，当前无信号源校准数据。", color = MonitorPalette.faint)
         return
     }
-    Text("GUIDE LINES", modifier = Modifier.padding(start = 12.dp, bottom = 5.dp),
+    Text("参考线", modifier = Modifier.padding(start = 12.dp, bottom = 5.dp),
         style = MonitorTypography.text(7.5f, FontWeight.Medium).copy(letterSpacing = 1.sp), color = MonitorPalette.faint)
     MonitorOptionGroup {
-        MonitorSettingsSwitchInlineRow("Safe clip", isOn = guides.clip, showTopDivider = false) {
+        MonitorSettingsSwitchInlineRow("高光安全线", isOn = guides.clip, showTopDivider = false) {
             onGuides(guides.copy(clip = !guides.clip))
         }
-        MonitorSettingsSwitchInlineRow("Safe crush", isOn = guides.crush) {
+        MonitorSettingsSwitchInlineRow("暗部安全线", isOn = guides.crush) {
             onGuides(guides.copy(crush = !guides.crush))
         }
-        MonitorSettingsSwitchInlineRow("Middle gray", isOn = guides.middle) {
+        MonitorSettingsSwitchInlineRow("中灰", isOn = guides.middle) {
             onGuides(guides.copy(middle = !guides.middle))
         }
     }
@@ -52,12 +52,12 @@ fun <Mode> MonitorScopeTraceMenu(
 @Composable
 fun MonitorVectorscopeMenu(zoom: MonitorVectorscopeZoom, onZoom: (MonitorVectorscopeZoom) -> Unit,
     brightness: Int, onBrightness: (Int) -> Unit) {
-    MonitorSettingsInlineRow("Trace Zoom", help = "Magnifies only the chroma trace; the graticule stays at unity.",
+    MonitorSettingsInlineRow("矢量放大倍率", help = "仅放大色度轨迹，刻度盘保持原比例。",
         showTopDivider = false, stacked = true) {
         MonitorSettingsChoices(MonitorVectorscopeZoom.entries, zoom, accentSelection = true,
             title = { it.label }, onSelect = onZoom)
     }
-    MonitorSettingsInlineRow("Brightness", help = "Raise trace intensity when the chroma plot is hard to read.", stacked = true) {
+    MonitorSettingsInlineRow("亮度", help = "色度轨迹不清晰时，可提高轨迹亮度。", stacked = true) {
         MonitorSettingsPercentSlider(brightness, 0..200, onBrightness)
     }
 }

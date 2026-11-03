@@ -6,7 +6,7 @@ import java.util.Locale
 
 /** How the ND chip names the reading. Operator setting, not a camera SET. */
 enum class MonitorNDFilterNotation(val persisted: String, val editorLabel: String) {
-    STOPS("stops", "Stops"),
+    STOPS("stops", "档数"),
     FACTOR("factor", "ND32"),
     DENSITY("density", "ND 0.3"),
     ;

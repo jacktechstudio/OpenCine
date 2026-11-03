@@ -17,7 +17,7 @@ public val MonitorControlModel.State.pendingZoom: Double?
  */
 public fun MonitorControlModel.commitZoomCycle(ratio: Double): Boolean {
     val editor = edit(SettingKey.ZOOM) ?: return false
-    return commit(SettingValue.Zoom(ratio), editor, "Zoom $ratio")
+    return commit(SettingValue.Zoom(ratio), editor, "变焦 ${ratio}")
 }
 
 /**

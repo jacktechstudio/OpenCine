@@ -240,7 +240,7 @@ private class CaptureReadoutActions(
                     state.show(MonitorOperatorCapturePreview(readout.id, value, field, native?.identity), currentInputs.previewChanged)
                 }
             }
-            MonitorOperatorCaptureDrawer(readout.title, "drag to set", maximum,
+            MonitorOperatorCaptureDrawer(readout.title, "拖动调节", maximum,
                 inputs.isTop(readout.id), portrait, compact = true, close = {}) {
                 MonitorValueDrum(value.control.options, value.selection, markedValues = value.control.marked,
                     interactive = false, displayPosition = value.position, onSelect = {})
@@ -415,8 +415,8 @@ public fun monitorOperatorCapturePlacement(layout: MonitorFieldLayout, top: Bool
         Box(Modifier.offset(place.x.dp, place.y.dp).width(place.width.dp).onGloballyPositioned {
             height = with(density) { it.size.height.toDp().value }
         }) {
-            MonitorOperatorCaptureDrawer(header?.title ?: panel.title ?: field?.title ?: "Camera",
-                header?.subtitle ?: panel.subtitle ?: field?.label ?: "Not set", place.maxHeight, panel.top, layout.portrait,
+            MonitorOperatorCaptureDrawer(header?.title ?: panel.title ?: field?.title ?: "相机",
+                header?.subtitle ?: panel.subtitle ?: field?.label ?: "未设置", place.maxHeight, panel.top, layout.portrait,
                 close = { if (enabled && currentSource()) inputs.dismiss() }) {
                 if (panel.chrome == MonitorOperatorCameraPanelChrome.DESCRIPTOR && field != null) {
                     MonitorCaptureDrum(control, field, enabled = commandEnabled && currentSource())
@@ -466,7 +466,7 @@ public fun monitorOperatorCapturePlacement(layout: MonitorFieldLayout, top: Bool
         }
         if (showsClose) Box(Modifier.size(44.dp).monitorChromeClickable(enabled = enabled, onClick = onClose,
             onClickFeedback = { haptics.selection() }).testTag("monitor.capture.close")
-            .semantics { contentDescription = "Close camera control" }, contentAlignment = Alignment.Center) {
+            .semantics { contentDescription = "关闭相机控制" }, contentAlignment = Alignment.Center) {
             MonitorIcon(MonitorIcon.X, null, Modifier.size(13.dp), MonitorPalette.muted)
         }
     }

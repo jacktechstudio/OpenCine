@@ -24,7 +24,7 @@ object IsoSheetLogic {
 
     fun autoLabels(status: CameraStatus, bodyName: String = "", isoAutoRangeFloor: Int? = null,
         ceilingSupported: Boolean = true): List<String> =
-        if (ceilingSupported) CaptureLists.isoAutoLabels(status, bodyName, isoAutoRangeFloor) else listOf("Auto")
+        if (ceilingSupported) CaptureLists.isoAutoLabels(status, bodyName, isoAutoRangeFloor) else listOf("自动")
 
     fun isAutoTab(status: CameraStatus, selectedMode: Int): Boolean =
         CaptureLists.offersIsoAuto(status) && selectedMode == 0
@@ -46,7 +46,7 @@ object IsoSheetLogic {
             else CaptureLists.isoDrumLabels(status)
         val live =
             if (autoTab) {
-                if (ceilingSupported) CaptureLists.isoAutoLabel(status, bodyName, isoAutoRangeFloor) else "Auto"
+                if (ceilingSupported) CaptureLists.isoAutoLabel(status, bodyName, isoAutoRangeFloor) else "自动"
             } else {
                 when {
                     status.isoIndex > 0 -> CameraCommands.isoLabel(status.isoIndex)

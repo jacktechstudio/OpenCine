@@ -47,7 +47,7 @@ class MonitorOperatorLiveOwnerTest {
             ControlStatus(SupportStatus.SUPPORTED, SettingAccess.READ_ONLY)))
         assertTrue(host.controls.focus.isShown)
         assertEquals("AF-S", source.readout(LiveSheet.FOCUS, host.status, host.status.focusLabel))
-        source.release(LiveSheet.FOCUS, held, "Lock", lifetime, true)
+        source.release(LiveSheet.FOCUS, held, "主角追焦", lifetime, true)
         assertTrue(host.commits.isEmpty(), "A held writable editor cannot outlive read-only access")
         assertNull(source.quick(LiveSheet.FOCUS, host.status, lifetime))
     }
@@ -71,11 +71,11 @@ class MonitorOperatorLiveOwnerTest {
         val control = MonitorControlModel(backgroundScope)
         control.bind(camera)
         val source = host.source(control)
-        for ((strategy, label) in listOf(1 to "Showcase", 2 to "Lock", 3 to "Priority")) {
+        for ((strategy, label) in listOf(1 to "展示模式", 2 to "主角追焦", 3 to "登记优先")) {
             host.status = host.status.copy(focusMode = CameraCommands.FOCUS_CONTINUOUS, focusTrack = strategy)
             assertEquals(label, source.readout(LiveSheet.FOCUS, host.status, host.status.focusLabel))
             assertEquals(label, source.quick(LiveSheet.FOCUS, host.status)?.selection)
-            assertEquals(listOf("AF-S", "AF-C", "Showcase", "Lock", "Priority"), source.quick(LiveSheet.FOCUS, host.status)?.options)
+            assertEquals(listOf("AF-S", "AF-C", "展示模式", "主角追焦", "登记优先"), source.quick(LiveSheet.FOCUS, host.status)?.options)
         }
         host.status = host.status.copy(focusMode = -1, focusTrack = -1)
         assertEquals("--", source.readout(LiveSheet.FOCUS, host.status, host.status.focusLabel))
@@ -108,17 +108,17 @@ class MonitorOperatorLiveOwnerTest {
         val beforePause = requireNotNull(source.quick(LiveSheet.FOCUS, host.status, lifetime))
         lifetime.update(false)
         lifetime.update(true)
-        source.release(LiveSheet.FOCUS, beforePause, "Lock", lifetime, true)
+        source.release(LiveSheet.FOCUS, beforePause, "主角追焦", lifetime, true)
         val beforePhase = requireNotNull(source.quick(LiveSheet.FOCUS, host.status, lifetime))
         lifetime.invalidate()
-        source.release(LiveSheet.FOCUS, beforePhase, "Lock", lifetime, true)
+        source.release(LiveSheet.FOCUS, beforePhase, "主角追焦", lifetime, true)
         val beforeRemount = requireNotNull(source.quick(LiveSheet.FOCUS, host.status, lifetime))
         val remounted = CaptureQuickLifetime().also { it.update(true) }
-        source.release(LiveSheet.FOCUS, beforeRemount, "Lock", remounted, true)
+        source.release(LiveSheet.FOCUS, beforeRemount, "主角追焦", remounted, true)
         assertTrue(host.commits.isEmpty())
         source.release(LiveSheet.FOCUS, requireNotNull(source.quick(LiveSheet.FOCUS, host.status, remounted)),
-            "Lock", remounted, true)
-        assertEquals(listOf<CaptureSetting>(CaptureSetting.Focus("Lock")), host.commits)
+            "主角追焦", remounted, true)
+        assertEquals(listOf<CaptureSetting>(CaptureSetting.Focus("主角追焦")), host.commits)
         assertEquals(0, host.refreshes)
         assertEquals(0, host.preferenceWrites)
     }
@@ -129,19 +129,19 @@ class MonitorOperatorLiveOwnerTest {
         val lifetime = CaptureQuickLifetime().also { it.update(true) }
         val held = requireNotNull(source.quick(LiveSheet.FOCUS, host.status, lifetime))
         host.busy = true
-        source.release(LiveSheet.FOCUS, held, "Lock", lifetime, true)
+        source.release(LiveSheet.FOCUS, held, "主角追焦", lifetime, true)
         host.busy = false
         host.status = host.status.copy(focusMode = CameraCommands.FOCUS_CONTINUOUS, focusTrack = 1)
-        source.release(LiveSheet.FOCUS, held, "Lock", lifetime, true)
+        source.release(LiveSheet.FOCUS, held, "主角追焦", lifetime, true)
         val current = requireNotNull(source.quick(LiveSheet.FOCUS, host.status, lifetime))
         host.controls = host.controls.copy(focus = ControlCapability.unsupported())
-        source.release(LiveSheet.FOCUS, current, "Lock", lifetime, true)
+        source.release(LiveSheet.FOCUS, current, "主角追焦", lifetime, true)
         assertNull(source.quick(LiveSheet.FOCUS, host.status, lifetime))
         assertTrue(host.commits.isEmpty())
         host.controls = host.controls.copy(focus = ControlCapability.supported())
         source.release(LiveSheet.FOCUS, requireNotNull(source.quick(LiveSheet.FOCUS, host.status, lifetime)),
-            "Lock", lifetime, true)
-        assertEquals(listOf<CaptureSetting>(CaptureSetting.Focus("Lock")), host.commits)
+            "主角追焦", lifetime, true)
+        assertEquals(listOf<CaptureSetting>(CaptureSetting.Focus("主角追焦")), host.commits)
     }
 
     @Test fun replacementAndRebindingCannotMoveHeldIsoToTheSuccessor() = runTest {
@@ -239,14 +239,14 @@ class MonitorOperatorLiveOwnerTest {
         state.topQuickActive = true
         state.apply(lifecycle.update(active.copy(covered = true)), source)
         state.apply(lifecycle.update(active), source)
-        source.release(LiveSheet.FOCUS, beforeCover, "Lock", lifetime, true)
+        source.release(LiveSheet.FOCUS, beforeCover, "主角追焦", lifetime, true)
         assertEquals(LiveSheet.ISO, state.sheet, "The cover keeps the open picker for the return")
         assertFalse(state.topQuickActive)
         val beforeRotation = requireNotNull(source.quick(LiveSheet.FOCUS, host.status, lifetime))
         state.open(LiveSheet.WB, host.status)
         state.stripQuickActive = true
         state.apply(lifecycle.update(active.copy(orientationRevision = 1)), source)
-        source.release(LiveSheet.FOCUS, beforeRotation, "Lock", lifetime, true)
+        source.release(LiveSheet.FOCUS, beforeRotation, "主角追焦", lifetime, true)
         assertEquals(LiveSheet.WB, state.sheet, "Rotation retires held input, preserving the persistent editor")
         assertFalse(state.stripQuickActive)
         assertEquals(0L, state.paletteRevision, "A cover and a turn keep the assist palette as it was")
@@ -254,8 +254,8 @@ class MonitorOperatorLiveOwnerTest {
         assertTrue(camera.fake.wire.isEmpty())
         assertEquals(0, camera.closes)
         source.release(LiveSheet.FOCUS, requireNotNull(source.quick(LiveSheet.FOCUS, host.status, lifetime)),
-            "Lock", lifetime, true)
-        assertEquals(listOf<CaptureSetting>(CaptureSetting.Focus("Lock")), host.commits)
+            "主角追焦", lifetime, true)
+        assertEquals(listOf<CaptureSetting>(CaptureSetting.Focus("主角追焦")), host.commits)
     }
 
     @Test fun reportedChoicesAndExplicitNativeEvRouteDoNotInventAudioOrFocus() = runTest {
@@ -263,7 +263,7 @@ class MonitorOperatorLiveOwnerTest {
         val control = MonitorControlModel(backgroundScope)
         val source = host.source(control)
         assertNull(source.quick(LiveSheet.AUDIO, host.status))
-        assertEquals(listOf("AF-S", "AF-C", "Showcase", "Lock", "Priority"), source.quick(LiveSheet.FOCUS, host.status)?.options)
+        assertEquals(listOf("AF-S", "AF-C", "展示模式", "主角追焦", "登记优先"), source.quick(LiveSheet.FOCUS, host.status)?.options)
         host.status = host.status.copy(focusMode = -1, focusTrack = -1)
         assertEquals("", source.quick(LiveSheet.FOCUS, host.status)?.selection)
         host.controls = host.controls.copy(focus = ControlCapability.unsupported())

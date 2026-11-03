@@ -15,7 +15,7 @@ public enum class MonitorAccountState { NOT_CONFIGURED, CONNECTING, SIGNED_OUT, 
 public fun MonitorAccountSettings(
     title: String, help: String, state: MonitorAccountState,
     signIn: (() -> Unit)? = null, signOut: (() -> Unit)? = null,
-    statusLabel: String? = null, signInTitle: String = "Sign in", signOutTitle: String = "Log out",
+    statusLabel: String? = null, signInTitle: String = "登录", signOutTitle: String = "退出登录",
     busyLabel: String? = null, errorMessage: String? = null,
     pillActions: Boolean = false,
 ) {
@@ -23,17 +23,17 @@ public fun MonitorAccountSettings(
         MonitorSettingsInlineRow(title, help, showTopDivider = false) {
             if (busyLabel != null) MonitorSettingsValueText(busyLabel)
             else when (state) {
-                MonitorAccountState.NOT_CONFIGURED -> MonitorSettingsValueText(statusLabel ?: "Not configured")
+                MonitorAccountState.NOT_CONFIGURED -> MonitorSettingsValueText(statusLabel ?: "未配置")
                 MonitorAccountState.CONNECTING -> if (statusLabel != null) MonitorSettingsValueText(statusLabel)
                 else CircularProgressIndicator(modifier = Modifier.size(18.dp), color = MonitorPalette.accent, strokeWidth = 2.dp)
                 MonitorAccountState.SIGNED_OUT, MonitorAccountState.ATTENTION -> if (signIn != null) {
                     if (pillActions) MonitorSettingsActionPill(signInTitle, onClick = signIn)
                     else MonitorSettingsTextAction(signInTitle, onClick = signIn)
-                } else MonitorSettingsValueText(statusLabel ?: "Signed out")
+                } else MonitorSettingsValueText(statusLabel ?: "未登录")
                 MonitorAccountState.SIGNED_IN -> if (signOut != null) {
                     if (pillActions) MonitorSettingsActionPill(signOutTitle, onClick = signOut)
                     else MonitorSettingsTextAction(signOutTitle, onClick = signOut)
-                } else MonitorSettingsValueText(statusLabel ?: "Connected")
+                } else MonitorSettingsValueText(statusLabel ?: "已连接")
             }
         }
         errorMessage?.let { Text(it, color = MonitorPalette.accent) }

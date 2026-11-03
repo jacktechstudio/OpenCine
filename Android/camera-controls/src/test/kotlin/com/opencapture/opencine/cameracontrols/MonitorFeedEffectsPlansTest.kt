@@ -196,15 +196,15 @@ class MonitorFeedEffectsPlansTest {
     @Test fun multiviewAutoLutCaptions() {
         val packer = RecordingPacker()
         val plans = MonitorFeedEffectsPlans(packer)
-        assertEquals(FeedEffectsRenderPlan.IDENTITY to "Waiting for camera color", plans.multiviewAutoLut(bytes, true, -1, dlogProfile))
-        assertEquals(FeedEffectsRenderPlan.IDENTITY to "Auto · no conversion needed",
+        assertEquals(FeedEffectsRenderPlan.IDENTITY to "等待相机色彩模式", plans.multiviewAutoLut(bytes, true, -1, dlogProfile))
+        assertEquals(FeedEffectsRenderPlan.IDENTITY to "自动 · 无需转换",
             plans.multiviewAutoLut(bytes, true, CameraCommands.COLOR_NORMAL, dlogProfile))
-        assertEquals(FeedEffectsRenderPlan.IDENTITY to "Auto · D-Log to Rec.709",
+        assertEquals(FeedEffectsRenderPlan.IDENTITY to "自动 · D-Log to Rec.709",
             plans.multiviewAutoLut(bytes, false, CameraCommands.COLOR_DLOG, dlogProfile))
-        assertEquals(FeedEffectsRenderPlan.IDENTITY to "LUT unavailable",
+        assertEquals(FeedEffectsRenderPlan.IDENTITY to "LUT 不可用",
             plans.multiviewAutoLut({ null }, true, CameraCommands.COLOR_DLOG, dlogProfile))
         val (plan, caption) = plans.multiviewAutoLut(bytes, true, CameraCommands.COLOR_DLOG, dlogProfile)
-        assertEquals("Auto · D-Log to Rec.709", caption)
+        assertEquals("自动 · D-Log to Rec.709", caption)
         assertNotNull(plan.lutCube)
         assertFalse(plan.peaking); assertFalse(plan.zebraHighlightOn)
     }

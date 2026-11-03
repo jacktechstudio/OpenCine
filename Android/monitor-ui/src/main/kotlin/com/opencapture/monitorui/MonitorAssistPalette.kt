@@ -95,7 +95,7 @@ fun <T> MonitorAssistPalette(tools: List<T>, portrait: Boolean, locked: Boolean,
     accessibilityLabel: (T) -> String? = { null },
     accessibilityValue: (T) -> String? = { null },
     accessibilityIdentifier: (T) -> String? = { null },
-    expansionAccessibilityName: String = "view assists",
+    expansionAccessibilityName: String = "监看辅助",
     expansionAccessibilityIdentifier: String = "monitor.assists.expand",
     cellSize: Float? = null,
     maxExpandedHeight: Float? = null,
@@ -228,7 +228,7 @@ fun <T> MonitorAssistPalette(tools: List<T>, portrait: Boolean, locked: Boolean,
             .then(if (identifier != null) Modifier.testTag(identifier) else Modifier)
             .semantics {
                 role = Role.Button
-                contentDescription = accessibilityLabel(tool) ?: "${title(tool)}, ${if (active) "on" else "off"}"
+                contentDescription = accessibilityLabel(tool) ?: "${title(tool)}，${if (active) "开启" else "关闭"}"
                 accessibilityValue(tool)?.let { stateDescription = it }
             },
             contentAlignment = Alignment.Center) {
@@ -347,7 +347,7 @@ fun <T> MonitorAssistPalette(tools: List<T>, portrait: Boolean, locked: Boolean,
             )
             .testTag(expansionAccessibilityIdentifier)
             .semantics {
-                contentDescription = if (open) "Show $expansionAccessibilityName" else "Collapse $expansionAccessibilityName"
+                contentDescription = if (open) "显示$expansionAccessibilityName" else "收起$expansionAccessibilityName"
                 role = Role.Button
                 if (portrait && !locked) onClick {
                     if (dragging) false else { expanded = !expanded; true }

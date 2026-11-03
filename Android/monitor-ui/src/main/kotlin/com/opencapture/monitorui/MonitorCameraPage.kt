@@ -60,8 +60,8 @@ fun <T> MonitorCameraPage(
     key: (T) -> Any,
     emptyMessage: String,
     modifier: Modifier = Modifier,
-    title: String = "Your cameras",
-    emptyTitle: String = "No cameras saved yet",
+    title: String = "我的相机",
+    emptyTitle: String = "尚未保存相机",
     scanning: Boolean = false,
     actions: @Composable RowScope.() -> Unit,
     camera: @Composable (T) -> Unit,
@@ -342,10 +342,10 @@ fun MonitorCameraCard(
                 }
             } else {
                 MonitorCameraAction(
-                    text = if (busy) "Cancel" else actionTitle,
+                    text = if (busy) "取消" else actionTitle,
                     primary = primary && !busy,
                     enabled = if (busy) onCancel != null else enabled,
-                    contentDescription = if (busy) "Cancel connecting to $title" else "$actionTitle $title",
+                    contentDescription = if (busy) "取消连接 $title" else "$actionTitle $title",
                     onClick = { if (busy) onCancel?.invoke() else onOpen() },
                 )
             }
@@ -358,7 +358,7 @@ fun MonitorCameraCard(
 private fun MonitorCameraScanStatus(fullLabels: Boolean) {
     val phase = monitorPulsePhase(1400)
     Row(
-        Modifier.semantics(mergeDescendants = true) { contentDescription = "Scanning for cameras" },
+        Modifier.semantics(mergeDescendants = true) { contentDescription = "正在搜索相机" },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
@@ -370,7 +370,7 @@ private fun MonitorCameraScanStatus(fullLabels: Boolean) {
         )
         if (fullLabels) {
             Text(
-                "SCANNING",
+                "正在搜索",
                 color = MonitorPalette.accent,
                 style = MonitorTypography.text(9.5f, FontWeight.Bold).copy(letterSpacing = 1.1.sp),
                 maxLines = 1,

@@ -77,14 +77,14 @@ public object CamerasMapping {
                 name = camera.displayName,
                 subtitle = listOfNotNull(camera.model, network).filter { it.isNotEmpty() }.joinToString(" · "),
                 badge = when {
-                    attempt != null -> "CONNECTING"
-                    failure != null -> "NOT CONNECTED"
-                    camera.id == latest -> "LAST USED"
-                    nearby -> "PAIRED"
-                    else -> "OFFLINE"
+                    attempt != null -> "正在连接"
+                    failure != null -> "未连接"
+                    camera.id == latest -> "最近使用"
+                    nearby -> "已配对"
+                    else -> "离线"
                 },
-                status = attempt?.let(::status) ?: if (nearby) "Nearby · ready to connect" else "Not found. Power it on to reconnect",
-                actionTitle = if (nearby) "Connect" else "Reconnect",
+                status = attempt?.let(::status) ?: if (nearby) "附近 · 可以连接" else "未找到相机。请开机后重新连接",
+                actionTitle = if (nearby) "连接" else "重新连接",
                 isPrimary = camera.id == latest,
                 isBusy = attempt != null,
                 isAvailable = nearby,
@@ -110,9 +110,9 @@ public object CamerasMapping {
 
     /** The chip title: the operator's setup name, else the shell's name for the kind. */
     public fun title(route: SavedRoute): String = route.title ?: when (route.kind) {
-        RouteKind.CAMERA_ACCESS_POINT -> "Camera Wi-Fi"
+        RouteKind.CAMERA_ACCESS_POINT -> "相机 Wi-Fi"
         RouteKind.INFRASTRUCTURE_NETWORK -> route.network?.let { "Wi-Fi · $it" } ?: "Wi-Fi"
-        RouteKind.PHONE_HOTSPOT -> "Hotspot"
+        RouteKind.PHONE_HOTSPOT -> "热点"
         RouteKind.USB -> "USB-C"
         RouteKind.CAPTURE_DEVICE -> "HDMI"
     }
@@ -145,12 +145,12 @@ public object CamerasMapping {
             when (action) {
                 is RecoveryAction.UseRoute -> {
                     val route = camera?.routes?.firstOrNull { it.id == action.route }
-                    link = MonitorConnectFailure.Action(id(action), "Connect over ${route?.let(::title) ?: "another setup"} instead")
+                    link = MonitorConnectFailure.Action(id(action), "改用${route?.let(::title) ?: "其他连接方案"}连接")
                 }
-                RecoveryAction.Retry -> actions += MonitorConnectFailure.Action(id(action), "Try again", primary = true)
-                is RecoveryAction.EditRoute -> actions += MonitorConnectFailure.Action(id(action), "Edit setup")
-                RecoveryAction.PairAgain -> actions += MonitorConnectFailure.Action(id(action), "Pair again")
-                RecoveryAction.OpenSettings -> actions += MonitorConnectFailure.Action(id(action), "Open Settings")
+                RecoveryAction.Retry -> actions += MonitorConnectFailure.Action(id(action), "重试", primary = true)
+                is RecoveryAction.EditRoute -> actions += MonitorConnectFailure.Action(id(action), "编辑连接方案")
+                RecoveryAction.PairAgain -> actions += MonitorConnectFailure.Action(id(action), "重新配对")
+                RecoveryAction.OpenSettings -> actions += MonitorConnectFailure.Action(id(action), "打开设置")
                 is RecoveryAction.Integration -> actions += MonitorConnectFailure.Action(id(action), action.title)
             }
         }
@@ -183,31 +183,31 @@ public object CamerasMapping {
         val step = attempt?.progress?.let { it.steps.getOrNull(it.current) }
         val instructions = when (val prompt = attempt?.prompt) {
             is ConnectionPrompt.ApproveOnCamera ->
-                listOf(MonitorPairingInstruction("On the camera", MonitorPairingInstructionIcon.CAMERA, listOf(prompt.text)))
+                listOf(MonitorPairingInstruction("在相机上操作", MonitorPairingInstructionIcon.CAMERA, listOf(prompt.text)))
             is ConnectionPrompt.AcceptNetworkJoin ->
-                listOf(MonitorPairingInstruction("On this phone", MonitorPairingInstructionIcon.PHONE, listOf(prompt.text)))
+                listOf(MonitorPairingInstruction("在本机操作", MonitorPairingInstructionIcon.PHONE, listOf(prompt.text)))
             is ConnectionPrompt.Integration ->
-                listOf(MonitorPairingInstruction("Next", MonitorPairingInstructionIcon.CAMERA, listOf(prompt.text)))
+                listOf(MonitorPairingInstruction("下一步", MonitorPairingInstructionIcon.CAMERA, listOf(prompt.text)))
             null -> emptyList()
         }
         val settings = failure?.actions?.contains(RecoveryAction.OpenSettings) == true
         return MonitorPairingPresentation(
-            steps = listOf(MonitorPairingStep("Find your camera", "Nearby cameras")) + plan.map { MonitorPairingStep(it.title, it.detail) },
+            steps = listOf(MonitorPairingStep("查找相机", "附近的相机")) + plan.map { MonitorPairingStep(it.title, it.detail) },
             currentStep = current,
-            title = failure?.title ?: step?.title ?: "Find your camera",
-            body = failure?.message ?: step?.detail ?: "Turn the camera on and keep this phone nearby.",
-            target = selected?.camera?.name ?: "Nothing selected yet",
+            title = failure?.title ?: step?.title ?: "查找相机",
+            body = failure?.message ?: step?.detail ?: "请打开相机，并将手机靠近相机。",
+            target = selected?.camera?.name ?: "尚未选择",
             hint = if (choosing) {
-                selected?.let { "Selected ${it.camera.name}" } ?: "Choose the camera that matches your screen"
+                selected?.let { "已选择 ${it.camera.name}" } ?: "选择与相机屏幕显示一致的设备"
             } else {
-                "Monitoring opens when the picture is ready"
+                "收到画面后将进入监看"
             },
             // The prompt has its own card; the live line is the integration's note or step.
-            progress = attempt?.let { it.progress?.note ?: step?.title ?: "Connecting…" },
+            progress = attempt?.let { it.progress?.note ?: step?.title ?: "正在连接…" },
             devices = if (choosing) {
                 state.nearby.map {
                     MonitorPairingDevice(
-                        it.id, it.camera.name, "${it.camera.model} · nearby", selected = state.selection == it.id,
+                        it.id, it.camera.name, "${it.camera.model} · 附近", selected = state.selection == it.id,
                         busy = state.attempts.isNotEmpty(), signalBars = it.camera.signalBars,
                     )
                 }
@@ -216,20 +216,20 @@ public object CamerasMapping {
             },
             instructions = instructions,
             emptyTitle = if (choosing && state.nearby.isEmpty()) {
-                if (state.scanning) "Looking for cameras" else "No cameras yet"
+                if (state.scanning) "正在搜索相机" else "尚未发现相机"
             } else {
                 null
             },
             primaryAction = when {
-                failure != null -> if (settings) "Open Settings" else "Try again"
-                choosing -> "Continue"
+                failure != null -> if (settings) "打开设置" else "重试"
+                choosing -> "继续"
                 else -> null
             },
             primaryActionEnabled = failure != null || (choosing && selected != null),
             backAction = when {
-                !choosing -> "Cancel"
+                !choosing -> "取消"
                 state.saved.isEmpty() -> null
-                else -> "Back"
+                else -> "返回"
             },
         )
     }
@@ -241,10 +241,10 @@ public object CamerasMapping {
         return CameraItem(
             id = camera.id,
             name = copy?.name ?: camera.name,
-            subtitle = copy?.subtitle ?: if (camera.model.isEmpty()) "nearby" else "${camera.model} · nearby",
-            badge = if (held) "IN USE" else "NEW",
-            status = if (held) "In use by another device" else copy?.status ?: "Ready to pair",
-            actionTitle = "Pair",
+            subtitle = copy?.subtitle ?: if (camera.model.isEmpty()) "附近" else "${camera.model} · 附近",
+            badge = if (held) "使用中" else "新设备",
+            status = if (held) "其他设备正在使用" else copy?.status ?: "可以配对",
+            actionTitle = "配对",
             isPrimary = state.selection == camera.id,
             isBusy = ConnectTarget.Nearby(camera).cameraID in state.attempts,
             isAvailable = !held,
@@ -253,8 +253,8 @@ public object CamerasMapping {
     }
 
     internal fun status(attempt: CamerasModel.Attempt): String {
-        val progress = attempt.progress ?: return "Connecting…"
-        return attempt.prompt?.text ?: progress.note ?: progress.steps.getOrNull(progress.current)?.title ?: "Connecting…"
+        val progress = attempt.progress ?: return "正在连接…"
+        return attempt.prompt?.text ?: progress.note ?: progress.steps.getOrNull(progress.current)?.title ?: "正在连接…"
     }
 
     internal fun matches(sighting: CamerasModel.Sighting, camera: SavedCamera): Boolean =

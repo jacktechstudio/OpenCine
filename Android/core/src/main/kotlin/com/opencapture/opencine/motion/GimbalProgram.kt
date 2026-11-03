@@ -35,8 +35,8 @@ public data class GimbalProgram(
             when {
                 a != null && b != null && c != null -> "A·B·C"
                 a != null && b != null -> "A·B"
-                a != null || b != null || c != null -> "Partial"
-                else -> "Not set"
+                a != null || b != null || c != null -> "不完整"
+                else -> "未设置"
             }
 
     /** One pass: A to B, then B to C when C is set. */

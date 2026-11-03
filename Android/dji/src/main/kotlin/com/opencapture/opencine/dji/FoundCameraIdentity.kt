@@ -6,7 +6,7 @@ object FoundCameraIdentity {
         val trimmed = name.trim()
         if (trimmed.isEmpty()) return true
         val compact = trimmed.lowercase()
-        return compact == "dji camera" || compact == "dji osmo camera"
+        return compact == "dji camera" || compact == "dji osmo camera" || compact == "dji osmo 相机"
     }
 
     fun listTitle(advertisedName: String, modelName: String): String =
@@ -20,9 +20,9 @@ object FoundCameraIdentity {
                 else -> "Pocket"
             }
         return if (isGenericName(advertisedName) || advertisedName == modelName) {
-            "$kind · nearby"
+            "$kind · 附近"
         } else {
-            "$kind · $modelName · nearby"
+            "$kind · $modelName · 附近"
         }
     }
 

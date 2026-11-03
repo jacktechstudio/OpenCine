@@ -102,10 +102,10 @@ public class MonitorDeliveryCoordinator(
                 MonitorDeliveryAdmission { admission.isCurrent() && source.isCurrent() }, originals, filename,
                 uploadCaption, progress = progress)
             MonitorDeliveryCompletion(MonitorDeliveryBatchOutcome.Uploaded(""))
-        } ?: throw CancellationException("Delivery is closed.")
+        } ?: throw CancellationException("交付窗口已关闭。")
         capturedRun = run
         run.awaitEnteredCleanup()
-        if (!source.isCurrent()) throw CancellationException("Selection is no longer available.")
+        if (!source.isCurrent()) throw CancellationException("所选素材已不可用。")
         // The cache itself is the truth: a cancelled or superseded run leaves clips uncached.
         val missing = records.filter { !originals.available(it) }
         if (missing.isNotEmpty()) {
@@ -156,7 +156,7 @@ public class MonitorDeliveryCoordinator(
             photosAuthorization = photosAuthorization,
             upload = remote?.let { remote ->
                 MonitorDeliveryUploadService(remote.progressCaption) { file, report ->
-                    val record = origins[file] ?: throw CancellationException("Delivery file was released.")
+                    val record = origins[file] ?: throw CancellationException("交付文件已释放。")
                     remote.upload(record, file, report)
                 }
             },

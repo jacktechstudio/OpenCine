@@ -96,24 +96,24 @@ internal class NativeZoomPauseStability(private val maximumGap: Double = 0.3) {
 /** Unpinned camera reports govern automated zoom; a motion take never changes color mode. */
 fun nativeProgramZoomFailure(program: GimbalProgram, model: CameraModel, status: CameraStatus, target: Double? = null): String? {
     if (!program.changesZoom) return null
-    if (status.colorMode == CameraCommands.COLOR_DLOG2) return "Zoom moves are unavailable in D-Log2"
+    if (status.colorMode == CameraCommands.COLOR_DLOG2) return "D-Log2 模式不支持变焦运动"
     if (status.colorMode !in setOf(CameraCommands.COLOR_NORMAL, CameraCommands.COLOR_NORMAL10,
             CameraCommands.COLOR_HDR, CameraCommands.COLOR_DLOG, CameraCommands.COLOR_DLOG_M)) {
-        return "Wait for camera color mode before a zoom move"
+        return "请等候相机报告色彩模式，再运行变焦动作"
     }
     val ceiling = model.activeZoomStops(status.resolutionCode, status.shootingMode).lastOrNull() ?: 1.0
     if (listOfNotNull(program.a, program.b, program.c).any { !it.zoom.isFinite() || it.zoom < 1.0 || it.zoom > ceiling }) {
-        return "Saved zoom exceeds the current FORMAT limit"
+        return "保存的变焦倍率超出当前录制格式的上限"
     }
     if (status.zoomFactor?.let { it.isFinite() && it in 1.0..ceiling } != true ||
-        target?.let { !it.isFinite() || it !in 1.0..ceiling } == true) return "Wait for camera zoom feedback"
+        target?.let { !it.isFinite() || it !in 1.0..ceiling } == true) return "正在等待相机反馈变焦倍率"
     return null
 }
 
 /** Angular reports cannot refresh the lens report's independent 2.5 Hz evidence. */
 internal fun nativeProgramZoomFeedbackFailure(receivedAt: Double?, now: Double): String? =
     if (receivedAt != null && now.isFinite() && now >= receivedAt && now - receivedAt <= 0.85) null
-    else "Move interrupted: camera zoom feedback lost"
+    else "运动已中断：相机变焦反馈丢失"
 
 /** Existing subscribe/status frames are consumed before the main-thread status callback. */
 internal fun nativeProgramZoomStatus(frame: DumlFrame, status: CameraStatus, model: CameraModel): CameraStatus {
@@ -195,7 +195,7 @@ class NativeGimbalProgramRunner internal constructor(
                     stop()
                     releaseRequest(token)
                     publish(Progress(token, program, sample?.pose, null,
-                        "Move interrupted: timing or camera feedback lost", true, epoch = epoch))
+                        "运动已中断：时序或相机反馈丢失", true, epoch = epoch))
                     return@schedule
                 }
                 val engine = GimbalMoveEngine()
@@ -203,7 +203,7 @@ class NativeGimbalProgramRunner internal constructor(
                     stop()
                     releaseRequest(token)
                     publish(Progress(token, program, sample.pose, null,
-                        engine.failure ?: "Set reachable gimbal points again", true, epoch = epoch))
+                        engine.failure ?: "请重新设置云台可到达的关键点", true, epoch = epoch))
                     return@schedule
                 }
                 val run = Run(token, program, engine, publish, current,
@@ -258,7 +258,7 @@ class NativeGimbalProgramRunner internal constructor(
             if (run != null) active = null
             val live = feedback()?.pose
             interrupted.publish(Progress(interrupted.token, interrupted.program, live,
-                live?.let { run?.engine?.readout(it) }, "Move interrupted: camera connection changed", true, epoch = callbackEpoch.get()))
+                live?.let { run?.engine?.readout(it) }, "运动已中断：相机连接已变化", true, epoch = callbackEpoch.get()))
         }
     }
 
@@ -287,7 +287,7 @@ class NativeGimbalProgramRunner internal constructor(
                 stop()
                 run?.let(::stopOwnedZoom)
                 saved.publish(Progress(token, saved.program, sample?.pose, null,
-                    "Move interrupted: camera feedback lost", true, epoch = epoch))
+                    "运动已中断：相机反馈丢失", true, epoch = epoch))
                 releaseRequest(token)
                 active = null
                 return@schedule
@@ -319,7 +319,7 @@ class NativeGimbalProgramRunner internal constructor(
             if (pose == null || (run.program.changesZoom && (!run.zoomStability.ready(now()) || !zoomResumeReady(now()))) ||
                 current?.nativePitch != run.nativePitch || !run.engine.resume(pose)) {
                 run.publish(Progress(token, run.program, current?.pose, current?.pose?.let { run.engine.readout(it) },
-                    null, false, paused = true, note = "Hold the camera still before resuming", epoch = epoch,
+                    null, false, paused = true, note = "继续前请保持相机静止", epoch = epoch,
                     verificationInterruptedByPause = run.engine.verificationInterruptedByPause))
                 return@schedule
             }
@@ -363,7 +363,7 @@ class NativeGimbalProgramRunner internal constructor(
             val current = now()
             val sample = feedback()
             if (sample == null) {
-                fail(run, null, "Move interrupted: camera feedback lost")
+                fail(run, null, "运动已中断：相机反馈丢失")
                 return@schedule
             }
             zoomFailure(run.program)?.let { fail(run, sample.pose, it); return@schedule }
@@ -375,7 +375,7 @@ class NativeGimbalProgramRunner internal constructor(
             val out = run.engine.tick(current - run.lastTick, sample.pose, current - sample.receivedAt)
             run.lastTick = current
             if (out == null) {
-                fail(run, sample.pose, "Move interrupted: timing or camera feedback lost")
+                fail(run, sample.pose, "运动已中断：时序或相机反馈丢失")
                 return@schedule
             }
             if (generation.get() != run.token || callbackEpoch.get() != epoch) return@schedule
@@ -384,7 +384,7 @@ class NativeGimbalProgramRunner internal constructor(
             if (out.stop) stop()
             if (out.stop || out.finished) stopOwnedZoom(run)
             if (out.target != null && !sendNative(run, out.target, out.duration, sample)) {
-                fail(run, sample.pose, "Set reachable gimbal points again")
+                fail(run, sample.pose, "请重新设置云台可到达的关键点")
                 return@schedule
             }
             if (out.finished) {
@@ -430,7 +430,7 @@ class NativeGimbalProgramRunner internal constructor(
         if (run.lastZoomLens == lens) return true
         if (generation.get() != run.token || callbackEpoch.get() != epoch) return false
         if (!sendZoom(lens, run.program)) {
-            fail(run, feedback()?.pose, zoomFailure(run.program) ?: "Move interrupted: zoom command failed")
+            fail(run, feedback()?.pose, zoomFailure(run.program) ?: "运动已中断：变焦指令失败")
             return false
         }
         run.lastZoomLens = lens
@@ -451,7 +451,7 @@ class NativeGimbalProgramRunner internal constructor(
                 val verified = sample != null && sample.zoomReceivedAt?.let { it > sentAt } == true &&
                     abs(sample.pose.zoom - expected) <= 2.0 / 217.0 + 1e-9
                 if (!verified) {
-                    fail(run, sample?.pose, "Move interrupted: camera did not reach the starting zoom")
+                    fail(run, sample?.pose, "运动已中断：相机未到达起始变焦倍率")
                     return false
                 }
             }
@@ -491,7 +491,7 @@ class NativeGimbalProgramRunner internal constructor(
         }
         if (generation.get() != run.token || callbackEpoch.get() != epoch) return false
         if (!sendNativeZoom(command, run.program)) {
-            fail(run, feedback()?.pose, zoomFailure(run.program) ?: "Move interrupted: zoom command failed")
+            fail(run, feedback()?.pose, zoomFailure(run.program) ?: "运动已中断：变焦指令失败")
             return false
         }
         run.lastNativeZoom = command

@@ -8,14 +8,14 @@ class SessionRecoveryCopyTest {
 
     @Test fun pausedCopyWithoutASuspectIsUnchanged() {
         assertEquals(
-            "Z 6III reconnected but dropped 3 times in quick succession. Automatic retries are paused to protect the camera. The frame below is held, not live.",
+            "Z 6III重连后短时间内又断开 3 次。为保护相机，已暂停自动重连。下方画面已定格。",
             SessionRecoveryCopy.detail(paused, "Z 6III"),
         )
     }
 
     @Test fun pausedCopyNamesAnotherScanningDevice() {
         assertEquals(
-            "The camera reconnected but dropped 3 times in quick succession. Automatic retries are paused to protect the camera, since another device may be scanning for cameras. The frame below is held, not live.",
+            "相机重连后短时间内又断开 3 次，可能有其他设备正在搜索相机。为保护相机，已暂停自动重连。下方画面已定格。",
             SessionRecoveryCopy.detail(paused, " ", SessionDropSuspect.OTHER_DEVICE_SCANNING),
         )
     }
@@ -23,14 +23,14 @@ class SessionRecoveryCopyTest {
     /** Hardware pass 5.1: "attempt 1 of 8", then the 3 minute budget stopped at 3 tries. */
     @Test fun retryingCopyNamesTheTimeBudgetNotAnAttemptCount() {
         assertEquals(
-            "OsmoPocket4P-EA4A dropped off. Holding the last frame, attempt 1. Reconnecting for up to 3 minutes.",
+            "OsmoPocket4P-EA4A已断开，画面停留在最后一帧。正在第 1 次重连。最多尝试 3 分钟。",
             SessionRecoveryCopy.detail(SessionRecoveryUi.Retrying(attempt = 1, maxAttempts = 8), "OsmoPocket4P-EA4A"),
         )
     }
 
     @Test fun givingUpSuggestsRestartingTheCamera() {
         assertEquals(
-            "Luna Ultra didn't come back after 8 tries. Turn the camera off and on, then tap Retry. The frame below is held, not live.",
+            "尝试 8 次后仍未能连接Luna Ultra。请重启相机，再点按“重新连接”。下方画面已定格。",
             SessionRecoveryCopy.detail(SessionRecoveryUi.WaitingForOperator(attemptsMade = 8), "Luna Ultra"),
         )
     }
@@ -45,13 +45,13 @@ class SessionRecoveryCopyTest {
 
     @Test fun takenOverNamesTheHolderAndHowToTakeItBack() {
         val taken = SessionRecoveryUi.TakenOver(holder = "Phone B")
-        assertEquals("Camera taken over", SessionRecoveryCopy.title(taken))
+        assertEquals("相机已连接到其他设备", SessionRecoveryCopy.title(taken))
         assertEquals(
-            "Phone B connected to Z 6III, so this device stopped reconnecting. Retry takes the camera back. The frame below is held, not live.",
+            "Phone B已连接到Z 6III，本机已停止重连。点按“重新连接”可重新接管相机。下方画面已定格。",
             SessionRecoveryCopy.detail(taken, "Z 6III"),
         )
         assertEquals(
-            "Another device connected to the camera, so this device stopped reconnecting. Retry takes the camera back. The frame below is held, not live.",
+            "其他设备已连接到相机，本机已停止重连。点按“重新连接”可重新接管相机。下方画面已定格。",
             SessionRecoveryCopy.detail(SessionRecoveryUi.TakenOver(holder = " "), ""),
         )
     }

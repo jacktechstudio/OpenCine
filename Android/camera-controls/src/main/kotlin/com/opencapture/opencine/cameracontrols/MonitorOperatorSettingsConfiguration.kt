@@ -149,12 +149,12 @@ public class MonitorSettingsMotionSource(
     public val sensitivity: MonitorMotionIntegerSetting? = null,
     public val joystick: MonitorSettingsJoystickSource? = null,
     public val controller: MonitorMotionChoiceSetting? = null,
-    public val controllerStatus: String = "Not connected", public val controllerHelp: String = "",
+    public val controllerStatus: String = "未连接", public val controllerHelp: String = "",
 )
 /** The remote shutter row: the host's stored choice with its title and caption (A2-32). */
 public class MonitorSettingsRemoteShutter(
     public val enabled: Boolean, public val setEnabled: (Boolean) -> Unit,
-    public val title: String = "Remote shutter", public val caption: String? = null,
+    public val title: String = "快门遥控", public val caption: String? = null,
 ) {
     public companion object {
         /** The media-button shutter [com.opencapture.opencine.appkit.MonitorRemoteShutter] runs, over the host's stored choice. */
@@ -166,7 +166,7 @@ public class MonitorSettingsRemoteShutter(
 /** The auto-rotate row, for a source that reports the camera body's orientation (A2-32). */
 public class MonitorSettingsAutoRotate(
     public val enabled: Boolean, public val setEnabled: (Boolean) -> Unit,
-    public val title: String = "Auto-Rotate Feed", public val help: String = "",
+    public val title: String = "自动旋转取景画面", public val help: String = "",
 )
 
 /**
@@ -180,7 +180,7 @@ public class MonitorSettingsControlsSource(
     public val keepAwake: Boolean, public val setKeepAwake: (Boolean) -> Unit,
     public val keepAwakeHelp: String,
     public val autoRotateFeed: Boolean? = null, public val setAutoRotateFeed: ((Boolean) -> Unit)? = null,
-    public val rotationTitle: String = "Auto-Rotate Feed", public val rotationHelp: String = "",
+    public val rotationTitle: String = "自动旋转取景画面", public val rotationHelp: String = "",
     public val hapticsHelp: String? = null,
     public val motion: MonitorSettingsMotionSource? = null,
     public val shutter: MonitorSettingsRemoteShutter? = null,
@@ -196,13 +196,13 @@ public class MonitorSettingsControlsSource(
 public class MonitorSettingsCachePresentation(
     public val source: MonitorSettingsCacheSource,
     public val formatBytes: ((Long) -> String)? = null,
-    public val checking: String = "Checking…", public val readFailure: String = "Could not read the cache.",
-    public val clearFailure: String = "Could not clear the cache. Try again.",
-    public val scopeHelp: String = "Originals and playback proxies downloaded from the camera.",
-    public val clearHelp: String = "Remove downloaded picture files while keeping the clip list.",
+    public val checking: String = "正在检查…", public val readFailure: String = "无法读取缓存。",
+    public val clearFailure: String = "未能清除缓存，请重试。",
+    public val scopeHelp: String = "从相机下载的原片与回放代理文件。",
+    public val clearHelp: String = "删除已下载的影像文件，保留素材列表。",
     public val summaryColor: Color = MonitorPalette.accent,
     public val cacheOriginals: Boolean? = null, public val setCacheOriginals: ((Boolean) -> Unit)? = null,
-    public val cacheHelp: String = "Keep originals downloaded for playback.",
+    public val cacheHelp: String = "保留为回放下载的原片。",
 )
 /** Help & Feedback. Privacy and terms come from [MonitorOperatorSettingsConfiguration.legal]. */
 public class MonitorSettingsSupportSource(
@@ -210,9 +210,9 @@ public class MonitorSettingsSupportSource(
     public val automaticReports: Boolean? = null, public val available: Boolean = false,
     public val automaticHelp: String = "", public val unavailableHelp: String = "",
     public val setAutomaticReports: ((Boolean) -> Unit)? = null,
-    public val reportTitle: String = "Report a problem",
-    public val reportHelp: String = "Tell us what happened in the app. Choose whether to include technical details and an email for a reply.",
-    public val reportActionTitle: String = "Open",
+    public val reportTitle: String = "报告问题",
+    public val reportHelp: String = "请描述使用中遇到的问题，可附上技术信息和回复邮箱。",
+    public val reportActionTitle: String = "打开",
     public val status: MonitorReportStatus? = null, public val discard: (() -> Unit)? = null,
     public val actions: List<MonitorSupportAction> = emptyList(),
     public val sourceUrl: String? = null,
@@ -241,7 +241,7 @@ public class MonitorSettingsSupportSource(
 public class MonitorSettingsDiagnosticsSource(
     public val save: () -> Unit,
     public val incidents: FeedIncidentRuntime,
-    public val deleteHelp: String = "Remove saved feed reports from this phone. Connection logs remain. Turn off automatic reporting to clear pending uploads. Reports already sent cannot be removed here.",
+    public val deleteHelp: String = "删除本机保存的图传报告，保留连接日志。关闭自动报告可清除待上传项目，已发送的报告无法在此删除。",
 )
 public data class MonitorSettingsInformationSource(
     public val theme: String, public val protocolName: String, public val version: String,
@@ -461,12 +461,12 @@ internal fun SettingsLink(source: MonitorSettingsLinkSource) {
     MonitorLinkHealthScale(source.healthTitle, source.healthCaption, source.score ?: 0)
     MonitorConnectionSettings(source.transport, source.transportHelp, source.phase, source.phaseHelp,
         source.network?.takeIf { it.isNotEmpty() }, source.networkHelp)
-    if (source.choices.isNotEmpty() || source.controlHolder != null) MonitorSettingsRowCard("Picture") {
+    if (source.choices.isNotEmpty() || source.controlHolder != null) MonitorSettingsRowCard("画面") {
         source.controlHolder?.let { SettingsReadout(it) }
         source.choices.forEach { SettingsChoice(it) }
     }
     if (source.processingChoices.isNotEmpty() || source.processing.isNotEmpty()) {
-        MonitorSettingsRowCard(source.processingTitle ?: "Processing") {
+        MonitorSettingsRowCard(source.processingTitle ?: "处理") {
             source.processingChoices.forEachIndexed { index, choice ->
                 MonitorSettingsInlineRow(choice.title, choice.help, showTopDivider = index > 0) {
                     MonitorSettingsSegmented(choice.choices.map { it.title },
@@ -487,7 +487,7 @@ internal fun SettingsLink(source: MonitorSettingsLinkSource) {
 internal fun SettingsSharing(source: MonitorSettingsSharingSource?, feedback: () -> Unit) {
     if (source == null) {
         MonitorSettingsRowCard {
-            Text("Coming soon...", style = LiveType.ui(15f, FontWeight.Medium), color = LiveDesign.muted,
+            Text("即将推出…", style = LiveType.ui(15f, FontWeight.Medium), color = LiveDesign.muted,
                 modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp, horizontal = 2.dp))
         }
         return
@@ -539,29 +539,29 @@ internal fun SettingsSharing(source: MonitorSettingsSharingSource?, feedback: ()
 @Composable
 internal fun SettingsGyro(source: MonitorSettingsGyroSource?, feedback: () -> Unit) {
     source?.let { gyro ->
-        MonitorSettingsRowCard("Gyro logging") {
+        MonitorSettingsRowCard("陀螺仪记录") {
             for (row in monitorSettingsGyroRows(gyro)) when (row) {
-                MonitorSettingsGyroRow.LOGGING -> MonitorSettingsSwitchInlineRow("Log gyro with camera recordings", gyro.enabled,
-                    help = "Mount this phone firmly to the camera. Synchronize exported logs in Gyroflow.",
+                MonitorSettingsGyroRow.LOGGING -> MonitorSettingsSwitchInlineRow("随相机录制陀螺仪数据", gyro.enabled,
+                    help = "请将手机牢固安装在相机上，并在 Gyroflow 中同步导出的日志。",
                     showTopDivider = false) {
                     if (gyro.available) { feedback(); gyro.setEnabled(!gyro.enabled) }
                 }
-                MonitorSettingsGyroRow.STATUS -> MonitorSettingsInlineRow("Status", null) {
+                MonitorSettingsGyroRow.STATUS -> MonitorSettingsInlineRow("状态", null) {
                     MonitorSettingsValueText(gyro.status)
                 }
                 MonitorSettingsGyroRow.MOUNT -> gyro.configureMount?.let { configureMount ->
-                    MonitorSettingsInlineRow("Phone mount",
-                        "Choose the phone's position relative to the camera. Keep the mount unchanged during a take; rotating the whole rig needs no new selection.") {
+                    MonitorSettingsInlineRow("手机安装方向",
+                        "选择手机相对相机的安装方向。单条拍摄期间请勿改变安装位置；转动整套设备无需重新选择。") {
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically) {
                             gyro.mountName?.let { MonitorSettingsValueText(it) }
-                            MonitorSettingsActionPill("Configure", onClick = configureMount)
+                            MonitorSettingsActionPill("设置", onClick = configureMount)
                         }
                     }
                 }
                 MonitorSettingsGyroRow.CALIBRATE -> gyro.calibrate?.let { calibrate ->
                     MonitorSettingsInlineRow(GyroCopy.settingsCalibrate, null) {
-                        MonitorSettingsActionPill("Open", onClick = { feedback(); calibrate() })
+                        MonitorSettingsActionPill("打开", onClick = { feedback(); calibrate() })
                     }
                 }
             }
@@ -583,9 +583,9 @@ internal fun SettingsControls(source: MonitorSettingsControlsSource, feedback: (
     val shutter = source.shutter
     val rotation = source.autoRotateRow
     MonitorInputOrientationSettings(shutter?.enabled, shutter?.setEnabled,
-        remoteTitle = shutter?.title ?: "Remote shutter", remoteCaption = shutter?.caption,
+        remoteTitle = shutter?.title ?: "快门遥控", remoteCaption = shutter?.caption,
         autoRotateFeed = rotation?.enabled, onAutoRotateFeed = rotation?.setEnabled,
-        rotationTitle = rotation?.title ?: "Auto-Rotate Feed", rotationHelp = rotation?.help.orEmpty(),
+        rotationTitle = rotation?.title ?: "自动旋转取景画面", rotationHelp = rotation?.help.orEmpty(),
         feedback = feedback)
     val motion = source.motion ?: return
     motion.sensitivity?.let { MonitorGimbalSettings(it) }
@@ -600,13 +600,13 @@ internal fun SettingsControls(source: MonitorSettingsControlsSource, feedback: (
 @Composable
 internal fun SettingsStorage(configuration: MonitorOperatorSettingsConfiguration) {
     configuration.gyro?.let { gyro ->
-        MonitorSettingsRowCard("Gyro logs") {
-            MonitorSettingsInlineRow("Saved motion logs",
+        MonitorSettingsRowCard("陀螺仪日志") {
+            MonitorSettingsInlineRow("已保存的运动日志",
                 if (gyro.configureMount == null)
-                    "Share a log with the matching camera video, then select its lens and mount orientation in Gyroflow."
-                else "Share a log with the matching camera video, then select its lens in Gyroflow. A configured phone mount is included in each new log.",
+                    "将日志与对应视频一同导入 Gyroflow，然后选择镜头和安装方向。"
+                else "将日志与对应视频一同导入 Gyroflow，然后选择镜头。新日志将包含已设置的手机安装方向。",
                 showTopDivider = false) {
-                MonitorSettingsActionPill("Open", onClick = gyro.openLogs)
+                MonitorSettingsActionPill("打开", onClick = gyro.openLogs)
             }
         }
     }
@@ -640,7 +640,7 @@ internal fun SettingsSystem(configuration: MonitorOperatorSettingsConfiguration,
             delete = {
                 diagnostics.incidents.deleteStoredReports { deleted ->
                     Toast.makeText(context,
-                        if (deleted) "Saved feed reports deleted" else "Couldn't delete saved feed reports. Please try again.",
+                        if (deleted) "已删除图传报告" else "无法删除图传报告，请重试。",
                         Toast.LENGTH_LONG).show()
                 }
             })
@@ -667,7 +667,7 @@ internal fun SettingsSystem(configuration: MonitorOperatorSettingsConfiguration,
 }
 
 /** The placeholder an empty passcode field shows, as on iOS (`SecureField("Optional")`). */
-internal const val SETTINGS_PASSCODE_PLACEHOLDER = "Optional"
+internal const val SETTINGS_PASSCODE_PLACEHOLDER = "选填"
 
 /**
  * The watcher passcode entry: an outlined field with a placeholder, so an empty code is still a

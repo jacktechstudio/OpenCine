@@ -70,9 +70,9 @@ object LutLookResolver {
         source: LutLookSource,
     ): String {
         val title = LutCatalog.titleFor(selection)
-        if (!enabled) return "Off · $title"
+        if (!enabled) return "关 · $title"
         if (selection == LutCatalog.AUTO || selection == LutCatalog.OFFICIAL_AUTO) {
-            return "Auto · ${sourceTitle(source)}"
+            return "自动 · ${sourceTitle(source)}"
         }
         return title
     }
@@ -86,22 +86,22 @@ object LutLookResolver {
                 val official =
                     LutCatalog.officialCameraCubes.any { it.fileName == source.fileName } ||
                         cameraLooks.any { it.fileName == source.fileName }
-                if (official) "Applying official $title" else "Applying $title"
+                if (official) "正在应用官方 LUT：$title" else "正在应用 LUT：$title"
             }
-            is LutLookSource.Custom -> "Applying ${LutCatalog.displayName(source.fileName)}"
-            is LutLookSource.Creative -> "Applying ${source.name}"
+            is LutLookSource.Custom -> "正在应用 ${LutCatalog.displayName(source.fileName)}"
+            is LutLookSource.Creative -> "正在应用 ${sourceTitle(source)}"
         }
 
     fun sourceTitle(source: LutLookSource): String =
         when (source) {
-            LutLookSource.Off -> "Off"
+            LutLookSource.Off -> "关"
             is LutLookSource.Asset ->
                 source.title
                     ?: LutCatalog.officialBuiltInLooks.firstOrNull { it.fileName == source.fileName }?.title
                     ?: LutCatalog.officialCameraCubes.firstOrNull { it.fileName == source.fileName }?.title
                     ?: LutCatalog.displayName(source.fileName)
             is LutLookSource.Custom -> LutCatalog.displayName(source.fileName)
-            is LutLookSource.Creative -> source.name
+            is LutLookSource.Creative -> LutCatalog.creative.firstOrNull { LutCatalog.creativeName(it.id) == source.name }?.title ?: source.name
         }
 
     /** Manual conversion changes the cube's exposure math, never source metering metadata. */

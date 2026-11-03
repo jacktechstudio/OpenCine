@@ -73,11 +73,11 @@ object MonitorLevelGeometry {
     fun label(value: Double?, unknownLabel: String = "?"): String =
         if (value == null) unknownLabel else String.format(Locale.ROOT, "%+.1f°", if (abs(value) < 0.05) 0.0 else value)
 
-    fun accessibilityLabel(display: MonitorLevelDisplay, noDataLabel: String = "No level data"): String = when (display) {
-        MonitorLevelDisplay.Unavailable -> "Level, $noDataLabel"
-        is MonitorLevelDisplay.Gauges -> String.format(Locale.ROOT, "Level, roll %+.1f°, tilt %+.1f°", display.rollDeg, display.tiltDeg)
-        is MonitorLevelDisplay.Bubble -> String.format(Locale.ROOT, "Level, off plumb %+.1f° / %+.1f°", display.xDeg, display.yDeg)
-        is MonitorLevelDisplay.Horizon -> String.format(Locale.ROOT, "Level, horizon roll %+.1f°", display.rollDeg)
+    fun accessibilityLabel(display: MonitorLevelDisplay, noDataLabel: String = "无水平仪数据"): String = when (display) {
+        MonitorLevelDisplay.Unavailable -> "水平仪，$noDataLabel"
+        is MonitorLevelDisplay.Gauges -> String.format(Locale.ROOT, "水平仪，横滚 %+.1f°，俯仰 %+.1f°", display.rollDeg, display.tiltDeg)
+        is MonitorLevelDisplay.Bubble -> String.format(Locale.ROOT, "水平仪，垂直偏差 %+.1f° / %+.1f°", display.xDeg, display.yDeg)
+        is MonitorLevelDisplay.Horizon -> String.format(Locale.ROOT, "水平仪，横滚 %+.1f°", display.rollDeg)
     }
 }
 
@@ -89,7 +89,7 @@ fun MonitorLevelOverlay(
     viewportDp: MonitorScopeRect,
     portrait: Boolean,
     modifier: Modifier = Modifier,
-    noDataLabel: String = "No level data",
+    noDataLabel: String = "无水平仪数据",
     unknownLabel: String = "?",
 ) {
     val measurer = rememberTextMeasurer()

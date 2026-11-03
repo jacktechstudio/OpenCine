@@ -9,9 +9,9 @@ class MonitorSettingsCopyTest {
     @Test fun reliabilityReportsPrivacyStatesTheInstallIdentifierAndTheTogglePlace() {
         val text = MonitorSettingsCopy.reliabilityReportsPrivacy
         listOf(
-            "Optional reliability reports\n", "through Sentry",
-            "random install identifier that is created when you opt in and deleted when you opt out",
-            "Operator Setup > System", "deletes the install identifier", "exclude all images",
+            "可选的可靠性报告\n", "通过 Sentry",
+            "随机安装标识在开启报告时创建，关闭时删除",
+            "监看设置 > 系统", "删除安装标识", "不含图像",
         ).forEach { assertTrue(text.contains(it), it) }
         assertFalse(text.contains('—'), "Operator copy never uses the em dash")
     }

@@ -26,7 +26,7 @@ class MonitorAssistCapabilitiesTest {
         assertTrue(camera.offers(MonitorAssistTool.EV, photography = true))
         assertFalse(camera.offers(MonitorAssistTool.ND, photography = true))
         assertTrue(camera.hasLevelStyle)
-        assertEquals(listOf("Horizon", "Gauge"), camera.levelStyles.map { it.title })
+        assertEquals(listOf("水平线", "双轴水平仪"), camera.levelStyles.map { it.title })
         assertEquals(MonitorLevelStyle.GAUGE, MonitorLevelStyle.fromStoredName("GAUGE"))
         assertNull(MonitorLevelStyle.fromStoredName("Gauge"))
     }

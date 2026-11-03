@@ -46,7 +46,7 @@ data class MonitorStatusPresentation(
     val clock: String get() = timecode ?: timecodePlaceholder
     val recordingLabel: String get() = when (recording) { true -> "REC"; false -> "STBY"; null -> "--" }
     val recordingAccessibilityLabel: String get() = when (recording) {
-        true -> "Recording"; false -> "Standby"; null -> "Recording state unknown"
+        true -> "正在录制"; false -> "待机"; null -> "录制状态未知"
     }
     val elapsedLabel: String get() = elapsedSeconds?.coerceAtLeast(0)?.let {
         String.format(Locale.ROOT, "%02d:%02d", it / 60, it % 60)
@@ -54,10 +54,10 @@ data class MonitorStatusPresentation(
     val elapsedAccessibilityLabel: String get() = elapsedSeconds?.coerceAtLeast(0)?.let {
         val minutes = it / 60
         val seconds = it % 60
-        val m = if (minutes == 1) "1 minute" else "$minutes minutes"
-        val s = if (seconds == 1) "1 second" else "$seconds seconds"
+        val m = "$minutes 分钟"
+        val s = "$seconds 秒"
         when { minutes == 0 -> s; seconds == 0 -> m; else -> "$m $s" }
-    } ?: "Elapsed time unknown"
+    } ?: "已录制时长未知"
 }
 
 /** Integrations fill format, color, mode and telemetry readouts; common status owns orientation. */
@@ -219,7 +219,7 @@ fun MonitorClock(
         .let { if (fontSizeOverride != null) it.copy(letterSpacing = (LocalMonitorPortraitPrimaryFit.current?.tracking ?: 0f).sp) else it },
         maxLines = 1, softWrap = false,
         modifier = modifier.then(if (fontSizeOverride != null) Modifier.wrapContentWidth(unbounded = true) else Modifier)
-            .clearAndSetSemantics { contentDescription = timecode?.let { "Timecode $it" } ?: "Timecode not available" })
+            .clearAndSetSemantics { contentDescription = timecode?.let { "时间码 $it" } ?: "无时间码" })
 }
 
 /** Camera telemetry supplies elapsed time. Unknown recording never displays Standby. */
@@ -229,9 +229,9 @@ fun MonitorRecordingReadout(status: MonitorStatusPresentation, modifier: Modifie
     Row(modifier.background(Color.Black.copy(alpha = .65f), RoundedCornerShape(50))
         .clearAndSetSemantics {
             contentDescription = if (status.recording != null && (status.recording == true || (status.elapsedSeconds ?: 0) > 0))
-                "${status.recordingAccessibilityLabel}, ${status.elapsedAccessibilityLabel}"
+                "${status.recordingAccessibilityLabel}，${status.elapsedAccessibilityLabel}"
                 else status.recordingAccessibilityLabel
-            if (status.elapsedSeconds == null) stateDescription = "Elapsed time unknown"
+            if (status.elapsedSeconds == null) stateDescription = "已录制时长未知"
         }.padding(horizontal = (fit?.recordingPadding ?: 8f).dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy((fit?.recordingSpacing ?: 5f).dp)) {

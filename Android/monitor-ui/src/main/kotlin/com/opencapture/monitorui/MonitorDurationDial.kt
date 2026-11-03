@@ -157,7 +157,7 @@ fun MonitorDurationDial(
         modifier.size(MonitorDurationDialMetrics.WIDTH.dp, MonitorDurationDialMetrics.HEIGHT.dp)
             .background(ColorWhite07, RoundedCornerShape(8.dp))
             .semantics {
-                contentDescription = "Duration"
+                contentDescription = "时长"
                 stateDescription = formatter(displayValue)
                 if (!enabled) disabled()
                 progressBarRangeInfo = ProgressBarRangeInfo(
@@ -168,10 +168,10 @@ fun MonitorDurationDial(
                         emit(MonitorDurationDialMetrics.snap(requested.toDouble(), range, step), generation); true
                     }
                     customActions = listOf(
-                        CustomAccessibilityAction("Increase duration") {
+                        CustomAccessibilityAction("延长时长") {
                             emit(currentValue + scale.step, generation); true
                         },
-                        CustomAccessibilityAction("Decrease duration") {
+                        CustomAccessibilityAction("缩短时长") {
                             emit(currentValue - scale.step, generation); true
                         },
                     )

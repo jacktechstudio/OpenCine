@@ -638,7 +638,7 @@ public data class MonitorMediaShareIntentSpec(
                 clipDataLabel = if (single) first.displayName else batchLabel,
                 grantsReadUriPermission = true,
                 chooserTitle =
-                    if (single) "Share ${first.displayName}" else "Share ${shares.size} items",
+                    if (single) "分享 ${first.displayName}" else "分享 ${shares.size} 项",
                 text = metadataText?.takeIf { it.isNotBlank() },
             )
         }

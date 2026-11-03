@@ -24,8 +24,8 @@ public fun MonitorMediaDeletionOverlay(progress: MonitorMediaDeletionProgress, d
         Column(Modifier.mediaGlass(RoundedCornerShape(16.dp))
             .padding(horizontal = 24.dp, vertical = 20.dp), horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Deleting ${progress.selectedCount} ${if (progress.selectedCount == 1) "item" else "items"}…", color = LiveDesign.text)
-            Text(detail ?: "${progress.completed} of ${progress.total}", color = LiveDesign.muted)
+            Text("正在删除 ${progress.selectedCount} 项素材…", color = LiveDesign.text)
+            Text(detail ?: "${progress.completed}/${progress.total}", color = LiveDesign.muted)
             LinearProgressIndicator(progress = {
                 if (progress.total > 0) progress.completed.toFloat() / progress.total else 0f
             })

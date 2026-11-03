@@ -6,9 +6,9 @@ package com.opencapture.monitorui
  */
 enum class MonitorFalseColorSelection(val persisted: String, val menuLabel: String) {
     SCENE_STOPS("SceneStops", "CineStop"),
-    STOPS("CineStop", "Video"),
+    STOPS("CineStop", "视频"),
     IRE("IRE", "IRE"),
-    LIMITS("Limits", "Limits"),
+    LIMITS("Limits", "限幅"),
     ;
 
     val usesSceneStops: Boolean get() = this == SCENE_STOPS
@@ -23,9 +23,9 @@ enum class MonitorFalseColorSelection(val persisted: String, val menuLabel: Stri
 
         fun fromMenuLabel(label: String): MonitorFalseColorSelection =
             when (label) {
-                "Video" -> STOPS
+                "Video", STOPS.menuLabel -> STOPS
                 "IRE" -> IRE
-                "Limits" -> LIMITS
+                "Limits", LIMITS.menuLabel -> LIMITS
                 else -> SCENE_STOPS
             }
     }

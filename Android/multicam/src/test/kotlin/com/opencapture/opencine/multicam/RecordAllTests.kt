@@ -53,8 +53,8 @@ class RecordAllTests {
         while (cameras.any { it.wire.isEmpty() }) yield()
         advance(cameras, 1.seconds)
         val result = running.await()!!
-        assertEquals("Recording on 2 cameras", RecordAll.summary(result, allMatch = true))
-        assertEquals("1 of 2 confirmed · check camera tiles",
+        assertEquals("2 个机位正在录制", RecordAll.summary(result, allMatch = true))
+        assertEquals("1/2 个机位已确认 · 请检查各机位画面",
             RecordAll.summary(result.copy(outcomes = result.outcomes.toMutableMap().apply {
                 put(cameras[1].id, TargetOutcome.TimedOut)
             }), allMatch = false))
@@ -63,13 +63,13 @@ class RecordAllTests {
     @Test
     fun theOperatorsWordsForEachOutcome() {
         val start = RecordDirection.START
-        assertEquals("Recording", RecordAll.note(TargetOutcome.Confirmed, start))
-        assertEquals("Recording stopped", RecordAll.note(TargetOutcome.Confirmed, RecordDirection.STOP))
-        assertEquals("Recording command rejected · check camera",
+        assertEquals("录制中", RecordAll.note(TargetOutcome.Confirmed, start))
+        assertEquals("录制已停止", RecordAll.note(TargetOutcome.Confirmed, RecordDirection.STOP))
+        assertEquals("相机拒绝录制指令 · 请检查相机",
             RecordAll.note(TargetOutcome.Rejected(CommandRejection.CameraRefused), start))
-        assertEquals("Not sent · check camera", RecordAll.note(TargetOutcome.Failed(CommandFailure.NOT_SENT), start))
-        assertEquals("No confirmation · check camera", RecordAll.note(TargetOutcome.TimedOut, start))
+        assertEquals("指令未发送 · 请检查相机", RecordAll.note(TargetOutcome.Failed(CommandFailure.NOT_SENT), start))
+        assertEquals("相机未确认 · 请检查相机", RecordAll.note(TargetOutcome.TimedOut, start))
         assertNull(RecordAll.note(TargetOutcome.Superseded, start))
-        assertEquals("Starting cameras…", RecordAll.progress(start))
+        assertEquals("正在开始录制…", RecordAll.progress(start))
     }
 }

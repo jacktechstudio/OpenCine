@@ -62,9 +62,9 @@ public fun AssistAudioOverlay(state: MonitorAssistState, levels: MonitorAudioMet
     AssistAudioPanel(state, base, canvas, placement, locked, null, panelPlacement, feed,
         portraitOverride) {
         Column(Modifier.fillMaxSize().clearAndSetSemantics {
-            contentDescription = "Audio levels"
+            contentDescription = "音频电平"
             if (spokenValue != null) stateDescription = spokenValue
-            else if (levels == null) stateDescription = "Audio levels unavailable"
+            else if (levels == null) stateDescription = "无法读取音频电平"
         }, horizontalAlignment = Alignment.CenterHorizontally) {
             Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 // The floor is a drawing baseline only; absence is explicitly labelled no data.

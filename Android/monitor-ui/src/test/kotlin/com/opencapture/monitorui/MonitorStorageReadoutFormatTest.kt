@@ -9,10 +9,10 @@ class MonitorStorageReadoutFormatTest {
         assertEquals("\u2014", MonitorStorageReadoutFormat.capacity(-1))
         assertEquals("0 GB", MonitorStorageReadoutFormat.capacity(0))
         assertEquals("2048 GB", MonitorStorageReadoutFormat.capacity(2048))
-        assertEquals("\u2014 Min", MonitorStorageReadoutFormat.remainingMinutes(null))
-        assertEquals("\u2014 Min", MonitorStorageReadoutFormat.remainingMinutes(-1))
-        assertEquals("0 Min", MonitorStorageReadoutFormat.remainingMinutes(0))
-        assertEquals("180 Min", MonitorStorageReadoutFormat.remainingMinutes(180))
+        assertEquals("\u2014 分钟", MonitorStorageReadoutFormat.remainingMinutes(null))
+        assertEquals("\u2014 分钟", MonitorStorageReadoutFormat.remainingMinutes(-1))
+        assertEquals("0 分钟", MonitorStorageReadoutFormat.remainingMinutes(0))
+        assertEquals("180 分钟", MonitorStorageReadoutFormat.remainingMinutes(180))
     }
 
     @Test fun portraitCapacityKeepsNearestWholeUnitAndCompactUppercaseUnit() {
@@ -33,10 +33,10 @@ class MonitorStorageReadoutFormatTest {
      * II-130, PIA-252, PAA-248).
      */
     @Test fun oneTapStepsFromFreeSpaceToPercentThenRecordingTime() {
-        assertEquals(listOf("47%", "~47 Min"), MonitorStorageReadoutFormat.alternatives("47%", "~47 Min", photo = false))
+        assertEquals(listOf("47%", "~47 分钟"), MonitorStorageReadoutFormat.alternatives("47%", "~47 分钟", photo = false))
         assertEquals(listOf("47%"), MonitorStorageReadoutFormat.alternatives("47%", null, photo = false))
-        assertEquals(listOf("47%"), MonitorStorageReadoutFormat.alternatives("47%", "~47 Min", photo = true))
-        assertEquals(emptyList(), MonitorStorageReadoutFormat.alternatives(null, "~47 Min", photo = true))
+        assertEquals(listOf("47%"), MonitorStorageReadoutFormat.alternatives("47%", "~47 分钟", photo = true))
+        assertEquals(emptyList(), MonitorStorageReadoutFormat.alternatives(null, "~47 分钟", photo = true))
         assertEquals(emptyList(), MonitorStorageReadoutFormat.alternatives(null, null, photo = false))
     }
 

@@ -53,7 +53,7 @@ fun MonitorMediaDeliveryProgressPanel(
             Box(Modifier.fillMaxWidth().height(4.dp).clip(barShape)
                 .background(MonitorPalette.border.copy(alpha = .55f))
                 // Announces the status line, speed included ("Caching from camera 18% · 42 MB/s").
-                .semantics { contentDescription = "Progress"; stateDescription = value.status }
+                .semantics { contentDescription = "进度"; stateDescription = value.status }
                 .testTag("monitor.share.progress.bar")) {
                 Box(Modifier.fillMaxWidth(value.fraction.toFloat().coerceIn(0f, 1f))
                     .height(4.dp).background(MonitorPalette.accent))
@@ -62,17 +62,17 @@ fun MonitorMediaDeliveryProgressPanel(
         details.filename?.let { filename ->
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.testTag("monitor.share.progress.filename")) {
-                Text("File", style = MonitorTypography.text(10f, FontWeight.SemiBold), color = MonitorPalette.muted)
+                Text("文件", style = MonitorTypography.text(10f, FontWeight.SemiBold), color = MonitorPalette.muted)
                 Text(filename, Modifier.weight(1f), style = MonitorTypography.readout(11f),
                     color = MonitorPalette.text, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
         details.destination?.let { destination ->
-            Text("Destination: $destination", style = MonitorTypography.text(11f), color = MonitorPalette.muted,
+            Text("目标位置：$destination", style = MonitorTypography.text(11f), color = MonitorPalette.muted,
                 modifier = Modifier.testTag("monitor.share.progress.destination"))
         }
         onCollapse?.let { collapse ->
-            Text("Collapse", style = MonitorTypography.text(12f, FontWeight.SemiBold), color = MonitorPalette.accent,
+            Text("收起", style = MonitorTypography.text(12f, FontWeight.SemiBold), color = MonitorPalette.accent,
                 modifier = Modifier.align(Alignment.End).monitorChromeClickable(onClick = collapse)
                     .testTag("monitor.share.progress.collapse"))
         }
@@ -94,11 +94,11 @@ internal fun MonitorMediaDeliveryProgressContent(
         } else {
             ProgressStatus(value, showsInlineProgress,
                 Modifier.weight(1f).monitorChromeClickable(onClick = onExpand)
-                    .semantics { onClick(label = "Expand delivery progress") { onExpand(); true } }
+                    .semantics { onClick(label = "展开导出进度") { onExpand(); true } }
                     .testTag("monitor.share.progress.expand"), destinationIcon)
         }
         onCancel?.let {
-            Text("Cancel", style = MonitorTypography.text(11f, FontWeight.SemiBold), color = MonitorPalette.muted,
+            Text("取消", style = MonitorTypography.text(11f, FontWeight.SemiBold), color = MonitorPalette.muted,
                 modifier = Modifier.monitorChromeClickable(onClick = it))
         }
     }

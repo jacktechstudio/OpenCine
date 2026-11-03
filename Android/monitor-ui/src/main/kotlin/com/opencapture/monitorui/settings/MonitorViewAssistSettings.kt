@@ -177,7 +177,7 @@ private fun AssistSettingsCard(section: MonitorAssistSettingsSection): Unit {
         else -> error("No settings menu for ${section.tool}")
     }
     Column(Modifier.testTag("settings.assist.$tag")) {
-        MonitorSettingsRowCard(title = if (section.tool == MonitorAssistTool.PARADE) "Parade" else section.tool.title,
+        MonitorSettingsRowCard(title = if (section.tool == MonitorAssistTool.PARADE) "分量波形" else section.tool.title,
             onReset = section.reset) { section.Menu() }
     }
 }

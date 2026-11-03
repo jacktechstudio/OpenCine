@@ -533,8 +533,8 @@ fun MonitorPlaybackScreen(value: MonitorPlaybackPresentation, actions: MonitorPl
                                 ?: if (progress != null) {
                                     MediaTransferRate.caption(progress, value.transferRate)
                                         ?.takeIf { value.transferRate != null }
-                                        ?.let { "Buffering from camera…\n$it" } ?: "Buffering from camera…"
-                                } else "Preparing playback…",
+                                        ?.let { "正在缓冲相机画面…\n$it" } ?: "正在缓冲相机画面…"
+                                } else "正在准备回放…",
                             textAlign = TextAlign.Center,
                             color = MonitorPalette.muted,
                             style = MonitorTypography.text(14f, FontWeight.Medium),
@@ -917,7 +917,7 @@ fun MonitorConfirmPopup(
     onClickFeedback: () -> Unit = LocalMonitorPlaybackSelectionFeedback.current,
     /** A line under the title that explains the consequence. */
     message: String? = null,
-    cancelTitle: String = "Cancel",
+    cancelTitle: String = "取消",
     /** What TalkBack says for each action; the visible titles are the drawing alone (ZAB-443). */
     cancelDescription: String = cancelTitle,
     confirmDescription: String = confirmTitle,

@@ -62,9 +62,9 @@ class CaptureCodecColorChoices(
     /** The popup header: names only the sections the camera offers. */
     val title: String
         get() = when {
-            showsCodec && showsColor -> "CODEC · COLOR"
-            showsCodec -> "CODEC"
-            else -> "COLOR"
+            showsCodec && showsColor -> "编码 · 色彩"
+            showsCodec -> "编码"
+            else -> "色彩"
         }
 
     val codecEditable: Boolean get() = codecs.any { it.isEditable }

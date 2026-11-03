@@ -5,9 +5,9 @@ import kotlin.math.roundToInt
 
 public enum class MonitorDeliveryDestination {
     NATIVE_SHARE, REMOTE_UPLOAD;
-    public fun title(remoteDisplayName: String?): String = if (this == NATIVE_SHARE) "Share" else remoteDisplayName ?: "Upload"
-    public fun subtitle(remoteDisplayName: String?, nativeShareSubtitle: String = "Share with other apps"): String =
-        if (this == NATIVE_SHARE) nativeShareSubtitle else "Upload to your ${remoteDisplayName ?: "remote"} project"
+    public fun title(remoteDisplayName: String?): String = if (this == NATIVE_SHARE) "分享" else remoteDisplayName ?: "上传"
+    public fun subtitle(remoteDisplayName: String?, nativeShareSubtitle: String = "分享至其他应用"): String =
+        if (this == NATIVE_SHARE) nativeShareSubtitle else "上传到${remoteDisplayName ?: "远程"}项目"
 }
 public enum class MonitorDeliveryPostExportAction { SYSTEM_SHARE, SAVE_TO_PHOTOS }
 public data class MonitorDeliveryExportConfiguration<C, F>(
@@ -31,18 +31,18 @@ public data class MonitorDeliveryBatchProgress(
     public val showsBusySpinner: Boolean get() = isPreparingClip || isSwitchingNetworks || stage == Stage.SAVING || stage == Stage.AWAITING_PHOTOS_ACCESS
     public val percentText: String get() = if (isPreparingClip) "" else "${(overallFraction * 100).roundToInt()}%"
     public fun statusLine(uploadCaption: String? = null): String {
-        if (isSwitchingNetworks) return "Switching networks…"
-        if (stage == Stage.AWAITING_PHOTOS_ACCESS) return "Waiting for Photos access…"
-        if (stage == Stage.SAVING) return "Saving to Photos…"
+        if (isSwitchingNetworks) return "正在切换网络…"
+        if (stage == Stage.AWAITING_PHOTOS_ACCESS) return "正在等待相册访问权限…"
+        if (stage == Stage.SAVING) return "正在存入相册…"
         val verb = if (isCaching) {
-            if (isPreparingClip) "Caching from camera…" else "Caching from camera"
+            if (isPreparingClip) "正在从相机缓存素材…" else "从相机缓存素材"
         } else if (destination == MonitorDeliveryDestination.NATIVE_SHARE) {
-            if (clipFraction > 0 && clipFraction < 0.95) "Exporting" else if (isPreparingClip) "Preparing…" else "Preparing to share"
+            if (clipFraction > 0 && clipFraction < 0.95) "正在导出" else if (isPreparingClip) "正在准备…" else "正在准备分享"
         } else {
-            if (clipFraction > 0 && clipFraction < 0.45) "Exporting" else if (isPreparingClip) "Preparing…" else uploadCaption ?: this.uploadCaption ?: "Uploading"
+            if (clipFraction > 0 && clipFraction < 0.45) "正在导出" else if (isPreparingClip) "正在准备…" else uploadCaption ?: this.uploadCaption ?: "正在上传"
         }
         // Before the first byte the only reading is Stalled: it still shows.
-        if (isCaching && isPreparingClip && transferRate != null) return "Caching from camera · $transferRate"
+        if (isCaching && isPreparingClip && transferRate != null) return "正在从相机缓存素材 · ${transferRate}"
         if (isPreparingClip) return verb
         if (isCaching && transferRate != null) return "$verb $percentText · $transferRate"
         return "$verb $percentText"
@@ -82,7 +82,7 @@ public class MonitorDeliveryPhotosAuthorizationService(
  * recorded.
  */
 public class MonitorDeliveryUploadHistory<R>(public val wasUploaded: (R) -> Boolean, public val recordUploaded: (R) -> Unit)
-public class MonitorDeliveryUploadService<A>(public val progressCaption: String = "Uploading", public val upload: suspend (A, (Double) -> Unit) -> Unit)
+public class MonitorDeliveryUploadService<A>(public val progressCaption: String = "正在上传", public val upload: suspend (A, (Double) -> Unit) -> Unit)
 public class MonitorDeliveryInternetService<H>(
     /** A new route lease, or null when another hop holds the route (never stolen). */
     public val needsHop: () -> Boolean, public val begin: () -> H?, public val owns: (H) -> Boolean,
@@ -102,26 +102,26 @@ public data class MonitorDeliveryBatchCounts(
  * access is asked before any cache or export work, and the outcome counts every item.
  */
 public object MonitorDeliveryBatchPolicy {
-    public fun cacheFailure(count: Int): String = "Couldn't cache $count clip(s) from the camera. Check the connection and try again."
+    public fun cacheFailure(count: Int): String = "未能从相机缓存 ${count} 个片段。请检查连接后重试。"
     /** The link died mid-transfer: the camera stopped answering while caching. */
     public fun cameraStoppedResponding(count: Int): String =
-        "The camera stopped responding while caching $count clip(s). Reconnect and try again."
-    public const val EMPTY_SELECTION: String = "Select at least one clip."
+        "缓存 ${count} 个片段时相机无响应。请重新连接后重试。"
+    public const val EMPTY_SELECTION: String = "请至少选择一个片段。"
     public const val INTERNET_FAILURE: String =
-        "Couldn't reach the internet after leaving the camera's Wi-Fi. Check cellular or home Wi-Fi and try again."
+        "断开相机 Wi-Fi 后未能联网。请检查移动数据或其他 Wi-Fi 后重试。"
     /** The note shared beside a partial native share, or null when every item was prepared. */
     public fun nativeSummary(counts: MonitorDeliveryBatchCounts): String? = buildList {
-        if (counts.failed > 0) add("Prepared ${counts.prepared}; ${counts.failed} failed.")
-        if (counts.uncached > 0) add("${counts.uncached} clip(s) couldn't be cached from the camera.")
+        if (counts.failed > 0) add("已准备 ${counts.prepared} 项，${counts.failed} 项失败。")
+        if (counts.uncached > 0) add("有 ${counts.uncached} 个片段未能从相机缓存。")
     }.joinToString(" ").ifEmpty { null }
     /** A Photos save that saved nothing or rejected an item fails with its exact counts. */
     public fun photosFailure(saved: Int, failed: Int): String? =
-        if (saved == 0 || failed > 0) "Saved $saved; $failed couldn't be saved to Photos." else null
+        if (saved == 0 || failed > 0) "已保存 ${saved} 项，${failed} 项未能存入相册。" else null
 }
 
 public fun <A> MonitorDeliveryBatchOutcome<A>.completion(): MonitorDeliveryCompletion<MonitorDeliveryBatchOutcome<A>, MonitorDeliveryShareFiles<A>> = when (this) {
     is MonitorDeliveryBatchOutcome.Share -> MonitorDeliveryCompletion(this, share = MonitorDeliveryShareFiles(urls, metadataText, stagingCleanupURL))
-    is MonitorDeliveryBatchOutcome.SavedToPhotos -> MonitorDeliveryCompletion(this, toast = "Saved $count clip${if (count == 1) "" else "s"} to Photos")
+    is MonitorDeliveryBatchOutcome.SavedToPhotos -> MonitorDeliveryCompletion(this, toast = "已将 ${count} 个片段存入相册")
     is MonitorDeliveryBatchOutcome.Uploaded -> MonitorDeliveryCompletion(this, toast = summary)
     is MonitorDeliveryBatchOutcome.Failed -> MonitorDeliveryCompletion(this, toast = message)
 }

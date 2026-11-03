@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 public data class ShellBrand(
     public val name: String,
     /** How nearby cameras are found, under NEARBY ("announcing over Bluetooth"). */
-    public val nearbyNote: String = "announcing over Bluetooth",
+    public val nearbyNote: String = "正在通过蓝牙广播",
     /** Superseded by the integration's [com.opencapture.opencine.core.IntegrationPresentation.namesSetups]; `false` still hides Rename setup. */
     @Deprecated("Integrations declare it: IntegrationPresentation.namesSetups")
     public val renamesSetups: Boolean = true,

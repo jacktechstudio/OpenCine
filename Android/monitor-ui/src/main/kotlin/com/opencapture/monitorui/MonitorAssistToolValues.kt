@@ -23,7 +23,24 @@ enum class MonitorAssistTool {
     ;
 
     val chipLabel: String
-        get() = if (this == DESQ) "DE-SQ" else name
+        get() = when (this) {
+            PEAK -> "峰值"
+            FALSE -> "假色"
+            ZEBRA -> "斑马纹"
+            WAVE -> "波形"
+            PARADE -> "分量"
+            HISTO -> "直方图"
+            VECTOR -> "矢量"
+            LIGHTS -> "剪切"
+            AUDIO -> "电平"
+            GUIDES -> "框线"
+            GRID -> "网格"
+            CROSS -> "十字线"
+            LEVEL -> "水平仪"
+            DESQ -> "还原"
+            MIRROR -> "镜像"
+            LUT, ND, EV -> name
+        }
 
     val label: String
         get() = name
@@ -31,7 +48,7 @@ enum class MonitorAssistTool {
     /** Settings names, matching the shared Swift catalog. */
     val displaySettingsTitle: String
         get() = when (this) {
-            PARADE -> "Parade"
+            PARADE -> "分量波形"
             ND -> "ND"
             else -> title
         }
@@ -40,23 +57,23 @@ enum class MonitorAssistTool {
         get() =
             when (this) {
                 LUT -> "LUT"
-                PEAK -> "Peaking"
-                FALSE -> "False Color"
-                ZEBRA -> "Zebra"
-                WAVE -> "Waveform"
-                PARADE -> "RGB Parade"
-                HISTO -> "Histogram"
-                VECTOR -> "Vectorscope"
-                LIGHTS -> "Traffic Lights"
-                ND -> "ND Suggestion"
-                EV -> "EV Meter"
-                AUDIO -> "Audio Levels"
-                GUIDES -> "Guides"
-                GRID -> "Grid"
-                CROSS -> "Crosshair"
-                LEVEL -> "Level"
-                DESQ -> "Anamorphic Desqueeze"
-                MIRROR -> "Mirror"
+                PEAK -> "峰值对焦"
+                FALSE -> "假色"
+                ZEBRA -> "斑马纹"
+                WAVE -> "波形图"
+                PARADE -> "RGB 分量波形"
+                HISTO -> "直方图"
+                VECTOR -> "矢量示波器"
+                LIGHTS -> "RGB 剪切指示灯"
+                ND -> "ND 滤镜建议"
+                EV -> "曝光指示器"
+                AUDIO -> "音频电平"
+                GUIDES -> "画幅框线"
+                GRID -> "构图网格"
+                CROSS -> "中心十字线"
+                LEVEL -> "电子水平仪"
+                DESQ -> "变形宽银幕还原"
+                MIRROR -> "镜像"
             }
 
     /** The fixed camera EV meter and LEVEL are tap-only toggles. */
@@ -100,6 +117,6 @@ enum class MonitorAssistTool {
         val cleanPinCases: List<MonitorAssistTool> get() = settingsCases.filter { it != EV }
 
         fun fromPersisted(raw: String): MonitorAssistTool? =
-            entries.firstOrNull { it.name == raw || it.chipLabel == raw }
+            if (raw == "DE-SQ") DESQ else entries.firstOrNull { it.name == raw || it.chipLabel == raw }
     }
 }

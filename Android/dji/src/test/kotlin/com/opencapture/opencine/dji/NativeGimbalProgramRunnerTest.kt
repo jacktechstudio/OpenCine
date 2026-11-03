@@ -217,7 +217,7 @@ class NativeGimbalProgramRunnerTest {
             assertEquals(0, targets)
             assertEquals(0, stops, "rebind cleanup must not STOP a replacement connection")
             assertTrue(updates.last().finished)
-            assertEquals("Move interrupted: camera connection changed", updates.last().failure)
+            assertEquals("运动已中断：相机连接已变化", updates.last().failure)
         }
     }
 
@@ -328,7 +328,7 @@ class NativeGimbalProgramRunnerTest {
             assertTrue(zooms.any { kotlin.math.abs(it.first - time) < 1e-7 && it.second == CamFov.pinchLens(factor) },
                 "Saved endpoint $factor must be requested 50 ms before $time + 50 ms")
         }
-        assertTrue(updates.size <= 58, "Zoom adds no 20 Hz UI callbacks")
+        assertTrue(updates.size <= 58, "变焦 adds no 20 Hz UI callbacks")
         assertTrue(updates.none { it.finished || it.failure != null })
     }
 
@@ -418,8 +418,8 @@ class NativeGimbalProgramRunnerTest {
                 assertEquals(listOf(CamFov.LENS_1X), zooms)
                 assertEquals(1, stops)
                 assertTrue(updates.last().finished)
-                assertEquals(if (changeColor) "Zoom moves are unavailable in D-Log2" else
-                    "Saved zoom exceeds the current FORMAT limit", updates.last().failure)
+                assertEquals(if (changeColor) "D-Log2 模式不支持变焦运动" else
+                    "保存的变焦倍率超出当前录制格式的上限", updates.last().failure)
                 tx.through(5.0)
                 assertEquals(1, zooms.size)
             }
@@ -435,7 +435,7 @@ class NativeGimbalProgramRunnerTest {
             val updates = mutableListOf<NativeGimbalProgramRunner.Progress>()
             val runner = NativeGimbalProgramRunner({ tx.now }, tx::schedule,
                 { if (fresh) NativeGimbalFeedback(a, tx.now) else null }, { _, _ -> true }, {},
-                zoomFailure = { if (blockedAtStart) "Zoom moves are unavailable in D-Log2" else null },
+                zoomFailure = { if (blockedAtStart) "D-Log2 模式不支持变焦运动" else null },
                 sendZoom = { _, _ -> zooms++; true }, stopZoom = { zoomStops++ })
             runner.start(GimbalProgram(a, a.copy(zoom = 3.0), durationAB = 1.0)) { updates += it }
             tx.through(0.5)
@@ -462,7 +462,7 @@ class NativeGimbalProgramRunnerTest {
         status = status.copy(colorMode = CameraCommands.COLOR_DLOG2)
         tx.through(4.0)
         assertTrue(updates.last().finished)
-        assertEquals("Zoom moves are unavailable in D-Log2", updates.last().failure)
+        assertEquals("D-Log2 模式不支持变焦运动", updates.last().failure)
     }
 
     @Test fun highRateZoomTracksLinearABCAndLoopLegsAtFiftyHzWithoutExtraUiProgress() {
@@ -507,7 +507,7 @@ class NativeGimbalProgramRunnerTest {
                 assertTrue(CamFov.pinchLens((first.second as NativeProgramZoomCommand.Track).factor) !=
                     CamFov.pinchLens((next.second as NativeProgramZoomCommand.Track).factor))
             }
-            assertTrue(updates.size <= 61, "Zoom adds no 50 Hz UI callbacks")
+            assertTrue(updates.size <= 61, "变焦 adds no 50 Hz UI callbacks")
             assertTrue(updates.none { it.finished || it.failure != null })
             val count = commands.size
             assertTrue(runner.cancel(token))
@@ -565,7 +565,7 @@ class NativeGimbalProgramRunnerTest {
         runner.start(GimbalProgram(a, a.copy(zoom = 3.0), durationAB = 1.0, loop = true)) { updates += it }
         tx.through(3.4)
         assertTrue(updates.last().finished)
-        assertEquals("Move interrupted: camera zoom feedback lost", updates.last().failure)
+        assertEquals("运动已中断：相机变焦反馈丢失", updates.last().failure)
         assertEquals(1, stops)
         val count = commands.size
         tx.through(8.0)
@@ -620,7 +620,7 @@ class NativeGimbalProgramRunnerTest {
         tx.through(5.0)
         assertEquals(2, commands.size)
         assertEquals(1, stops)
-        assertEquals("Move interrupted: zoom command failed", updates.last().failure)
+        assertEquals("运动已中断：变焦指令失败", updates.last().failure)
         assertTrue(updates.last().finished)
     }
 
@@ -639,7 +639,7 @@ class NativeGimbalProgramRunnerTest {
             tx.through(3.0)
             assertEquals(0, targets)
             assertEquals(listOf<NativeProgramZoomCommand>(NativeProgramZoomCommand.Position(3.0)), commands)
-            assertEquals("Move interrupted: camera did not reach the starting zoom", updates.last().failure)
+            assertEquals("运动已中断：相机未到达起始变焦倍率", updates.last().failure)
             assertTrue(updates.last().finished)
             assertEquals(1, stops)
         }

@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 /** Local exposure-meter presentation. The host supplies its exercised reading policy and action. */
 @Composable
 fun MonitorExposureMeterSettings(isOn: Boolean, help: String, onToggle: () -> Unit): Unit {
-    MonitorSettingsRowCard(title = "EV Meter") {
-        MonitorSettingsSwitchInlineRow(title = "Enabled", isOn = isOn, help = help,
+    MonitorSettingsRowCard(title = "曝光指示器") {
+        MonitorSettingsSwitchInlineRow(title = "启用", isOn = isOn, help = help,
             showTopDivider = false, onToggle = onToggle)
     }
 }
@@ -15,11 +15,11 @@ fun MonitorExposureMeterSettings(isOn: Boolean, help: String, onToggle: () -> Un
 @Composable
 fun MonitorLookSettings(look: String, help: String, onOpen: () -> Unit): Unit {
     MonitorSettingsRowCard(title = "LUT") {
-        MonitorSettingsInlineRow(title = "Look", help = help, showTopDivider = false) {
+        MonitorSettingsInlineRow(title = "色彩风格", help = help, showTopDivider = false) {
             MonitorSettingsValueText(value = look)
         }
-        MonitorSettingsInlineRow(title = "Choose look") {
-            MonitorSettingsActionPill(title = "Open", onClick = onOpen)
+        MonitorSettingsInlineRow(title = "选择色彩风格") {
+            MonitorSettingsActionPill(title = "打开", onClick = onOpen)
         }
     }
 }

@@ -93,7 +93,7 @@ class NDFilterRecommendationTest {
         val under = assertNotNull(MonitorNDFilterRecommendation.suggestion(-1.5, none))
         assertEquals(none, under.chipLabel(MonitorNDFilterNotation.FACTOR))
         assertEquals("−1.5", under.chipLabel(MonitorNDFilterNotation.STOPS))
-        assertEquals("Stops", MonitorNDFilterNotation.STOPS.editorLabel)
+        assertEquals("档数", MonitorNDFilterNotation.STOPS.editorLabel)
         assertEquals("ND32", MonitorNDFilterNotation.FACTOR.editorLabel)
         assertEquals("ND 0.3", MonitorNDFilterNotation.DENSITY.editorLabel)
         assertEquals(MonitorNDFilterNotation.FACTOR, MonitorNDFilterNotation.fromPersisted("factor"))

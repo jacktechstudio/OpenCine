@@ -83,7 +83,7 @@ class CaptureNativeReadoutPresentationTest {
      * strategy (Action 6), as the standalone apps did, never a dash.
      */
     @Test fun apertureFallsBackToTheRequestedStrategyUntilTheIrisIsMeasured() {
-        assertEquals("Starburst f/4", CaptureNativeReadoutPresentation.aperture(null, ApertureStrategy.STARBURST))
+        assertEquals("星芒 F4", CaptureNativeReadoutPresentation.aperture(null, ApertureStrategy.STARBURST))
         assertEquals("--", CaptureNativeReadoutPresentation.aperture(null, -1))
         assertEquals(com.opencapture.opencine.appkit.MonitorCapturePresentation.label(
             com.opencapture.opencine.core.SettingValue.Aperture(2.8)),

@@ -5,9 +5,9 @@ import com.opencapture.opencine.media.MonitorDesqueezeDirection
 
 /** Presentation only: the source pixels, scope samples and delivered files stay unchanged. */
 object AnamorphicDesqueeze {
-    const val HELP = "Corrects the displayed shape of an anamorphic image in live view and playback. " +
-        "Horizontal widens the image; Vertical makes it taller. The full image stays fitted. " +
-        "Recordings, photos, exports and scope measurements are unchanged."
+    const val HELP = "在取景和回放时还原变形宽银幕镜头的画面比例。" +
+        "水平反挤压拉宽画面，垂直反挤压拉高画面；两种方式均完整显示画幅。" +
+        "不影响录像、照片、导出文件和示波器读数。"
 
     fun snap(value: Double): Double = MonitorAnamorphicDesqueeze.snap(value)
     fun label(value: Double): String = MonitorAnamorphicDesqueeze.label(value)

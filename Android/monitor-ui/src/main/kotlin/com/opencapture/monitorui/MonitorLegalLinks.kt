@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 fun MonitorLegalLinks(onPrivacy: (() -> Unit)?, onTerms: (() -> Unit)?, modifier: Modifier = Modifier.fillMaxWidth()) {
     if (onPrivacy == null && onTerms == null) return
     Row(modifier, horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)) {
-        if (onPrivacy != null) LegalLink("Privacy", "legal.privacy", onPrivacy)
-        if (onTerms != null) LegalLink("Terms", "legal.terms", onTerms)
+        if (onPrivacy != null) LegalLink("隐私", "legal.privacy", onPrivacy)
+        if (onTerms != null) LegalLink("使用条款", "legal.terms", onTerms)
     }
 }
 

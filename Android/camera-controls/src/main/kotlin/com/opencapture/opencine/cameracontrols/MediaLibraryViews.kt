@@ -125,14 +125,14 @@ fun MediaCategoryTab(tab: MediaLibraryTab, active: Boolean, fill: Boolean = fals
     val haptics = LocalOperatorHaptics.current
     val label =
         when (tab) {
-            MediaLibraryTab.ALL -> "All"
-            MediaLibraryTab.VIDEOS -> "Videos"
-            MediaLibraryTab.PHOTOS -> "Photos"
-            MediaLibraryTab.FAVORITES -> "Favorites"
+            MediaLibraryTab.ALL -> "全部"
+            MediaLibraryTab.VIDEOS -> "视频"
+            MediaLibraryTab.PHOTOS -> "照片"
+            MediaLibraryTab.FAVORITES -> "收藏"
         }
     MonitorTab(active, { haptics.selection(); onClick() }, Modifier.then(if (fill) Modifier.fillMaxWidth() else Modifier),
         vertical = fill, separator = tab != MediaLibraryTab.entries.first(),
-        accessibilityLabel = "Show $label media") {
+        accessibilityLabel = "显示${label}素材") {
         Row(Modifier.then(if (fill) Modifier.fillMaxWidth() else Modifier),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             // iOS category tabs carry no glyph.
@@ -159,11 +159,11 @@ fun MediaCatalogHeaderRow(
 
 /** Selection actions name how many items they act on and where deletion happens (ZAB-440). */
 internal fun selectionDeleteDescription(count: Int, enabled: Boolean): String =
-    if (enabled) "Delete $count selected ${if (count == 1) "item" else "items"} from the camera card"
-    else "Delete selected media"
+    if (enabled) "从相机存储卡删除所选的 ${count} 项素材"
+    else "删除所选素材"
 
 internal fun selectionShareDescription(count: Int): String =
-    "Share $count selected ${if (count == 1) "item" else "items"}"
+    "分享所选的 ${count} 项素材"
 
 /** The shared selection bar with this library's labels and haptics (iOS: the same bar in `MonitorMediaCatalog`). */
 @Composable
@@ -193,7 +193,7 @@ fun MediaCacheBar(filename: String, progress: Double, rate: String? = null) {
         com.opencapture.monitorui.MonitorMediaProgressTrack(progress.toFloat(), trackWidth = 120.dp,
             modifier = Modifier.semantics { stateDescription = caption })
         Text(
-            "CACHING $filename $caption",
+            "正在缓存 ${filename} ${caption}",
             color = LiveDesign.muted,
             fontSize = 10.sp,
             fontFamily = MonitorTypography.fontFamily,
@@ -243,7 +243,7 @@ fun MediaEmptyState(listing: Boolean, subtitle: String, title: String? = null, r
             style = LiveType.ui(12f),
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
         )
-        if (retry != null) Text("Retry", color = LiveDesign.accent, style = LiveType.ui(13f, FontWeight.SemiBold),
+        if (retry != null) Text("重试", color = LiveDesign.accent, style = LiveType.ui(13f, FontWeight.SemiBold),
             modifier = Modifier.chromeClickable(onClick = retry).padding(horizontal = 16.dp, vertical = 8.dp))
     }
 }
@@ -256,10 +256,10 @@ fun MediaListingState(listed: Int) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CircularProgressIndicator(color = LiveDesign.muted)
-        Text("Listing clips on camera…", color = LiveDesign.muted, style = LiveType.ui(15f, FontWeight.Medium), modifier = Modifier.padding(top = 12.dp))
+        Text("正在读取相机素材列表…", color = LiveDesign.muted, style = LiveType.ui(15f, FontWeight.Medium), modifier = Modifier.padding(top = 12.dp))
         Text(
-            if (listed == 0) "Querying card storage…"
-            else "$listed clip${if (listed == 1) "" else "s"} found so far",
+            if (listed == 0) "正在读取存储卡容量…"
+            else "已找到 ${listed} 个片段",
             color = LiveDesign.faint,
             style = LiveType.ui(12f),
         )
@@ -328,14 +328,14 @@ fun MediaFilterPopup(
                 Column(Modifier.padding(top = 72.dp, start = 20.dp, end = 20.dp).widthIn(max = 400.dp).fillMaxWidth()
                     .mediaPanelGlass(MediaCornerShape).chromeClickable(onClick = {}).padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("Filters", style = LiveType.ui(16f, FontWeight.SemiBold), color = LiveDesign.text)
+                    Text("筛选", style = LiveType.ui(16f, FontWeight.SemiBold), color = LiveDesign.text)
                     val scroll = rememberScrollState()
                     Column(Modifier.fillMaxWidth().weight(1f, fill = false).heightIn(max = 290.dp).verticalScroll(scroll)) { form() }
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("Clear all", style = LiveType.ui(13f, FontWeight.Medium),
+                        Text("全部清除", style = LiveType.ui(13f, FontWeight.Medium),
                             color = if (hasActiveFilters) LiveDesign.accent else LiveDesign.faint,
                             modifier = Modifier.chromeClickable(enabled = hasActiveFilters, onClick = onClear))
-                        Text("Done", style = LiveType.ui(13f, FontWeight.SemiBold), color = LiveDesign.accent,
+                        Text("完成", style = LiveType.ui(13f, FontWeight.SemiBold), color = LiveDesign.accent,
                             modifier = Modifier.chromeClickable(onClick = onClose))
                     }
                 }
@@ -371,11 +371,11 @@ fun MediaFilterPopup(
                 .padding(16.dp)
                 .monitorScrollFade(filterScroll)
                 .verticalScroll(filterScroll)
-                .semantics { contentDescription = "Filter popup" },
+                .semantics { contentDescription = "筛选面板" },
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "FILTER",
+                    "筛选",
                     color = LiveDesign.muted,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,
@@ -404,12 +404,12 @@ fun MediaFilterPopup(
                                 edit.commit(key)
                             }
                             edit.cancel(); pickingDate = null
-                        }) { Text("Done") }
+                        }) { Text("完成") }
                     },
                     dismissButton = {
                         TextButton(onClick = {
                             edit.commit(null); edit.cancel(); pickingDate = null
-                        }) { Text("Clear") }
+                        }) { Text("清除") }
                     },
                 ) {
                     DatePicker(pickerState)
@@ -435,7 +435,7 @@ fun MediaCloseButton(
             .clip(CircleShape)
             .mediaGlass(CircleShape)
             .chromeClickable(enabled = enabled, onClick = onClick)
-            .semantics { contentDescription = "Close" },
+            .semantics { contentDescription = "关闭" },
         contentAlignment = Alignment.Center,
     ) {
         MonitorIcon(
@@ -585,11 +585,11 @@ fun MediaLibraryPage(
                 modifier = Modifier.windowInsetsPadding(safe).padding(horizontal = 12.dp, vertical = 10.dp),
                 navigationWidth = 206f,
                 back = close?.let { onClose ->
-                    { MonitorChromeButton(MonitorIcon.CHEVRON_LEFT, "Back", Modifier.testTag("monitor.page.back"),
+                    { MonitorChromeButton(MonitorIcon.CHEVRON_LEFT, "返回", Modifier.testTag("monitor.page.back"),
                         onClick = onClose) }
                 },
                 heading = {
-                    com.opencapture.monitorui.MonitorPageHeading("Media", state.cameraName)
+                    com.opencapture.monitorui.MonitorPageHeading("素材", state.cameraName)
                 },
                 navigation = { compact ->
                     Column(

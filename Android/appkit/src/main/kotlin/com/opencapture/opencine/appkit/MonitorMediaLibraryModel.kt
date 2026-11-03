@@ -25,10 +25,10 @@ public data class MonitorMediaLibraryActionToken internal constructor(
     public val lifetime: UUID, public val binding: MediaBrowseBinding?,
 )
 public data class MonitorMediaLibraryCopy(
-    public val openFailed: String = "Could not open the camera library.",
-    public val listFailed: String = "Could not list camera clips.",
-    public val favoriteSaveFailed: String = "Could not save local clip favorites.",
-    public val downloadFailed: String = "Could not download that clip.",
+    public val openFailed: String = "无法打开相机素材库。",
+    public val listFailed: String = "无法读取相机素材列表。",
+    public val favoriteSaveFailed: String = "无法保存本机收藏。",
+    public val downloadFailed: String = "无法下载此片段。",
     public val listing: String? = null, public val empty: String? = null,
     /** Shown when the camera holds its own gallery, so it lists nothing here. */
     public val sourceHeld: String? = null,

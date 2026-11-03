@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 
 /** The selection bar's Close, which leaves selection mode. Swift twin: `MonitorMediaSelectionCopy`. */
 object MonitorMediaSelectionCopy {
-    const val EXIT = "Exit selection"
+    const val EXIT = "退出多选"
     const val EXIT_TAG = "monitor.media.selection.close"
 }
 
@@ -49,8 +49,8 @@ fun MonitorSelectionTray(
     modifier: Modifier = Modifier,
     shareEnabled: Boolean = true,
     deleteEnabled: Boolean = true,
-    shareLabel: String = "Share selected",
-    deleteLabel: String = "Delete selected",
+    shareLabel: String = "分享所选素材",
+    deleteLabel: String = "删除所选素材",
     onClickFeedback: () -> Unit = {},
 ) {
     Row(
@@ -64,14 +64,14 @@ fun MonitorSelectionTray(
         MonitorSelectionChip(MonitorIcon.X, MonitorMediaSelectionCopy.EXIT, tag = MonitorMediaSelectionCopy.EXIT_TAG,
             minimumTarget = 48f, onClickFeedback = onClickFeedback, onClick = onExit)
         // The count keeps its full width; on a narrow phone the actions scroll instead of cutting it.
-        Text("$count selected", color = MonitorPalette.text,
+        Text("已选 $count 项", color = MonitorPalette.text,
             style = MonitorTypography.text(10.5f, FontWeight.SemiBold), maxLines = 1, softWrap = false)
         Box(Modifier.weight(1f).padding(start = 4.dp), contentAlignment = Alignment.CenterEnd) {
             Row(Modifier.horizontalScroll(rememberScrollState()), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                MonitorSelectionChip(MonitorIcon.CIRCLE_CHECK, "Select all", text = "All",
+                MonitorSelectionChip(MonitorIcon.CIRCLE_CHECK, "全选", text = "全部",
                     onClickFeedback = onClickFeedback, onClick = onAll)
-                MonitorSelectionChip(MonitorIcon.SHARE, shareLabel, text = "Share", active = true,
+                MonitorSelectionChip(MonitorIcon.SHARE, shareLabel, text = "分享", active = true,
                     enabled = shareEnabled, onClickFeedback = onClickFeedback, onClick = onShare)
                 MonitorSelectionChip(MonitorIcon.TRASH, deleteLabel, danger = true,
                     enabled = deleteEnabled, onClickFeedback = onClickFeedback, onClick = onDelete)

@@ -25,7 +25,7 @@ class CaptureCodecColorTest {
         )
         assertFalse(choices.showsCodec)
         assertTrue(choices.showsColor)
-        assertEquals("COLOR", choices.title)
+        assertEquals("色彩", choices.title)
         assertEquals("D-Log M", choices.selectedColorChoice?.label)
     }
 
@@ -38,7 +38,7 @@ class CaptureCodecColorTest {
             selectedColor = "nlog",
         )
         assertTrue(choices.showsCodec && choices.showsColor)
-        assertEquals("CODEC · COLOR", choices.title)
+        assertEquals("编码 · 色彩", choices.title)
         assertEquals(listOf(CaptureCodecColorSection.CODEC, CaptureCodecColorSection.COLOR), choices.sections)
         assertEquals("H.265 10-bit", choices.selectedCodecChoice?.label)
         assertEquals(listOf("SDR", "HLG", "N-Log"), choices.colors.map { it.label })
@@ -52,7 +52,7 @@ class CaptureCodecColorTest {
         )
         assertEquals(listOf("A", "B"), choices.codecs.map { it.label })
         assertEquals(listOf(CaptureCodecColorSection.CODEC), choices.sections)
-        assertEquals("CODEC", choices.title)
+        assertEquals("编码", choices.title)
     }
 
     @Test

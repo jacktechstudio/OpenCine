@@ -21,7 +21,7 @@ class LutPickerCaptionTest {
         cameraLooksCaption = "Official DJI looks for this color / camera",
     )
     private val looks = LutPickerCopy(
-        cameraTab = "Camera",
+        cameraTab = "相机",
         autoId = LutCatalog.AUTO,
         customHint = "Imported looks land here. Auto keeps the Rec.709 preview unchanged.",
         noLookCaption = "Rec.709 preview · no conversion needed",
@@ -36,7 +36,7 @@ class LutPickerCaptionTest {
         assertEquals("No matching look for this color / camera", camera(official, LutCatalog.OFFICIAL_AUTO))
         assertEquals("Rec.709 preview · no conversion needed", camera(looks, LutCatalog.AUTO))
         for (copy in listOf(official, looks)) {
-            assertEquals("Applying official D-Log → Rec.709", camera(copy, copy.autoId, CameraCommands.COLOR_DLOG))
+            assertEquals("正在应用官方 LUT：D-Log → Rec.709", camera(copy, copy.autoId, CameraCommands.COLOR_DLOG))
         }
     }
 
@@ -45,14 +45,14 @@ class LutPickerCaptionTest {
         assertEquals("Official DJI looks for this color / camera", camera(official, "creativeMono"))
         assertEquals("Camera looks for this color profile", camera(looks, "djiDLog2"))
         assertEquals("Camera looks for this color profile", camera(looks, "creativeMono"))
-        assertEquals("Manual camera conversion", camera(looks, "camera:unknown"))
+        assertEquals("手动色彩转换", camera(looks, "camera:unknown"))
     }
 
     @Test fun photoLiveViewAndCreativeCaptionsAreShared() {
         for (copy in listOf(official, looks)) {
             assertEquals(LutCatalog.PHOTO_REC709_CAPTION, camera(copy, copy.autoId, CameraCommands.COLOR_DLOG, isPhoto = true))
-            assertEquals("Applying Mono", creativeCaption(copy, "creativeMono", CameraCommands.COLOR_NORMAL, null, false))
-            assertEquals("Looks for the displayed picture", creativeCaption(copy, copy.autoId, CameraCommands.COLOR_NORMAL, null, false))
+            assertEquals("正在应用 黑白", creativeCaption(copy, "creativeMono", CameraCommands.COLOR_NORMAL, null, false))
+            assertEquals("监看画面风格", creativeCaption(copy, copy.autoId, CameraCommands.COLOR_NORMAL, null, false))
         }
     }
 }

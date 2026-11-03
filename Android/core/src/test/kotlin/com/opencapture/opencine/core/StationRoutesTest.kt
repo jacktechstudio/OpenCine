@@ -13,15 +13,15 @@ class StationRoutesTest {
 
     @Test fun theConnectCardNamesWhereTheCameraIsGoing() {
         assertEquals(
-            listOf("Connecting over Bluetooth", "Joining camera Wi-Fi", "Opening the video link", "Starting the picture"),
+            listOf("正在通过蓝牙连接", "正在加入相机 Wi-Fi", "正在建立图传连接", "正在启动取景画面"),
             StationRoutes.steps(null).map { it.title },
         )
         val wifi = SavedRoute(key = "wifi", kind = RouteKind.INFRASTRUCTURE_NETWORK, network = "Studio")
         assertEquals(
-            listOf("Connecting over Bluetooth", "Moving the camera to Studio", "Finding the camera", "Starting the picture"),
+            listOf("正在通过蓝牙连接", "正在将相机切换至Studio", "正在查找相机", "正在启动取景画面"),
             StationRoutes.steps(wifi).map { it.title },
         )
-        assertEquals("Moving the camera to Hotspot", StationRoutes.steps(SavedRoute(key = "hotspot", kind = RouteKind.PHONE_HOTSPOT))[1].title)
+        assertEquals("正在将相机切换至热点", StationRoutes.steps(SavedRoute(key = "hotspot", kind = RouteKind.PHONE_HOTSPOT))[1].title)
     }
 
     @Test fun anAddedSetupBecomesAWiFiOrHotspotRoute() {
@@ -50,9 +50,9 @@ class StationRoutesTest {
 
     @Test fun aFailedSetupOffersEditingItAndTheCameraWiFi() {
         val wifi = SavedRoute(key = "wifi", kind = RouteKind.INFRASTRUCTURE_NETWORK, network = "Studio")
-        val failure = ConnectionFailure(ConnectionFailure.Reason.Other, null, "Couldn’t connect over Camera Wi-Fi", "m", listOf(RecoveryAction.Retry), "c")
+        val failure = ConnectionFailure(ConnectionFailure.Reason.Other, null, "无法通过相机 Wi-Fi 连接", "m", listOf(RecoveryAction.Retry), "c")
         val routed = StationRoutes.withRouteActions(failure, wifi, camera)
-        assertEquals("Couldn’t connect over Studio", routed.title)
+        assertEquals("无法通过Studio连接", routed.title)
         assertEquals(listOf(RecoveryAction.EditRoute(wifi.id), RecoveryAction.Retry, RecoveryAction.UseRoute(ap.id)), routed.actions)
         assertEquals(failure, StationRoutes.withRouteActions(failure, ap, camera))
         assertEquals(failure, StationRoutes.withRouteActions(failure, null, camera))

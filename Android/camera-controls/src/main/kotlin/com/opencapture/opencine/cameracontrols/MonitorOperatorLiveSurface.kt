@@ -279,7 +279,7 @@ private fun OperatorWaitingPicture(frame: MonitorRect, control: MonitorControlMo
     Box(Modifier.frame(frame).background(Color.Black), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
             CircularProgressIndicator(color = LiveDesign.text.copy(alpha = .72f))
-            Text("WAITING FOR LIVE VIEW", color = LiveDesign.text.copy(alpha = .72f), style = LiveType.mono(15f, FontWeight.SemiBold))
+            Text("等待图传画面", color = LiveDesign.text.copy(alpha = .72f), style = LiveType.mono(15f, FontWeight.SemiBold))
             if (hint) Text(LocalVPNFilter.LIVE_HINT, color = LiveDesign.muted, style = LiveType.ui(12f),
                 textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 28.dp))
         }

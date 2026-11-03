@@ -44,21 +44,21 @@ public data class MonitorCapturePolicy(
     }
 
     public val accessibilityLabel: String get() = when {
-        photo -> "Take photo"
-        recording == true && pending -> "Stopping recording"
-        recording == true -> "Stop recording"
-        recording == null -> "Recording state unknown"
-        else -> "Start recording"
+        photo -> "拍照"
+        recording == true && pending -> "正在停止录制"
+        recording == true -> "停止录制"
+        recording == null -> "录制状态未知"
+        else -> "开始录制"
     }
 
     /** What a hold does, for the screen reader; null where a hold is a press. */
-    public val holdAccessibilityLabel: String? get() = if (offersMode) "Shooting mode" else null
+    public val holdAccessibilityLabel: String? get() = if (offersMode) "拍摄模式" else null
 
     /** Spoken beside the action, like the pre-shared Android record disc. */
     public val stateDescription: String? get() = when {
         photo -> null
-        recording == true -> "Recording"
-        recording == false -> "Standby"
+        recording == true -> "录制中"
+        recording == false -> "待机"
         else -> null
     }
 

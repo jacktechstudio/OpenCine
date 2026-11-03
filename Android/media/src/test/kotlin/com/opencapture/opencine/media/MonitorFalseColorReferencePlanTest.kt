@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 class MonitorFalseColorReferencePlanTest {
     @Test fun rec709RulerKeepsTheGrayZoneAndEverySecondStop() {
         val plan = MonitorFalseColorReferencePlan.signal(LiveFalseColorScale.SCENE_STOPS, MonitorTransfer.REC709, 255)
-        assertEquals(listOf("−6", "−4", "−2", "18%", "clip"), plan.markers.map { it.label })
+        assertEquals(listOf("−6", "−4", "−2", "18%", "剪切"), plan.markers.map { it.label })
         val gray = plan.segments.first { it.band.label == "18%" }
         assertEquals(8.0 / 12, gray.lowerFraction)
         assertEquals(9.0 / 12, gray.upperFraction)

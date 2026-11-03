@@ -36,7 +36,7 @@ public class MonitorOperatorExposureReading(stops: Double?, available: Boolean =
     /** Top is +3, bottom is −3. Scaled through thirds so a reported third lands exactly. */
     public val needleFraction: Float? = this.stops?.let { (9f - (it.coerceIn(-3.0, 3.0) * 3).toFloat()) / 18f }
     public val accessibilityLabel: String =
-        if (this.stops == null) "Camera exposure meter, unavailable" else "Camera exposure meter, $label EV"
+        if (this.stops == null) "无法读取相机曝光指示" else "相机曝光指示：${label} EV"
 
     public companion object {
         public fun frame(feed: MonitorRect, mode: MonitorDisplayMode, avoid: MonitorRect? = null): MonitorRect? {

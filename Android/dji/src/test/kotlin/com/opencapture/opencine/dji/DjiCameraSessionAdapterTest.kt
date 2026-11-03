@@ -464,7 +464,7 @@ class DjiCameraSessionAdapterTest {
         assertEquals(null, seam.current.recording.value, "Unknown is not idle")
         assertEquals(CommandStage.Rejected(CommandRejection.RecordingStateUnknown), seam.shutter()?.stage)
         assertTrue(port.fired.isEmpty())
-        assertEquals("Waiting for the camera's record state", port.note)
+        assertEquals("正在等待相机报告录制状态", port.note)
     }
 
     @Test

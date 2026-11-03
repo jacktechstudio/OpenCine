@@ -21,10 +21,10 @@ import kotlin.math.sqrt
  */
 enum class MonitorTiltSource(val visibleLabel: String, val accessibilityLabel: String) {
     /** The platform's fused gravity sensor supplied the device vector directly. */
-    GRAVITY_SENSOR("DEVICE GRAVITY", "device gravity sensor"),
+    GRAVITY_SENSOR("重力传感器", "设备重力传感器"),
 
     /** A normalized, low-pass accelerometer vector approximated the device tilt (no gravity sensor). */
-    ACCELEROMETER_LOW_PASS("DEVICE TILT", "device tilt from low-pass accelerometer"),
+    ACCELEROMETER_LOW_PASS("设备倾角", "经低通滤波的加速度计测得的倾角"),
 }
 
 /** A normalized device vector. */

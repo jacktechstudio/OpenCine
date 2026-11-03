@@ -5,10 +5,10 @@ import kotlin.test.assertEquals
 
 class MediaSelectionTrayCopyTest {
     @Test fun selectionActionsNameTheCountAndTheCameraCard() {
-        assertEquals("Delete 3 selected items from the camera card", selectionDeleteDescription(3, true))
-        assertEquals("Delete 1 selected item from the camera card", selectionDeleteDescription(1, true))
-        assertEquals("Delete selected media", selectionDeleteDescription(2, false))
-        assertEquals("Share 3 selected items", selectionShareDescription(3))
-        assertEquals("Share 1 selected item", selectionShareDescription(1))
+        assertEquals("从相机存储卡删除所选的 3 项素材", selectionDeleteDescription(3, true))
+        assertEquals("从相机存储卡删除所选的 1 项素材", selectionDeleteDescription(1, true))
+        assertEquals("删除所选素材", selectionDeleteDescription(2, false))
+        assertEquals("分享所选的 3 项素材", selectionShareDescription(3))
+        assertEquals("分享所选的 1 项素材", selectionShareDescription(1))
     }
 }

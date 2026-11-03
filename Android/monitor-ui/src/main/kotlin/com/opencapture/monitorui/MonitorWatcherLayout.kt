@@ -15,9 +15,9 @@ public object MonitorWatcherControlPlacement {
 
 /** Common notice wording; the adapter only maps its transport phase. */
 public object MonitorWatcherNotices {
-    public val joining: MonitorWatcherNotice get() = MonitorWatcherNotice("Joining shared feed…")
-    public val waitingForPicture: MonitorWatcherNotice get() = MonitorWatcherNotice("Waiting for picture from the host…")
-    public fun reconnecting(attempt: Int, maximum: Int): MonitorWatcherNotice = MonitorWatcherNotice("Reconnecting… $attempt of $maximum")
+    public val joining: MonitorWatcherNotice get() = MonitorWatcherNotice("正在连接共享画面…")
+    public val waitingForPicture: MonitorWatcherNotice get() = MonitorWatcherNotice("正在等待主机画面…")
+    public fun reconnecting(attempt: Int, maximum: Int): MonitorWatcherNotice = MonitorWatcherNotice("正在重新连接…第 $attempt/$maximum 次")
     public fun failed(message: String): MonitorWatcherNotice = MonitorWatcherNotice(message, canChooseFeed = true)
 }
 public enum class MonitorWatcherConnectionPhase { JOINING, WATCHING, DENIED, FAILED }
@@ -44,7 +44,7 @@ public object MonitorWatcherPasscodeRule {
     public const val MINIMUM_LENGTH: Int = 4
 
     /** Shown under a broadcaster's entry that is not yet long enough to take effect. */
-    public const val TOO_SHORT_HINT: String = "At least 4 characters, or empty for an open feed."
+    public const val TOO_SHORT_HINT: String = "密码至少 4 个字符。留空即可允许免密观看。"
 
     /** What a broadcaster's entry means. */
     public sealed interface Entry {

@@ -1183,8 +1183,8 @@ class PocketCameraSession(
                     withCredentialIO(credentialSourceCurrent, transaction = wifiCache.ioTransaction) { wifiCache.remove(camera.id) }
                 }
                 error(
-                    "couldn't join camera Wi-Fi. Tap the system Join prompt if Android asked. " +
-                        "On 5.8 GHz the camera Wi-Fi can take about a minute to appear. Try again, or set the camera to 2.4 GHz (Settings, Wireless, Frequency) for a faster join.",
+                    "未能加入相机 Wi-Fi。如 Android 提示是否连接，请轻点“连接”。" +
+                        "在 5.8 GHz 频段，相机 Wi-Fi 可能需约一分钟才会出现。请重试，或在相机的“设置 → 无线连接 → 频段”中选择 2.4 GHz 以加快连接。",
                 )
             }
         }
@@ -1412,16 +1412,16 @@ class PocketCameraSession(
             joinedSSID = null
             // Wi-Fi: this phone joins first. Hotspot: the phone hosts it and joins nothing.
             if (!hotspot) {
-                _setupProgress.value = "Joining ${network.ssid} on this phone"
+                _setupProgress.value = "本机正在加入 ${network.ssid}"
                 if (!station.join(network.ssid, network.password)) {
-                    error("this phone could not join the Wi-Fi. Check the password and that the network is in range")
+                    error("本机未能加入 Wi-Fi。请检查密码并确认设备位于网络覆盖范围内")
                 }
             }
             if (camera.model.family == "nano") {
-                _setupProgress.value = "Waking camera Wi-Fi"
+                _setupProgress.value = "正在唤醒相机 Wi-Fi"
                 val wake = exchangeBle(DjiNative.CMD_SESSION_5310)
                 if (!wake.contentEquals(byteArrayOf(1, 0, 0, 0))) {
-                    error("the Nano did not confirm its Wi-Fi wake. Keep it powered on and try again")
+                    error("Osmo Nano 未确认 Wi-Fi 唤醒请求，请保持相机开机后重试")
                 }
                 delay(1_000)
             }
@@ -1447,14 +1447,14 @@ class PocketCameraSession(
                 log = ::stationLog,
             )
             if (outcome == StationJoin.Outcome.JOINED) {
-                _setupProgress.value = "Finding the camera on ${network.ssid}"
+                _setupProgress.value = "正在查找 ${network.ssid} 上的相机"
                 // A router hands the camera an address, then its services start: about 40 s
                 // after the join on a Pocket 4 Pro on a home /24 (iOS, 2026-09-24).
                 if (!openStationDatalink(camera, identity, patienceMs = STATION_FIND_MS)) {
                     error(
-                        "the camera joined the Wi-Fi, but this phone cannot reach it there. The router is keeping " +
-                            "the two apart: on a Wi-Fi 7 router turn off MLO for this network (or add a camera " +
-                            "network without it), and turn off client isolation. The Hotspot setup avoids the router",
+                        "相机已加入 Wi-Fi，但本机无法访问。请检查路由器设置：" +
+                            "若使用 Wi-Fi 7，请为此网络关闭 MLO（或另建禁用 MLO 的相机网络），" +
+                            "并关闭客户端隔离。也可使用手机热点绕过路由器",
                     )
                 }
             }
@@ -3262,7 +3262,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SHOOT_PHOTO,
             CaptureShutterPolicy.shootPhotoExtra(start = true),
-            "Photo",
+            "拍照",
             retransmits = false,
             onSettle = { _controlBusy.value = false },
         )
@@ -3280,7 +3280,7 @@ class PocketCameraSession(
         fireKind(
             if (trigger) DjiNative.CMD_SHOOT_PHOTO else if (start) DjiNative.CMD_RECORD_START else DjiNative.CMD_RECORD_STOP,
             if (trigger) CaptureShutterPolicy.shootPhotoExtra(start = start) else null,
-            if (trigger) (if (start) "TimeLapse" else "Stop") else if (start) "Record" else "Stop",
+            if (trigger) (if (start) "静止延时" else "停止") else if (start) "录像" else "停止",
             onStage = onStage,
             expect = { reportedRecording == start },
             onSettle = { _controlBusy.value = false },
@@ -3339,7 +3339,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_ISO_LIMIT,
             "$raw",
-            "ISO limit",
+            "ISO 上限",
             coalesce = true,
             onFail = {
                 if (isoLimitPin === requestPin && _status.value.isoLimit == raw) {
@@ -3360,7 +3360,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_APERTURE_STRATEGY,
             "$raw",
-            "Aperture",
+            "光圈",
             coalesce = true,
             onFail = {
                 if (aperturePin === requestPin && _status.value.apertureStrategy == raw) {
@@ -3381,7 +3381,7 @@ class PocketCameraSession(
     suspend fun refreshIsoLimit(): Boolean {
         if (nativeISOCapabilities.ceiling != true) return false
         if (!CameraCommands.shouldGetIsoLimit(_status.value.colorMode)) return false
-        return sendKind(DjiNative.CMD_GET_ISO_LIMIT, null, "ISO limit GET")
+        return sendKind(DjiNative.CMD_GET_ISO_LIMIT, null, "读取 ISO 上限")
     }
 
     /** True while a feed recover rebuild is in flight; FPS chip `RECOV`, not session recovery. */
@@ -3409,7 +3409,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_SHOOTING_MODE,
             "$raw",
-            "Mode",
+            "模式",
             onFail = {
                 if (shootingModeRevision != revision) return@fireKind
                 if (shootingModePin === requestPin && _status.value.shootingMode == raw) {
@@ -3461,7 +3461,7 @@ class PocketCameraSession(
         Log.i(TAG, "zoom: setZoom $from → $to live=${datalink != null}")
         val write = CamFov.chipWrite(factor)
         if (write == null) {
-            _controlNote.value = "Zoom $to: no command"
+            _controlNote.value = "无法切换至 ${to} 变焦倍率"
             Log.i(TAG, "zoom: tap ignored — no write for $to")
             onStage?.invoke(ControlWireEvent.NOT_SENT)
             return
@@ -3479,7 +3479,7 @@ class PocketCameraSession(
         zoomPin =
             CameraValuePin(factor, SystemClock.elapsedRealtime() + CameraValuePin.SETTLE_MS)
         markZoomStop(factor)
-        val name = "Zoom $to"
+        val name = "变焦 ${to}"
         _controlNote.value = name
         when (write) {
             is CamFov.ChipWrite.Lens ->
@@ -3653,7 +3653,7 @@ class PocketCameraSession(
             payload = CameraCommands.gimbalRecenter(),
             receiver = CameraCommands.RX_GIMBAL,
         )
-        _controlNote.value = "Gimbal re-centered"
+        _controlNote.value = "云台已回中"
     }
 
     fun flipGimbal() {
@@ -3742,7 +3742,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_TRACKING_BOX,
             extra,
-            "Track",
+            "主体跟踪",
             onSettle = { ok -> if (ok) beginTrackingPoll() },
         )
     }
@@ -4042,7 +4042,7 @@ class PocketCameraSession(
             return
         }
         scope.launch {
-            sendDumlWait(0x02, CameraCommands.CMD_PLAYBACK, CameraCommands.enterPlayback(), "Playback")
+            sendDumlWait(0x02, CameraCommands.CMD_PLAYBACK, CameraCommands.enterPlayback(), "回放")
             listMedia()
         }
     }
@@ -4064,7 +4064,7 @@ class PocketCameraSession(
                     inPlayback = { _status.value.inPlayback },
                     pictureFresh = { hasRecoveryPicture(startedAt) },
                     exitPlayback = {
-                        sendDumlWait(0x02, CameraCommands.CMD_PLAYBACK, CameraCommands.exitPlayback(), "Live")
+                        sendDumlWait(0x02, CameraCommands.CMD_PLAYBACK, CameraCommands.exitPlayback(), "监看")
                     },
                     enableLiveView = ::restartLiveViewAfterMedia,
                 )
@@ -4093,7 +4093,7 @@ class PocketCameraSession(
                 0x00,
                 CameraCommands.CMD_MEDIA_DELETE,
                 CameraCommands.deleteMedia(handle, mediaListCounter),
-                "Delete",
+                "删除",
             )
         }
     }
@@ -4107,7 +4107,7 @@ class PocketCameraSession(
                 CameraCommands.setMediaFavorite(
                     handle, favorite, mediaListCounter, connectedCamera?.model?.name.orEmpty(),
                 ),
-                "Favorite",
+                "收藏",
             )
         }
     }
@@ -4145,7 +4145,7 @@ class PocketCameraSession(
             fireKind(
                 DjiNative.CMD_SET_EXPO_MODE,
                 "manual",
-                "Manual expo",
+                "手动曝光",
                 onFail = {
                     if (_status.value.expoMode == CameraCommands.EXPO_MANUAL) {
                         clearExpoPin(mode = true)
@@ -4176,7 +4176,7 @@ class PocketCameraSession(
     fun setShutterAngle(degrees: Double) {
         val dl = datalink
         if (!controlLeaseAllows() || dl == null || !endpointCommandAdmission.allows(dl.isClosed, dl.isRebuilding)) {
-            _controlNote.value = "not live"
+            _controlNote.value = "尚未进入实时取景"
             return
         }
         if (CameraCommands.isPhotoMode(_status.value.shootingMode)) return
@@ -4225,7 +4225,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_EXPO_MODE,
             extra,
-            "ExpoMode",
+            "曝光模式",
             onFail = {
                 if (_status.value.expoMode == mode) {
                     clearExpoPin(mode = true)
@@ -4321,7 +4321,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_WB_AUTO,
             "$next",
-            "WB Auto tint $next",
+            "自动白平衡 · 色调 ${next}",
             coalesce = true,
             onStage = onStage,
             expect = { reportedWhiteBalance == ReportedWhiteBalance(CameraCommands.WB_AUTO, 0, next) },
@@ -4359,7 +4359,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_WB_CUSTOM,
             "$k\u001f$t",
-            "WB ${k}K tint $t",
+            "白平衡 ${k} K · 色调 ${t}",
             coalesce = true,
             onStage = onStage,
             expect = { reportedWhiteBalance == ReportedWhiteBalance(CameraCommands.WB_CUSTOM, k, t) },
@@ -4396,7 +4396,7 @@ class PocketCameraSession(
         fireKind(
             DjiNative.CMD_SET_FOCUS_MODE,
             if (continuous) "2" else "1",
-            "Focus",
+            "对焦",
             onStage = onStage,
             onFail = {
                 if (focusPin?.requestId == requestPin?.requestId && focusPin?.focusMode != null && _status.value.focusMode == next) {
@@ -4438,7 +4438,7 @@ class PocketCameraSession(
         if (!supportsFocusMode) return
         if (_controlBusy.value) return
         scope.launch {
-            sendKind(DjiNative.CMD_GET_FOCUS_TRACK, null, "Focus track GET")
+            sendKind(DjiNative.CMD_GET_FOCUS_TRACK, null, "读取追焦模式")
         }
     }
 
@@ -4583,7 +4583,7 @@ class PocketCameraSession(
         val angle = if (pending != null && remaining == null && formatReported &&
             now < pending.activeDeadline) pending.shutterAngle else null
         if (pending?.shutterAngle != null && now >= pending.activeDeadline) {
-            _controlNote.value = "Frame rate unconfirmed; choose the shutter angle again"
+            _controlNote.value = "相机尚未确认帧率，请重新选择快门角度。"
         }
         return next to angle
     }
@@ -4767,11 +4767,11 @@ class PocketCameraSession(
         val from = _status.value.colorMode
         // Do not pin color; holdZoomWrite must see live D-Log2 until the body hops.
         colorPin = null
-        _controlNote.value = "D-Log (D-Log2 cannot zoom)"
+        _controlNote.value = "已切换至 D-Log；D-Log2 不支持变焦。"
         fireKind(
             DjiNative.CMD_SET_COLOR_MODE,
             colorModeExtra(next),
-            "D-Log (zoom)",
+            "D-Log（变焦）",
             onFail = hopFail@{
                 if (zoomColorHopGeneration != hopGen) return@hopFail
                 colorPin = null
@@ -4845,7 +4845,7 @@ class PocketCameraSession(
             colorModeExtra(CameraCommands.COLOR_DLOG2),
             "D-Log2",
             onFail = { colorPin = null },
-            onSettle = { ok -> if (ok) _controlNote.value = "Zoom 1× · D-Log2" },
+            onSettle = { ok -> if (ok) _controlNote.value = "变焦 1× · D-Log2" },
         )
         hopNativeISO(from, CameraCommands.COLOR_DLOG2, appHost.nativeISOHopEnabled())
         Log.i(TAG, "zoom: restore D-Log2 on 1× (from $from)")
@@ -4863,7 +4863,7 @@ class PocketCameraSession(
         if (_gimbalMoveRunning.value) cancelProgrammedMove()
         val dl = datalink
         if (!controlLeaseAllows() || dl == null || !endpointCommandAdmission.allows(dl.isClosed, dl.isRebuilding)) {
-            _controlNote.value = "Zoom not available"
+            _controlNote.value = "当前无法变焦"
             onStage?.invoke(ControlWireEvent.NOT_SENT)
             return
         }
@@ -5018,7 +5018,7 @@ class PocketCameraSession(
         _status.value = _status.value.copy(audioChannel = value)
         val label = CameraCommands.audioChannelLabel(value) ?: value.toString()
         enqueueAudio {
-            val ok = sendKind(DjiNative.CMD_SET_AUDIO_CHANNEL, "$value", "Audio $label")
+            val ok = sendKind(DjiNative.CMD_SET_AUDIO_CHANNEL, "$value", "声道：${label}")
             if (!ok) {
                 if (_status.value.audioChannel == value) {
                     _status.value = _status.value.copy(audioChannel = previous)
@@ -5033,9 +5033,9 @@ class PocketCameraSession(
         pinAudio(vocal = boost)
         val previous = _status.value.vocalBoost
         _status.value = _status.value.copy(vocalBoost = boost)
-        val label = if (on) "On" else "Off"
+        val label = if (on) "开" else "关"
         enqueueAudio {
-            val ok = sendKind(DjiNative.CMD_SET_VOCAL_BOOST, if (on) "1" else "0", "Vocal $label")
+            val ok = sendKind(DjiNative.CMD_SET_VOCAL_BOOST, if (on) "1" else "0", "人声增强：${label}")
             if (!ok) {
                 if (_status.value.vocalBoost == boost) {
                     _status.value = _status.value.copy(vocalBoost = previous)
@@ -5050,7 +5050,7 @@ class PocketCameraSession(
         pinAudio(wind = value)
         _status.value = _status.value.copy(windNr = value)
         enqueueAudio {
-            patchAudioDsp("Wind ${if (on) "On" else "Off"}") { CameraCommands.patchWind(it, on) }
+            patchAudioDsp("风噪抑制：${if (on) "开" else "关"}") { CameraCommands.patchWind(it, on) }
         }
     }
 
@@ -5059,15 +5059,15 @@ class PocketCameraSession(
         _status.value = _status.value.copy(directionalAudio = mode, windNr = 1)
         val label = CameraCommands.audioDirLabel(mode) ?: mode.toString()
         enqueueAudio {
-            patchAudioDsp("Dir $label") { CameraCommands.patchDirectional(it, mode) }
+            patchAudioDsp("收音指向：${label}") { CameraCommands.patchDirectional(it, mode) }
         }
     }
 
     fun refreshAudio() {
         enqueueAudio {
-            sendKind(DjiNative.CMD_GET_AUDIO_CHANNEL, null, "Audio ch GET")
-            sendKind(DjiNative.CMD_GET_VOCAL_BOOST, null, "Vocal GET")
-            sendKind(DjiNative.CMD_AUDIO_DSP_GET, null, "AudioDSP GET")
+            sendKind(DjiNative.CMD_GET_AUDIO_CHANNEL, null, "读取声道设置")
+            sendKind(DjiNative.CMD_GET_VOCAL_BOOST, null, "读取人声增强设置")
+            sendKind(DjiNative.CMD_AUDIO_DSP_GET, null, "读取音频处理参数")
         }
     }
 
@@ -5205,7 +5205,7 @@ class PocketCameraSession(
             return
         }
         if (point != point.clamped()) {
-            _controlNote.value = "Set the gimbal within its tilt limits"
+            _controlNote.value = "请将云台调至俯仰限位范围内。"
             return
         }
         if (point.nativePitchDeg == null) {
@@ -5264,7 +5264,7 @@ class PocketCameraSession(
             return
         }
         if (!firstPictureSettled || decoder.lastPresentedAt == null || isLiveVideoStale()) {
-            _controlNote.value = "Wait for live video before running a move"
+            _controlNote.value = "请在取景画面出现后再启动云台运动。"
             return
         }
         val link = datalink ?: return
@@ -5280,7 +5280,7 @@ class PocketCameraSession(
         }
         if (live.pose.nativePitchDeg == null || listOfNotNull(program.a, program.b, program.c)
                 .any { it.nativePitchDeg == null }) {
-            _controlNote.value = "Set the gimbal points again"
+            _controlNote.value = "请重新设置云台关键点。"
             return
         }
         restGimbalStickWire()
@@ -5307,7 +5307,7 @@ class PocketCameraSession(
             if (moveDatalink !== link || !_gimbalMoveRunning.value) return@launch
             if (!canRunProgrammedMove) {
                 cancelProgrammedMove()
-                _controlNote.value = link.programmedZoomFailure(program) ?: "Wait for live video before running a move"
+                _controlNote.value = link.programmedZoomFailure(program) ?: "请在取景画面出现后再启动云台运动。"
                 return@launch
             }
             prepProgrammedMoveGimbal()
@@ -5555,10 +5555,10 @@ class PocketCameraSession(
         val xy = "$nx\u001f$ny"
         scope.launch {
             val focused =
-                sendKind(DjiNative.CMD_TAP_FOCUS_POINT, xy, "Focus region", timeoutMs = 800)
+                sendKind(DjiNative.CMD_TAP_FOCUS_POINT, xy, "对焦区域", timeoutMs = 800)
             if (!focused) return@launch
-            sendKind(DjiNative.CMD_TAP_FOCUS_HINT, null, "AE hint", timeoutMs = 800)
-            sendKind(DjiNative.CMD_TAP_FOCUS_COMMIT, xy, "Focus", timeoutMs = 800)
+            sendKind(DjiNative.CMD_TAP_FOCUS_HINT, null, "自动曝光测光点", timeoutMs = 800)
+            sendKind(DjiNative.CMD_TAP_FOCUS_COMMIT, xy, "对焦", timeoutMs = 800)
         }
     }
 
@@ -5567,10 +5567,10 @@ class PocketCameraSession(
         subjectBox = null
         isTracking = false
         refreshTrackingHud()
-        _controlNote.value = "Frame Too Small"
+        _controlNote.value = "跟踪框太小"
         scope.launch {
             delay(2_000)
-            if (_controlNote.value == "Frame Too Small") _controlNote.value = null
+            if (_controlNote.value == "跟踪框太小") _controlNote.value = null
         }
     }
 
@@ -5587,7 +5587,7 @@ class PocketCameraSession(
         trackingRequest = null
         refreshTrackingHud()
         if (!sendClear || !had || datalink == null) return
-        fireKind(DjiNative.CMD_CLEAR_TRACKING_BOX, null, "Track clear")
+        fireKind(DjiNative.CMD_CLEAR_TRACKING_BOX, null, "取消主体跟踪")
     }
 
     private fun beginTrackingPoll() {
@@ -5739,10 +5739,10 @@ class PocketCameraSession(
 
     /** GET `0xA0` blob, patch `@2`, SET `0x9F`. Never invent the blob. */
     private suspend fun patchAudioDsp(name: String, patch: (ByteArray) -> ByteArray) {
-        val got = sendKind(DjiNative.CMD_AUDIO_DSP_GET, null, "AudioDSP GET")
+        val got = sendKind(DjiNative.CMD_AUDIO_DSP_GET, null, "读取音频处理参数")
         val blob = CameraCommands.audioDspBytes(_status.value.audioDspBlob) ?: audioDspBlob
         if (!got || blob == null || blob.size <= 2) {
-            _controlNote.value = "$name: no DSP blob"
+            _controlNote.value = "${name}：未收到相机的音频处理参数"
             return
         }
         val next = patch(blob)
@@ -5820,7 +5820,7 @@ class PocketCameraSession(
         ensureEndpointCommandCurrent(audioGeneration)
         val dl = datalink
         if (!controlLeaseAllows() || dl == null || !endpointCommandAdmission.allows(dl.isClosed, dl.isRebuilding)) {
-            _controlNote.value = "not live"
+            _controlNote.value = "尚未进入实时取景"
             return false
         }
         _controlNote.value = null
@@ -5846,7 +5846,7 @@ class PocketCameraSession(
             ensureEndpointCommandCurrent(audioGeneration)
             val parsed = CameraReply.parse(reply.payload)
             if (!parsed.isSuccess) {
-                _controlNote.value = "$name: ${parsed.message}"
+                _controlNote.value = "${name}：${parsed.message}"
             }
             return parsed.isSuccess
         } finally {
@@ -5874,7 +5874,7 @@ class PocketCameraSession(
     ) {
         val dl = datalink
         if (!controlLeaseAllows() || dl == null || !endpointCommandAdmission.allows(dl.isClosed, dl.isRebuilding)) {
-            _controlNote.value = "not live"
+            _controlNote.value = "尚未进入实时取景"
             onStage?.invoke(ControlWireEvent.NOT_SENT)
             onFail?.invoke()
             onSettle?.invoke(false)
@@ -5947,7 +5947,7 @@ class PocketCameraSession(
         if (appHost.debugBuild) debugCameraSetResult?.invoke(key, ok)
         if (!ok) {
             send.onFail?.invoke()
-            _controlNote.value = "${send.name}: ${parsed.message}"
+            _controlNote.value = "${send.name}：${parsed.message}"
         }
         send.onStage?.invoke(if (ok) ControlWireEvent.ACKNOWLEDGED else ControlWireEvent.REFUSED)
         send.onSettle?.invoke(ok)
@@ -6062,7 +6062,7 @@ class PocketCameraSession(
         ensureEndpointCommandCurrent(audioGeneration)
         val dl = datalink
         if (!controlLeaseAllows() || dl == null || !endpointCommandAdmission.allows(dl.isClosed, dl.isRebuilding)) {
-            _controlNote.value = "not live"
+            _controlNote.value = "尚未进入实时取景"
             return false
         }
         _controlNote.value = null
@@ -6088,7 +6088,7 @@ class PocketCameraSession(
             ensureEndpointCommandCurrent(audioGeneration)
             val parsed = CameraReply.parse(reply.payload)
             if (!parsed.isSuccess) {
-                _controlNote.value = "$name: ${parsed.message}"
+                _controlNote.value = "${name}：${parsed.message}"
             }
             return parsed.isSuccess
         } finally {

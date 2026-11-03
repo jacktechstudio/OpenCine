@@ -33,8 +33,8 @@ class DiscoveryPermissionsTest {
 
     @Test
     fun settingsCopyNamesThePermissionAndroidShows() {
-        assertEquals("Nearby devices", DiscoveryPermissions.settingsName(DiscoveryPermissions.discovery(34)))
-        assertEquals("Location", DiscoveryPermissions.settingsName(DiscoveryPermissions.discovery(30)))
+        assertEquals("附近的设备", DiscoveryPermissions.settingsName(DiscoveryPermissions.discovery(34)))
+        assertEquals("位置信息", DiscoveryPermissions.settingsName(DiscoveryPermissions.discovery(30)))
     }
 
     @Test

@@ -23,13 +23,8 @@ object CaptureFocusChoices {
             ?.takeIf { status.focusTrack in 0..3 }.orEmpty()
         else -> ""
     }
-    fun track(label: String): Int? = when (label) {
-        "AF-C" -> 0
-        "Showcase" -> 1
-        "Lock" -> 2
-        "Priority" -> 3
-        else -> null
-    }
+    fun track(label: String, options: List<String> = labels): Int? =
+        (options.indexOf(label) - 1).takeIf { it in 0..3 }
 }
 
 fun captureQuickFocusControl(status: CameraStatus, labels: List<String> = CaptureFocusChoices.labels) =
@@ -43,7 +38,7 @@ fun applyCaptureFocusChoice(label: String, status: CameraStatus,
     setFocusMode: (Boolean) -> Unit, setFocusTrack: (Int) -> Unit, labels: List<String> = CaptureFocusChoices.labels) {
     if (label !in labels || label == CaptureFocusChoices.selection(status, labels)) return
     if (label == "AF-S") setFocusMode(false)
-    else CaptureFocusChoices.track(label)?.let { track ->
+    else CaptureFocusChoices.track(label, labels)?.let { track ->
         if (!CaptureLists.focusIsContinuous(status)) setFocusMode(true)
         if (status.focusTrack != track) setFocusTrack(track)
     }

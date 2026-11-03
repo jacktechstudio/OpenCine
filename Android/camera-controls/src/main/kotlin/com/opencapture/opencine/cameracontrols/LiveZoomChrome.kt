@@ -123,10 +123,10 @@ fun LiveZoomChip(
                     { haptics.longPress(); dialBase = dialFactor; dialOpen = true }
                 } else null)
             .semantics {
-                val crop = if (digital) ", digital crop" else ""
-                val extra = if (onDigitalCycle != null) "; double tap for digital zoom" else ""
+                val crop = if (digital) "，数码裁切" else ""
+                val extra = if (onDigitalCycle != null) "；双击可数码变焦" else ""
                 contentDescription =
-                    "Zoom ${LiveZoom.label(held)}$crop. Tap to cycle; hold to adjust$extra"
+                    "变焦 ${LiveZoom.label(held)}${crop}。轻点切换，长按调节${extra}"
             },
         contentAlignment = Alignment.Center,
     ) {
@@ -304,7 +304,7 @@ fun LiveFeedGestureWell(
                                     haptics.lock()
                                     @Suppress("DEPRECATION")
                                     view.announceForAccessibility(
-                                        if (locked) "Focus box locked" else "Focus box unlocked",
+                                        if (locked) "对焦框已锁定" else "对焦框已解锁",
                                     )
                                 } else if (latestCanLockAe.value()) {
                                     gesture.aeLockHeld = true

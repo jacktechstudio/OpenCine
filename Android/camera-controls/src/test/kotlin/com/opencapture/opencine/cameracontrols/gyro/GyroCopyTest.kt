@@ -82,9 +82,9 @@ class GyroCopyTest {
         assertEquals("0:00", GyroCopy.length(-3.0))
         assertEquals("35791394:07", GyroCopy.length(1e300))
         assertEquals("0:00", GyroCopy.length(-1e300))
-        assertEquals("0.12 s before REC", GyroCopy.startOffset(0.123))
-        assertEquals("0.30 s after REC", GyroCopy.startOffset(-0.3))
-        assertEquals("Mount moved at 1:15", GyroCopy.status(GyroTakeStatus.MountMoved(75.0)))
+        assertEquals("0.12秒（起录前）", GyroCopy.startOffset(0.123))
+        assertEquals("0.30秒（起录后）", GyroCopy.startOffset(-0.3))
+        assertEquals("安装位置移动于 1:15", GyroCopy.status(GyroTakeStatus.MountMoved(75.0)))
         assertEquals("200 Hz", GyroCopy.sampleRate(199.6))
         assertEquals("0 Hz", GyroCopy.sampleRate(Double.NaN))
         assertEquals("0 Hz", GyroCopy.sampleRate(Double.POSITIVE_INFINITY))
@@ -108,27 +108,27 @@ class GyroCopyTest {
     @Test
     fun statusTexts() {
         assertEquals("REC", GyroCopy.status(GyroTakeStatus.Recording))
-        assertEquals("Cut short", GyroCopy.status(GyroTakeStatus.CutShort))
-        assertEquals("Small gaps", GyroCopy.status(GyroTakeStatus.SmallGaps))
-        assertEquals("Not calibrated", GyroCopy.status(GyroTakeStatus.NotCalibrated))
-        assertEquals("Ready", GyroCopy.status(GyroTakeStatus.Ready))
-        assertEquals("No gaps", GyroCopy.smoothness(GyroTakeStatus.Ready))
-        assertEquals("No gaps", GyroCopy.smoothness(GyroTakeStatus.MountMoved(1.0)))
-        assertEquals("Small gaps", GyroCopy.smoothness(GyroTakeStatus.SmallGaps))
-        assertEquals("Cut short", GyroCopy.smoothness(GyroTakeStatus.CutShort))
-        assertEquals("Still recording", GyroCopy.smoothness(GyroTakeStatus.Recording))
+        assertEquals("提前结束", GyroCopy.status(GyroTakeStatus.CutShort))
+        assertEquals("少量数据缺失", GyroCopy.status(GyroTakeStatus.SmallGaps))
+        assertEquals("未校准", GyroCopy.status(GyroTakeStatus.NotCalibrated))
+        assertEquals("就绪", GyroCopy.status(GyroTakeStatus.Ready))
+        assertEquals("无采样缺失", GyroCopy.smoothness(GyroTakeStatus.Ready))
+        assertEquals("无采样缺失", GyroCopy.smoothness(GyroTakeStatus.MountMoved(1.0)))
+        assertEquals("少量数据缺失", GyroCopy.smoothness(GyroTakeStatus.SmallGaps))
+        assertEquals("提前结束", GyroCopy.smoothness(GyroTakeStatus.CutShort))
+        assertEquals("仍在录制", GyroCopy.smoothness(GyroTakeStatus.Recording))
     }
 
     @Test
     fun pillA11yAppendsTheIbisWarning() {
-        assertEquals("Gyro armed. IBIS is still on", GyroCopy.pillA11y(GyroPillKind.ARMED, true))
+        assertEquals("陀螺仪已就绪。机身防抖仍已开启", GyroCopy.pillA11y(GyroPillKind.ARMED, true))
         assertEquals("", GyroCopy.pillA11y(GyroPillKind.HIDDEN, true))
     }
 
     @Test
     fun verdictLeadsWithReadyForGyroflow() {
-        assertEquals("Ready for Gyroflow", GyroCopy.verdict(GyroTakeStatus.Ready))
-        assertEquals("Still recording", GyroCopy.verdict(GyroTakeStatus.Recording))
-        assertEquals("Small gaps", GyroCopy.verdict(GyroTakeStatus.SmallGaps))
+        assertEquals("可用于 Gyroflow", GyroCopy.verdict(GyroTakeStatus.Ready))
+        assertEquals("仍在录制", GyroCopy.verdict(GyroTakeStatus.Recording))
+        assertEquals("少量数据缺失", GyroCopy.verdict(GyroTakeStatus.SmallGaps))
     }
 }
